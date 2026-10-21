@@ -153,6 +153,7 @@ tr:last-child td{border-bottom:none;}
 .opts{margin-top:4px; background:#fff; border:1px solid #e8e8e8; border-radius:6px; box-shadow:0 6px 16px rgba(0,0,0,.08); padding:4px; font-size:12px;}
 .opts div{padding:5px 10px; border-radius:4px;}
 .opts div.on{background:#e6f4ff; color:var(--adm-blue); font-weight:600;}
+.opts div.muted{color:#8c8c8c; font-style:italic;}
 .dlg-f{display:flex; justify-content:flex-end; gap:8px; padding:10px 16px; border-top:1px solid #f0f0f0;}
 .ab{border:1px solid var(--adm-line); border-radius:6px; padding:5px 14px; background:#fff;}
 .ab.p{background:var(--adm-blue); border-color:var(--adm-blue); color:#fff;}
@@ -172,6 +173,7 @@ tr:last-child td{border-bottom:none;}
 .lst td{border-bottom:1px solid #f0f0f0; white-space:nowrap;}
 .lst .hl{color:var(--adm-blue); font-weight:600;}
 .lst .lk{color:var(--adm-blue);}
+.lst td.pe{white-space:nowrap; line-height:1.55;}
 
 .appendix .spec-doc{padding:22px 24px;}
 footer{padding-block:28px 56px; color:var(--muted); font-size:12.5px;}
@@ -323,16 +325,18 @@ footer{padding-block:28px 56px; color:var(--muted); font-size:12.5px;}
           <div class="q"><label>用户ID:</label><div class="ip">请输入</div></div>
           <div class="q"><label>夺宝名称:</label><div class="ip">请输入</div></div>
           <div class="q"><label>商品名称:</label><div class="ip">请输入</div></div>
-          <div class="q"><label>订单状态:</label><div class="dd ph">请选择</div></div>
+          <div class="q drop"><div class="row"><label>订单状态: <i class="n">3</i></label><div class="dd ph" style="flex:1">请选择</div></div>
+            <div class="opts"><div class="muted">原有状态（不变）</div><div class="on">已兑换</div></div></div>
           <div class="q drop"><div class="row"><label>兑换类型: <i class="n">1</i></label><div class="dd ph" style="flex:1">请选择</div></div>
             <div class="opts"><div>未处置</div><div>回收折现</div><div>兑换实物</div><div>OKbet兑换码</div><div class="on">Share treats</div></div></div>
           <div class="q"><label>开奖时间:</label><div class="ip">开始 ~ 结束</div></div>
           <div class="qact"><span class="ab">重置</span><span class="ab p">查询</span></div>
         </div>
         <div class="lst"><table>
-          <thead><tr><th>夺宝订单ID</th><th>夺宝ID</th><th>用户ID</th><th>夺宝名称</th><th>商品名称</th><th>购买份数</th><th>购买号码</th><th>实付金额</th><th>兑换类型 <i class="n">2</i></th><th>操作</th></tr></thead>
+          <thead><tr><th>夺宝订单ID</th><th>夺宝ID</th><th>用户ID</th><th>夺宝名称</th><th>商品名称</th><th>购买份数</th><th>购买号码</th><th>实付金额</th><th>兑换类型 <i class="n">2</i></th><th>手机号/邮箱 <i class="n">4</i></th><th>操作</th></tr></thead>
           <tbody>
-            <tr><td>641592462434893834</td><td>2098</td><td>623352649730752522</td><td>测试夺宝</td><td>KFC 电子券</td><td>12</td><td>OCL3NRG…（12 个）</td><td>₱105</td><td class="hl">Share treats</td><td class="lk">订单详情</td></tr>
+            <tr><td>641592462434893834</td><td>2098</td><td>623352649730752522</td><td>测试夺宝</td><td>KFC 电子券</td><td>12</td><td>OCL3NRG…（12 个）</td><td>₱105</td><td class="hl">Share treats</td><td class="pe">092342456<br>suwyyhfg@gmail.com</td><td class="lk">订单详情</td></tr>
+            <tr><td>641592462434893851</td><td>2101</td><td>623352649730752522</td><td>测试夺宝</td><td>OKbet兑换码</td><td>5</td><td>OCL3NRH…（5 个）</td><td>₱45</td><td>OKbet兑换码</td><td>-</td><td class="lk">订单详情</td></tr>
           </tbody>
         </table></div>
       </div>
@@ -342,8 +346,10 @@ footer{padding-block:28px 56px; color:var(--muted); font-size:12.5px;}
       <ul class="notes">
         <li><i class="n">1</i><p><b>兑换类型筛选</b>：下拉选项为 未处置 / 回收折现 / 兑换实物 / OKbet兑换码，<b>新增 Share treats</b>。</p></li>
         <li><i class="n">2</i><p><b>兑换类型列</b>：用户在前台兑换成功（F7）后，该订单兑换类型显示为 <b>Share treats</b>。</p></li>
+        <li><i class="n">3</i><p><b>订单状态筛选</b>：新增 <b>已兑换</b>，表示虚拟物品已领取，即兑换类型为 OKbet兑换码 或 Share treats 且已领取成功；原有状态不变。</p></li>
+        <li><i class="n">4</i><p><b>手机号/邮箱列</b>：新增一列，手机号与邮箱上下两行展示，内容为用户在前台 Redeem 弹窗（F2）提交的信息，提交后即显示；未提交或非 Share treats 订单显示“-”。</p></li>
       </ul>
-      <div class="note">其余筛选条件与列表字段保持现状，不做改动。</div>
+      <div class="note">除以上新增项，其余筛选条件与列表字段保持现状。</div>
     </div>
   </div>
 </article>
@@ -366,17 +372,18 @@ footer{padding-block:28px 56px; color:var(--muted); font-size:12.5px;}
           <div class="q"><label>订单编号:</label><div class="ip">请输入</div></div>
           <div class="q drop"><div class="row"><label>兑换类型: <i class="n">1</i></label><div class="dd ph" style="flex:1">请选择</div></div>
             <div class="opts"><div>未处置</div><div>回收折现</div><div>兑换实物</div><div>OKbet兑换码</div><div class="on">Share treats</div></div></div>
-          <div class="q"><label>订单状态:</label><div class="dd ph">请选择</div></div>
+          <div class="q drop"><div class="row"><label>订单状态: <i class="n">3</i></label><div class="dd ph" style="flex:1">请选择</div></div>
+            <div class="opts"><div class="muted">原有状态（不变）</div><div class="on">已兑换</div></div></div>
           <div class="q"><label>开奖时间:</label><div class="ip">开始 ~ 结束</div></div>
           <div class="qact"><span class="ab">重置</span><span class="ab p">查询</span></div>
         </div>
         <div class="lst"><table>
-          <thead><tr><th>盲盒订单ID</th><th>用户ID</th><th>订单编号ID</th><th>兑换类型 <i class="n">2</i></th><th>批次ID</th><th>批次金额</th><th>盒子分类ID</th><th>盒子分类名称</th><th>奖品id</th><th>奖品名称</th><th>投放概率</th><th>投放金额</th></tr></thead>
+          <thead><tr><th>盲盒订单ID</th><th>用户ID</th><th>订单编号ID</th><th>兑换类型 <i class="n">2</i></th><th>手机号/邮箱 <i class="n">4</i></th><th>批次ID</th><th>批次金额</th><th>盒子分类ID</th><th>盒子分类名称</th><th>奖品id</th><th>奖品名称</th><th>投放概率</th><th>投放金额</th></tr></thead>
           <tbody>
-            <tr><td>642313369105…5114</td><td>623352649730752522</td><td>642313369910509578</td><td>未处置</td><td>73</td><td>9</td><td>165</td><td>9F-Box S</td><td>252</td><td>Pisoluck P20 OKBet E-Credit</td><td>5</td><td>9</td></tr>
-            <tr><td>642313369910…7722</td><td>623352649730752522</td><td>642313369910509578</td><td class="hl">Share treats</td><td>73</td><td>9</td><td>165</td><td>9F-Box S</td><td>951</td><td>Pisoluck P35 OKBet E-Credit</td><td>5</td><td>9</td></tr>
-            <tr><td>642313369910…7258</td><td>623352649730752522</td><td>642313369910509578</td><td class="hl">Share treats</td><td>73</td><td>9</td><td>165</td><td>9F-Box S</td><td>927</td><td>P9-11-Sanrio Kuromi Gel Pen</td><td>5</td><td>9</td></tr>
-            <tr><td>642313369910…1186</td><td>623352649730752522</td><td>642313369910509578</td><td class="hl">Share treats</td><td>73</td><td>9</td><td>165</td><td>9F-Box S</td><td>926</td><td>P9-11-Sanrio Kuromi Decompression Toy</td><td>5</td><td>9</td></tr>
+            <tr><td>642313369105…5114</td><td>623352649730752522</td><td>642313369910509578</td><td>未处置</td><td>-</td><td>73</td><td>9</td><td>165</td><td>9F-Box S</td><td>252</td><td>Pisoluck P20 OKBet E-Credit</td><td>5</td><td>9</td></tr>
+            <tr><td>642313369910…7722</td><td>623352649730752522</td><td>642313369910509578</td><td class="hl">Share treats</td><td class="pe">092342456<br>suwyyhfg@gmail.com</td><td>73</td><td>9</td><td>165</td><td>9F-Box S</td><td>951</td><td>Pisoluck P35 OKBet E-Credit</td><td>5</td><td>9</td></tr>
+            <tr><td>642313369910…7258</td><td>623352649730752522</td><td>642313369910509578</td><td class="hl">Share treats</td><td class="pe">092342456<br>suwyyhfg@gmail.com</td><td>73</td><td>9</td><td>165</td><td>9F-Box S</td><td>927</td><td>P9-11-Sanrio Kuromi Gel Pen</td><td>5</td><td>9</td></tr>
+            <tr><td>642313369910…1186</td><td>623352649730752522</td><td>642313369910509578</td><td class="hl">Share treats</td><td class="pe">092342456<br>suwyyhfg@gmail.com</td><td>73</td><td>9</td><td>165</td><td>9F-Box S</td><td>926</td><td>P9-11-Sanrio Kuromi Decompression Toy</td><td>5</td><td>9</td></tr>
           </tbody>
         </table></div>
       </div>
@@ -386,8 +393,10 @@ footer{padding-block:28px 56px; color:var(--muted); font-size:12.5px;}
       <ul class="notes">
         <li><i class="n">1</i><p><b>兑换类型筛选</b>：下拉选项为 未处置 / 回收折现 / 兑换实物 / OKbet兑换码，<b>新增 Share treats</b>。</p></li>
         <li><i class="n">2</i><p><b>兑换类型列</b>：用户兑换成功后显示 <b>Share treats</b>；未操作的订单仍为“未处置”。</p></li>
+        <li><i class="n">3</i><p><b>订单状态筛选</b>：新增 <b>已兑换</b>，表示虚拟物品已领取，即兑换类型为 OKbet兑换码 或 Share treats 且已领取成功；原有状态不变。</p></li>
+        <li><i class="n">4</i><p><b>手机号/邮箱列</b>：新增一列，手机号与邮箱上下两行展示，内容为用户在前台 Redeem 弹窗（F2）提交的信息，提交后即显示；未提交或非 Share treats 订单显示“-”。</p></li>
       </ul>
-      <div class="note">其余筛选条件与列表字段保持现状，不做改动。</div>
+      <div class="note">除以上新增项，其余筛选条件与列表字段保持现状。</div>
     </div>
   </div>
 </article>
