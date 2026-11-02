@@ -1,0 +1,497 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Cash 奖品 PRD</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one block per screen — left column draws the screen with every field
+   it carries, right column explains it, keyed by numbered markers. */
+:root{
+  --bg:#ffffff; --stage:#f6f7f9; --panel:#ffffff; --fg:#1f2329; --muted:#646a73; --line:#e4e4e0;
+  --accent:#2f5fd6; --accent-soft:#e9eefc; --mark:#e5484d;
+  --ok:#1f8a52; --ok-soft:#e5f4ec; --warn:#b4780f; --warn-soft:#fbf0dc; --bad:#c23b3b; --bad-soft:#fbe8e8;
+  /* app + admin mockup colours stay constant: they picture a light UI */
+  --app-bg:#f4f4f4; --app-card:#ffffff; --app-ink:#1f2329; --app-muted:#6b7280; --app-line:#ececec; --app-orange:#f07c1a; --app-box:#f4f4f4;
+  --adm-bg:#f0f2f5; --adm-side:#001529; --adm-blue:#1677ff; --adm-line:#d9d9d9; --adm-ink:#262626; --adm-muted:#8c8c8c; --adm-dis:#f5f5f5;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg); color:var(--fg); font:14px/1.65 'Inter',system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; -webkit-font-smoothing:antialiased;}
+code{font-family:'JetBrains Mono',ui-monospace,Menlo,monospace; font-size:.9em;}
+a{color:var(--accent)}
+.wrap{max-width:1240px; margin:0 auto; padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px));}
+
+/* header */
+.top{border-bottom:1px solid var(--line); background:var(--panel); padding-block:36px 24px;}
+.eyebrow{margin:0 0 8px; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--accent); font-weight:600;}
+.top h1{margin:0 0 18px; font-size:clamp(22px,3.4vw,30px); line-height:1.3; text-wrap:balance;}
+.meta{display:flex; flex-wrap:wrap; gap:8px 28px; margin:0; font-size:13px; color:var(--muted);}
+.meta b{color:var(--fg); font-weight:600; margin-left:6px;}
+.toc{display:flex; flex-wrap:wrap; gap:6px 8px; margin-top:20px; padding:0; list-style:none;}
+.toc a{display:inline-block; padding:5px 11px; border:1px solid var(--line); border-radius:999px; font-size:12.5px; color:var(--fg); text-decoration:none; background:var(--bg);}
+.toc a:hover{border-color:var(--accent); color:var(--accent);}
+.toc .grp{font-size:11px; color:var(--muted); align-self:center; margin:0 2px 0 8px; text-transform:uppercase; letter-spacing:.06em;}
+
+/* group heading */
+.group{padding-block:40px 4px;}
+.group h2{font-size:20px; margin:0 0 4px;}
+.group p{margin:0; color:var(--muted); max-width:72ch;}
+
+/* one screen */
+.spec{margin-top:24px; background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden; scroll-margin-top:16px;}
+.spec-head{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 12px; padding:16px 22px; border-bottom:1px solid var(--line);}
+.tag{font-family:'JetBrains Mono',monospace; font-size:11.5px; color:var(--accent); background:var(--accent-soft); padding:2px 8px; border-radius:6px;}
+.spec-head h3{margin:0; font-size:16.5px;}
+.route{font-size:12.5px; color:var(--muted);}
+.spec-row{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+.spec-row.wide{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);}
+.spec-ui{background:var(--stage); padding:26px 22px; display:flex; justify-content:center; align-items:flex-start; border-right:1px solid var(--line); min-width:0; overflow-x:auto;}
+.spec-doc{padding:22px 24px; min-width:0;}
+.spec-doc h4{margin:18px 0 8px; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted);}
+.spec-doc h4:first-child{margin-top:0;}
+.notes{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px;}
+.notes li{display:grid; grid-template-columns:22px 1fr; gap:8px; align-items:start;}
+.notes li p{margin:0;}
+.notes b{font-weight:600;}
+.n{display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; border-radius:50%; background:var(--mark); color:#fff; font-size:10.5px; font-weight:700; font-style:normal; font-family:'Inter',sans-serif; flex:none; line-height:1; vertical-align:middle;}
+.notes .n{margin-top:2px;}
+.req{color:var(--mark);}
+table{width:100%; border-collapse:collapse; font-size:12.5px;}
+.tbl{border:1px solid var(--line); border-radius:10px; overflow-x:auto; margin:4px 0 6px;}
+th,td{text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top;}
+th{background:var(--stage); color:var(--muted); font-weight:600; font-size:11.5px; white-space:nowrap;}
+tr:last-child td{border-bottom:none;}
+.pill{display:inline-flex; align-items:center; gap:5px; padding:2px 9px; border-radius:999px; font-size:11.5px; font-weight:600; white-space:nowrap;}
+.pill::before{content:""; width:6px; height:6px; border-radius:50%; background:currentColor;}
+.pill.ok{background:var(--ok-soft); color:var(--ok);} .pill.warn{background:var(--warn-soft); color:var(--warn);} .pill.bad{background:var(--bad-soft); color:var(--bad);}
+.note{margin-top:14px; padding:10px 12px; border-left:3px solid var(--accent); background:var(--accent-soft); border-radius:6px; font-size:12.5px;}
+
+/* ---------- phone mockup ---------- */
+.phone{width:300px; flex:none; background:var(--app-bg); border:8px solid #1f2329; border-radius:34px; overflow:hidden; color:var(--app-ink); font-size:12px; box-shadow:0 10px 30px rgba(0,0,0,.12); display:flex; flex-direction:column; min-height:560px; position:relative;}
+.app-bar{background:var(--app-card); display:grid; grid-template-columns:28px 1fr 28px; align-items:center; padding:12px 10px; font-weight:700; font-size:13.5px; text-align:center; border-bottom:1px solid var(--app-line);}
+.app-bar span:first-child{font-size:18px; font-weight:400; text-align:left;}
+.tabs{display:flex; justify-content:space-around; background:var(--app-bg); padding:10px 4px 0; font-size:12px; color:var(--app-muted);}
+.tabs span{padding-bottom:7px; border-bottom:2px solid transparent;}
+.tabs span.on{color:var(--app-orange); border-color:var(--app-orange); font-weight:600;}
+.app-body{padding:10px 12px; flex:1;}
+.card{background:var(--app-card); border-radius:12px; padding:14px 12px; position:relative;}
+.dot{position:absolute; top:12px; right:12px; width:14px; height:14px; border-radius:50%; border:4px solid var(--app-orange); background:#fff;}
+.thumb{width:74px; height:74px; border-radius:12px; background:#f6a128; margin:2px auto 10px; display:flex; align-items:center; justify-content:center; font-size:36px;}
+.thumb.coin{background:#e9e9e9; font-size:30px;}
+.pname{font-size:15px; font-weight:600; margin-bottom:8px;}
+.info{background:var(--app-box); border-radius:8px; padding:2px 12px;}
+.info div{display:flex; justify-content:space-between; gap:8px; padding:7px 0; border-bottom:1px solid var(--app-line);}
+.info div:last-child{border-bottom:none;}
+.info span:last-child{color:var(--app-orange); text-align:right; word-break:break-all;}
+.info span.plain{color:var(--app-ink);}
+.info span{white-space:nowrap;}
+.extra{margin-top:8px;}
+.extra span:last-child{color:var(--app-ink);}
+.app-foot{background:var(--app-card); padding:10px 12px 14px; border-top:1px solid var(--app-line);}
+.sel{font-size:11.5px; color:var(--app-muted); margin-bottom:8px;}
+.sel b{color:var(--app-ink);}
+.btns{display:flex; gap:10px;}
+.btn{flex:1; text-align:center; border:1px solid #d6d6d6; border-radius:8px; padding:9px 0; font-weight:700; font-size:13px; background:#fff; color:var(--app-ink);}
+.btn.solo{flex:0 0 60%; margin:0 auto;}
+.mk{position:absolute;}
+
+/* modal over phone */
+.scrim{position:absolute; inset:0; background:rgba(0,0,0,.45); display:flex; align-items:center; justify-content:center; padding:14px;}
+.modal{background:#fff; border-radius:14px; padding:16px 14px; width:100%; position:relative; color:var(--app-ink);}
+.modal .x{position:absolute; top:8px; right:10px; width:20px; height:20px; border-radius:50%; background:#8c8c8c; color:#fff; font-size:12px; display:flex; align-items:center; justify-content:center;}
+.modal .thumb{width:54px; height:54px; font-size:26px; margin-bottom:6px;}
+.modal h5{margin:0 0 12px; text-align:center; font-size:13.5px;}
+.fld{margin-bottom:10px;}
+.fld label{display:block; font-size:12px; font-weight:600; margin-bottom:4px;}
+.fld label i{color:#e5484d; font-style:normal;}
+.fld label i.n, .phone i.n{color:#fff;}
+.fld .in{border:1px solid #d9d9d9; border-radius:6px; padding:8px; font-size:11.5px; color:#a8a8a8;}
+.fld .err{font-size:11px; color:#e5484d; margin-top:3px;}
+.warn{color:#e5484d; font-size:11px; line-height:1.45; margin:2px 0 10px;}
+.agree{display:flex; gap:7px; font-size:11px; align-items:flex-start; margin-bottom:12px;}
+.agree .box{width:13px; height:13px; border:1.5px solid #bfbfbf; border-radius:3px; flex:none; margin-top:2px;}
+.agree a{color:#1677ff; text-decoration:none;}
+.cf{text-align:center; border-radius:8px; padding:9px 0; font-weight:700; background:#f0f0f0; color:#b0b0b0;}
+
+/* webview */
+.wv{padding:14px 16px; background:#fff; flex:1; font-size:12px;}
+.wv h6{font-size:12px; margin:10px 0 6px; letter-spacing:.04em;}
+.wv ol,.wv ul{margin:0 0 6px; padding-left:18px;}
+.wv li{margin-bottom:4px;}
+.wv .src{color:#8c8c8c; font-size:11px; margin-top:12px;}
+
+/* ---------- admin mockup ---------- */
+.admin{width:100%; max-width:640px; background:var(--adm-bg); border:1px solid #cfd3d8; border-radius:10px; overflow:hidden; color:var(--adm-ink); font-size:12.5px; box-shadow:0 10px 30px rgba(0,0,0,.08);}
+.adm-url{background:#2b2d31; color:#d7d9dc; font-size:11px; padding:7px 12px; font-family:'JetBrains Mono',monospace;}
+.adm-top{background:var(--adm-side); color:#fff; padding:9px 14px; font-weight:600; display:flex; align-items:center; gap:8px;}
+.adm-top .logo{width:20px; height:20px; border-radius:5px; background:#f5b301; color:#111; font-size:12px; display:flex; align-items:center; justify-content:center; font-weight:800;}
+.crumb{padding:10px 16px 0; color:var(--adm-muted); font-size:12px;}
+.adm-title{padding:4px 16px 10px; font-weight:700; font-size:15px;}
+.dlg{background:#fff; margin:0 12px 14px; border-radius:8px; border:1px solid #e8e8e8;}
+.dlg-h{display:flex; justify-content:space-between; padding:11px 16px; border-bottom:1px solid #f0f0f0; font-weight:600;}
+.dlg-b{padding:14px 16px 6px;}
+.f{margin-bottom:13px; position:relative;}
+.f > label{display:flex; align-items:center; gap:6px; margin-bottom:5px; font-size:12.5px;}
+.f > label .s{color:#ff4d4f;}
+.ip{border:1px solid var(--adm-line); border-radius:6px; padding:6px 10px; color:#bfbfbf; background:#fff; font-size:12px;}
+.ip.val{color:var(--adm-ink);}
+.ip.dis{background:var(--adm-dis); color:#bfbfbf;}
+.ip.sm{width:150px;}
+.ip.md{width:62%;}
+.sel2{display:flex; gap:8px; flex-wrap:wrap;}
+.dd{white-space:nowrap; overflow:hidden; border:1px solid var(--adm-line); border-radius:6px; padding:6px 10px; color:var(--adm-ink); background:#fff; display:flex; justify-content:space-between; gap:10px; min-width:130px; flex:1;}
+.dd::after{content:"▾"; color:#8c8c8c;}
+.dd.ph{color:#bfbfbf;}
+.pct{display:flex; width:220px;}
+.pct .ip{flex:1; border-radius:6px 0 0 6px;}
+.pct span{border:1px solid var(--adm-line); border-left:none; padding:6px 10px; background:#fafafa; border-radius:0 6px 6px 0; color:var(--adm-muted);}
+.up{width:110px; height:96px; border:1px dashed var(--adm-line); border-radius:6px; background:#fafafa; display:flex; align-items:center; justify-content:center; color:var(--adm-ink); font-size:12px;}
+.hint{color:var(--adm-muted); font-size:11.5px; margin-top:6px;}
+.opts{margin-top:4px; background:#fff; border:1px solid #e8e8e8; border-radius:6px; box-shadow:0 6px 16px rgba(0,0,0,.08); padding:4px; font-size:12px;}
+.opts div{padding:5px 10px; border-radius:4px;}
+.opts div.on{background:#e6f4ff; color:var(--adm-blue); font-weight:600;}
+.opts div.muted{color:#8c8c8c; font-style:italic;}
+.dlg-f{display:flex; justify-content:flex-end; gap:8px; padding:10px 16px; border-top:1px solid #f0f0f0;}
+.ab{border:1px solid var(--adm-line); border-radius:6px; padding:5px 14px; background:#fff;}
+.ab.p{background:var(--adm-blue); border-color:var(--adm-blue); color:#fff;}
+
+/* admin list */
+.qbox{background:#fff; margin:0 12px 12px; border-radius:8px; padding:12px 14px; display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px 14px;}
+.q{display:flex; align-items:center; gap:6px; font-size:12px; min-width:0;}
+.q label{white-space:nowrap; color:var(--adm-ink);}
+.q .ip,.q .dd{flex:1; min-width:0; padding:4px 8px;}
+.q.drop{position:relative;}
+.q.drop .opts{position:absolute; top:100%; left:62px; right:0; z-index:3; margin-top:4px;}
+.q.drop .row{display:flex; align-items:center; gap:6px;}
+.qact{grid-column:1/-1; display:flex; justify-content:flex-end; gap:8px;}
+.lst{background:#fff; margin:0 12px 14px; border-radius:8px; overflow-x:auto;}
+.lst table{font-size:11.5px; color:var(--adm-ink); min-width:760px;}
+.lst th{background:#fafafa; color:var(--adm-ink); font-size:11.5px; border-bottom:1px solid #f0f0f0;}
+.lst td{border-bottom:1px solid #f0f0f0; white-space:nowrap;}
+.lst .hl{color:var(--adm-blue); font-weight:600;}
+.lst .lk{color:var(--adm-blue);}
+.lst td.pe{white-space:nowrap; line-height:1.55;}
+
+.appendix .spec-doc{padding:22px 24px;}
+footer{padding-block:28px 56px; color:var(--muted); font-size:12.5px;}
+
+@media (max-width:900px){
+  .spec-row, .spec-row.wide{grid-template-columns:1fr;}
+  .spec-ui{border-right:none; border-bottom:1px solid var(--line);}
+}
+@media (max-width:360px){ .phone{width:100%;} }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">PISOLUCKY · 产品需求文档</p>
+    <h1>Cash 奖品 · 页面需求规格（后台 + 前台）</h1>
+    <div class="meta">
+      <span>版本<b>v1.0</b></span><span>更新<b>2026-11-02</b></span><span>整理<b>Qiqiu</b></span><span>适用<b>PM / UI / RD / QA</b></span>
+    </div>
+    <ul class="toc">
+      <li class="grp">后台</li>
+      <li><a href="#b1">B1 盲盒奖品新建</a></li>
+      <li><a href="#b2">B2 夺宝商品新建</a></li>
+      <li><a href="#b3">B3 夺宝订单</a></li>
+      <li><a href="#b4">B4 盲盒订单</a></li>
+      <li class="grp">前台</li>
+      <li><a href="#f1">F1 待处理</a></li>
+      <li><a href="#f2">F2 已折现</a></li>
+      <li class="grp">附录</li>
+      <li><a href="#rules">规则汇总</a></li>
+    </ul>
+  </div>
+</header>
+
+<main class="wrap">
+
+<div class="group">
+  <h2>需求概述</h2>
+  <p>盲盒奖品与夺宝商品的“虚拟物品”下新增 <b>Cash</b> 类型。用户抽中后只能在背包里折现（CashOut），不能领取，也不发货；折现逻辑与现有虚拟物品一致。不对接第三方。</p>
+</div>
+
+<div class="group" id="admin">
+  <h2>后台 · 奖品配置与订单管理</h2>
+  <p>盲盒奖品与夺宝商品是两个独立的新建页面，配置方式与其他虚拟物品一致；夺宝订单与盲盒订单的“兑奖类型”均新增 Cash。</p>
+</div>
+
+<!-- B1 -->
+<article class="spec" id="b1">
+  <div class="spec-head"><span class="tag">B1</span><h3>盲盒奖品 · 新建</h3><span class="route">商品 → 盲盒奖品 → 新建</span></div>
+  <div class="spec-row wide">
+    <div class="spec-ui">
+      <div class="admin">
+        <div class="adm-url">test-admin.pesoapp.net/product/lottery</div>
+        <div class="adm-top"><span class="logo">1</span>pisoluck</div>
+        <div class="crumb">商品 / 盲盒奖品</div>
+        <div class="adm-title">盲盒奖品</div>
+        <div class="dlg">
+          <div class="dlg-h"><span>新建</span><span>✕</span></div>
+          <div class="dlg-b">
+            <div class="f"><label><span class="s">*</span>奖品名称 <i class="n">1</i></label><div class="ip val">Cash</div></div>
+            <div class="f"><label><span class="s">*</span>奖品类型 <i class="n">2</i></label>
+              <div class="sel2"><div class="dd">虚拟物品</div><div class="dd">Cash</div></div></div>
+            <div class="f"><label><span class="s">*</span>成本价 <i class="n">3</i></label><div class="ip sm">请输入</div></div>
+            <div class="f"><label>运费 <i class="n">4</i></label><div class="ip sm dis">不可输入</div></div>
+            <div class="f"><label>奖品链接 <i class="n">5</i></label><div class="ip md">请输入</div></div>
+            <div class="f"><label><span class="s">*</span>封面图 <i class="n">6</i></label><div class="up">⤒ 上传封面图</div>
+              <div class="hint">支持 jpg、png、jpeg 格式，大小不超过 5MB，最多上传 1 张</div></div>
+          </div>
+          <div class="dlg-f"><span class="ab">取消</span><span class="ab p">确定</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-doc">
+      <h4>字段说明</h4>
+      <ul class="notes">
+        <li><i class="n">1</i><p><b>奖品名称</b>：必填，文本；即前台 F1 展示的奖品名称。</p></li>
+        <li><i class="n">2</i><p><b>奖品类型</b>：必填，二级联动。一级“虚拟物品”下<b>新增 Cash</b>，与现有虚拟物品选项并列。</p></li>
+        <li><i class="n">3</i><p><b>成本价</b>：必填，与其他虚拟物品一致。</p></li>
+        <li><i class="n">4</i><p><b>运费</b>：选择 Cash 时<b>置灰不可输入</b>，无需填写。</p></li>
+        <li><i class="n">5</i><p><b>奖品链接</b>：选填，保持现状。</p></li>
+        <li><i class="n">6</i><p><b>封面图</b>：必填，jpg / png / jpeg，≤ 5MB，最多 1 张；即前台展示的奖品图。</p></li>
+      </ul>
+      <div class="note">Cash 不需要选择类别或商品，也不对接第三方。</div>
+    </div>
+  </div>
+</article>
+
+<!-- B2 -->
+<article class="spec" id="b2">
+  <div class="spec-head"><span class="tag">B2</span><h3>夺宝商品 · 新建</h3><span class="route">商品 → 夺宝商品 → 新建</span></div>
+  <div class="spec-row wide">
+    <div class="spec-ui">
+      <div class="admin">
+        <div class="adm-url">test-admin.pesoapp.net/product/…</div>
+        <div class="adm-top"><span class="logo">1</span>pisoluck</div>
+        <div class="crumb">商品 / 夺宝商品</div>
+        <div class="adm-title">夺宝商品</div>
+        <div class="dlg">
+          <div class="dlg-h"><span>新建</span><span>✕</span></div>
+          <div class="dlg-b">
+            <div class="f"><label><span class="s">*</span>商品名称 <i class="n">1</i></label><div class="ip">请输入</div></div>
+            <div class="f"><label><span class="s">*</span>商品分类 <i class="n">2</i></label><div class="dd ph">请选择</div></div>
+            <div class="f"><label><span class="s">*</span>成本价 <i class="n">3</i></label><div class="ip sm">请输入</div></div>
+            <div class="f"><label><span class="s">*</span>奖品类型 <i class="n">4</i></label>
+              <div class="sel2"><div class="dd">虚拟物品</div><div class="dd">Cash</div></div></div>
+            <div class="f"><label><span class="s">*</span>溢价比例 <i class="n">5</i></label><div class="pct"><div class="ip">请输入</div><span>%</span></div></div>
+            <div class="f"><label><span class="s">*</span>商品溢价 <i class="n">6</i></label><div class="ip sm dis">请输入</div></div>
+            <div class="f"><label><span class="s">*</span>成交价</label><div class="ip sm dis">请输入</div></div>
+            <div class="f"><label><span class="s">*</span>回收折现比例 <i class="n">7</i></label><div class="pct"><div class="ip">请输入</div><span>%</span></div></div>
+            <div class="f"><label>运费 <i class="n">8</i></label><div class="ip sm dis">不可输入</div></div>
+            <div class="f"><label><span class="s">*</span>夺宝币最大使用比例 <i class="n">9</i></label><div class="pct"><div class="ip">请输入</div><span>%</span></div></div>
+          </div>
+          <div class="dlg-f"><span class="ab">取消</span><span class="ab p">确定</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-doc">
+      <h4>字段说明</h4>
+      <ul class="notes">
+        <li><i class="n">1</i><p><b>商品名称</b>：必填，文本。</p></li>
+        <li><i class="n">2</i><p><b>商品分类</b>：必填，下拉选择夺宝商品分类。</p></li>
+        <li><i class="n">3</i><p><b>成本价</b>：必填，与其他虚拟物品一致。</p></li>
+        <li><i class="n">4</i><p><b>奖品类型</b>：必填，二级联动。一级“虚拟物品”下<b>新增 Cash</b>。</p></li>
+        <li><i class="n">5</i><p><b>溢价比例</b>：必填，百分比，保持现状。</p></li>
+        <li><i class="n">6</i><p><b>商品溢价 / 成交价</b>：必填项，灰显不可编辑，由系统带出，保持现状。</p></li>
+        <li><i class="n">7</i><p><b>回收折现比例</b>：必填，百分比；折现逻辑与现有夺宝虚拟物品一致。</p></li>
+        <li><i class="n">8</i><p><b>运费</b>：选择 Cash 时<b>置灰不可输入</b>，无需填写。</p></li>
+        <li><i class="n">9</i><p><b>夺宝币最大使用比例</b>：必填，百分比，保持现状。</p></li>
+      </ul>
+    </div>
+  </div>
+</article>
+
+<!-- B3 -->
+<article class="spec" id="b3">
+  <div class="spec-head"><span class="tag">B3</span><h3>夺宝订单 · 列表</h3><span class="route">订单 → 夺宝订单</span></div>
+  <div class="spec-row wide">
+    <div class="spec-ui">
+      <div class="admin">
+        <div class="adm-top"><span class="logo">1</span>pisoluck</div>
+        <div class="crumb">订单 / 夺宝订单</div>
+        <div class="adm-title">夺宝订单</div>
+        <div class="qbox">
+          <div class="q"><label>夺宝订单ID:</label><div class="ip">请输入</div></div>
+          <div class="q"><label>用户ID:</label><div class="ip">请输入</div></div>
+          <div class="q"><label>夺宝名称:</label><div class="ip">请输入</div></div>
+          <div class="q"><label>商品名称:</label><div class="ip">请输入</div></div>
+          <div class="q"><label>订单状态:</label><div class="dd ph">请选择</div></div>
+          <div class="q drop"><div class="row"><label>兑奖类型: <i class="n">1</i></label><div class="dd ph" style="flex:1">请选择</div></div>
+            <div class="opts"><div>未处置</div><div>回归余额</div><div>兑换奖品</div><div>OKbet兑换码</div><div>Share treats</div><div class="on">Cash</div></div></div>
+          <div class="q"><label>开奖时间:</label><div class="ip">开始 ~ 结束</div></div>
+          <div class="qact"><span class="ab">重置</span><span class="ab p">查询</span></div>
+        </div>
+        <div class="lst"><table>
+          <thead><tr><th>夺宝订单ID</th><th>夺宝ID</th><th>用户ID</th><th>夺宝名称</th><th>商品名称</th><th>购买份数</th><th>实付金额</th><th>兑奖类型 <i class="n">2</i></th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td>641592462434893834</td><td>2098</td><td>623352649730752522</td><td>测试夺宝</td><td>Cash</td><td>12</td><td>₱105</td><td class="hl">Cash</td><td class="lk">订单详情</td></tr>
+            <tr><td>641592462434893851</td><td>2101</td><td>623352649730752522</td><td>测试夺宝</td><td>Cash</td><td>5</td><td>₱45</td><td>未处置</td><td class="lk">订单详情</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+    <div class="spec-doc">
+      <h4>页面说明</h4>
+      <ul class="notes">
+        <li><i class="n">1</i><p><b>兑奖类型筛选</b>：在 未处置 / 回归余额 / 兑换奖品 / OKbet兑换码 / Share treats 之后，<b>新增 Cash</b>。</p></li>
+        <li><i class="n">2</i><p><b>兑奖类型列</b>：用户在背包内折现 Cash 奖品后，该订单兑奖类型显示为 <b>Cash</b>；未处理的仍为“未处置”。按 Cash 筛选，即可查到所有已折现的 Cash 订单。</p></li>
+      </ul>
+      <div class="note">除以上新增项，其余筛选条件与列表字段保持现状。</div>
+    </div>
+  </div>
+</article>
+
+<!-- B4 -->
+<article class="spec" id="b4">
+  <div class="spec-head"><span class="tag">B4</span><h3>盲盒订单 · 列表</h3><span class="route">订单 → 盲盒订单</span></div>
+  <div class="spec-row wide">
+    <div class="spec-ui">
+      <div class="admin">
+        <div class="adm-top"><span class="logo">1</span>pisoluck</div>
+        <div class="crumb">订单 / 盲盒订单</div>
+        <div class="adm-title">盲盒订单</div>
+        <div class="qbox">
+          <div class="q"><label>批次金额:</label><div class="dd ph">请选择</div></div>
+          <div class="q"><label>盒子分类名称:</label><div class="dd ph">请先选择批次金额</div></div>
+          <div class="q"><label>奖品名称:</label><div class="dd ph">请选择盒子分类</div></div>
+          <div class="q"><label>盲盒订单ID:</label><div class="ip">请输入</div></div>
+          <div class="q"><label>用户ID:</label><div class="ip">请输入</div></div>
+          <div class="q"><label>订单组ID:</label><div class="ip">请输入</div></div>
+          <div class="q drop"><div class="row"><label>兑奖类型: <i class="n">1</i></label><div class="dd ph" style="flex:1">请选择</div></div>
+            <div class="opts"><div>未处置</div><div>回归余额</div><div>兑换奖品</div><div>OKbet兑换码</div><div>Share treats</div><div class="on">Cash</div></div></div>
+          <div class="q"><label>订单状态:</label><div class="dd ph">请选择</div></div>
+          <div class="q"><label>开奖时间:</label><div class="ip">开始 ~ 结束</div></div>
+          <div class="q"><label>奖品处置时间:</label><div class="ip">开始 ~ 结束</div></div>
+          <div class="qact"><span class="ab">重置</span><span class="ab p">查询</span></div>
+        </div>
+        <div class="lst"><table>
+          <thead><tr><th>盲盒订单ID</th><th>用户ID</th><th>订单组ID</th><th>兑奖类型 <i class="n">2</i></th><th>批次ID</th><th>批次金额</th><th>盒子分类ID</th><th>盒子分类名称</th><th>奖品id</th><th>奖品名称</th><th>投注倍数</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td>643657579800690698</td><td>570748125891788810</td><td>643657579800559626</td><td class="hl">Cash</td><td>75</td><td>5</td><td>170</td><td>9F-Box S</td><td>982</td><td>Cash</td><td>5</td><td class="lk">详情</td></tr>
+            <tr><td>643657579800821770</td><td>570748125891788810</td><td>643657579800559626</td><td class="hl">Cash</td><td>75</td><td>5</td><td>170</td><td>9F-Box S</td><td>982</td><td>Cash</td><td>5</td><td class="lk">详情</td></tr>
+            <tr><td>643657579800756234</td><td>570748125891788810</td><td>643657579800559626</td><td>未处置</td><td>75</td><td>5</td><td>170</td><td>9F-Box S</td><td>982</td><td>Cash</td><td>5</td><td class="lk">详情</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+    <div class="spec-doc">
+      <h4>页面说明</h4>
+      <ul class="notes">
+        <li><i class="n">1</i><p><b>兑奖类型筛选</b>：在 未处置 / 回归余额 / 兑换奖品 / OKbet兑换码 / Share treats 之后，<b>新增 Cash</b>。</p></li>
+        <li><i class="n">2</i><p><b>兑奖类型列</b>：用户在背包内折现 Cash 奖品后，该订单兑奖类型显示为 <b>Cash</b>；未处理的仍为“未处置”。按 Cash 筛选，即可查到所有已折现的 Cash 订单。</p></li>
+      </ul>
+      <div class="note">除以上新增项，其余筛选条件与列表字段保持现状。</div>
+    </div>
+  </div>
+</article>
+
+<div class="group" id="front">
+  <h2>前台 · 我的奖品（Lucky Draw prize）</h2>
+  <p>用户在盲盒或夺宝中抽中 Cash 后，奖品进入背包，只能折现，没有 Redeem 入口。</p>
+</div>
+
+<!-- F1 -->
+<article class="spec" id="f1">
+  <div class="spec-head"><span class="tag">F1</span><h3>奖品详情 · 待处理</h3><span class="route">我的奖品 → Pending</span></div>
+  <div class="spec-row">
+    <div class="spec-ui">
+      <div class="phone">
+        <div class="app-bar"><span>‹</span><span>Lucky Draw prize</span><span></span></div>
+        <div class="tabs"><span class="on">Pending <i class="n">1</i></span><span>Shipping</span><span>Completed</span><span>Not Won</span></div>
+        <div class="app-body">
+          <div class="card">
+            <span class="dot"></span>
+            <div class="thumb">🧧</div>
+            <div class="pname">Cash <i class="n">2</i></div>
+            <div class="info">
+              <div><span>Order Id:</span><span>635674779185119242</span></div>
+              <div><span>Quantity:</span><span class="plain">1</span></div>
+              <div><span>Value:</span><span>₱6.00</span></div>
+              <div><span>Status: <i class="n">3</i></span><span>Virtual Prize</span></div>
+              <div><span>Lottery draw time:</span><span>2026-09-03 15:41</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="app-foot">
+          <div class="sel">Selected: <b>1</b> items <b>₱6</b> <i class="n">4</i></div>
+          <div class="btns"><div class="btn" style="flex:0 0 48%">CashOut <i class="n">5</i></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-doc">
+      <h4>页面说明</h4>
+      <ul class="notes">
+        <li><i class="n">1</i><p><b>Tab</b>：Cash 中奖后进入 Pending。</p></li>
+        <li><i class="n">2</i><p><b>奖品图 + 名称</b>：取后台配置的封面图与奖品名称。</p></li>
+        <li><i class="n">3</i><p><b>Status</b>：显示 <b>Virtual Prize</b>。Order Id、Quantity、Value、Lottery draw time 与现有虚拟物品一致。</p></li>
+        <li><i class="n">4</i><p><b>已选汇总</b>：Selected: 1 items ₱6，显示已选奖品数量与金额。</p></li>
+        <li><i class="n">5</i><p><b>只有 CashOut</b>：没有 Redeem，不能领取，也不能申请发货。点击后按现有折现逻辑处理（见 F2）。</p></li>
+      </ul>
+    </div>
+  </div>
+</article>
+
+<!-- F2 -->
+<article class="spec" id="f2">
+  <div class="spec-head"><span class="tag">F2</span><h3>已折现 · Virtual Prize Claimed</h3><span class="route">F1 → 点击 CashOut</span></div>
+  <div class="spec-row">
+    <div class="spec-ui">
+      <div class="phone">
+        <div class="app-bar"><span>‹</span><span>Lucky Draw prize</span><span></span></div>
+        <div class="tabs"><span>Pending</span><span>Shipping</span><span class="on">Completed <i class="n">1</i></span><span>Not Won</span></div>
+        <div class="app-body">
+          <div class="card">
+            <span class="dot"></span>
+            <div class="thumb">🧧</div>
+            <div class="pname">Cash</div>
+            <div class="info">
+              <div><span>Order Id:</span><span>635674779185119242</span></div>
+              <div><span>Quantity:</span><span class="plain">1</span></div>
+              <div><span>Value:</span><span>₱6.00</span></div>
+              <div><span>Status: <i class="n">2</i></span><span>Virtual Prize Claimed</span></div>
+              <div><span>Lottery draw time:</span><span>2026-09-03 15:41</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="spec-doc">
+      <h4>页面说明</h4>
+      <ul class="notes">
+        <li><i class="n">1</i><p>折现后奖品移入 <b>Completed</b> Tab。</p></li>
+        <li><i class="n">2</i><p>Status 显示 <span class="pill ok">Virtual Prize Claimed</span>，不再显示操作按钮。</p></li>
+      </ul>
+      <div class="note">折现金额进入用户钱包，计算方式与现有盲盒 / 夺宝虚拟物品一致。后台对应订单的兑奖类型变为 Cash（见 B3、B4）。</div>
+    </div>
+  </div>
+</article>
+
+<div class="group" id="rules">
+  <h2>附录 · 规则汇总</h2>
+</div>
+
+<article class="spec appendix">
+  <div class="spec-head"><span class="tag">A1</span><h3>关键业务规则</h3></div>
+  <div class="spec-doc">
+    <ul class="notes">
+      <li><i class="n">1</i><p>盲盒奖品、夺宝商品的“虚拟物品”下新增 Cash 类型，上传方式与其他虚拟物品一致：需填成本价，无需填运费。</p></li>
+      <li><i class="n">2</i><p>用户中奖后只能折现，不能领取，也不发货。</p></li>
+      <li><i class="n">3</i><p>折现逻辑与目前盲盒、夺宝一致，不新增规则。</p></li>
+      <li><i class="n">4</i><p>前台状态：Pending 时显示 Virtual Prize；CashOut 后移入 Completed，显示 Virtual Prize Claimed。</p></li>
+      <li><i class="n">5</i><p>夺宝订单、盲盒订单的兑奖类型新增 Cash，用于查询用户在背包内折现的 Cash 奖品。</p></li>
+    </ul>
+  </div>
+</article>
+
+<footer>Cash 奖品 · 页面需求规格 v1.0 · 2026-11-02 · PISOLUCKY</footer>
+</main>
+</body>
+</html>
