@@ -9,11 +9,11 @@
 <style>
 /* Layout: the phone prototype on the left, the Chinese spec on the right; on a phone the spec stacks below. One deliberate dark game-UI look. */
 :root{
-  --page:#0e1029; --phone:#14173a; --panel:#1a1e48; --line:#2d3274; --text:#eef0ff; --muted:#a8aee3;
+  --page:#ffffff; --phone:#14173a; --panel:#f7f8fd; --line:#e3e6f3; --text:#1c2045; --muted:#5a6090;
   --gold:#ffd23f; --gold-deep:#6b2a00; --pink:#ff6b8b; --pink-deep:#c4415f; --violet:#3a2e9c; --violet-2:#271f73; --violet-3:#4a3fb5;
   --blue:#2350d8; --blue-2:#16308f; --blue-3:#1a3cb0; --red:#f2546a; --cream:#fff7f0; --ink-blue:#3446b8; --orange:#ffac1c; --coral:#ff5c5c;
   --display:'Lilita One','Nunito',system-ui,sans-serif; --ui:'Nunito',system-ui,sans-serif; --cn:'Noto Sans SC','PingFang SC','Microsoft YaHei',system-ui,sans-serif;
-  color-scheme:dark;
+  color-scheme:light;
 }
 html,body{background:var(--page);color:var(--text)}
 body{font-family:var(--cn)}
@@ -204,6 +204,27 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
 .tbl{background:var(--panel)}
 @media (prefers-reduced-motion:reduce){.slot.swap img,.pop,.sheet{animation:none}.slot{transition:none}.slot.win::after{animation:none;box-shadow:0 0 0 4px #fff}}
 @media (max-width:430px){.phone{border-radius:0;box-shadow:none;max-width:none;margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)))}.wrap{padding-top:0}}
+
+/* ---------- light document theme ---------- */
+.phone{box-shadow:0 0 0 1px #d9dcf0,0 24px 60px rgba(20,23,58,.22)}
+.spec{color:var(--text)}
+.eyebrow{color:#a66b00}
+.doc-head p,.spec .sec p,.spec .sec li,.spec ol li{color:#3a3f66}
+.spec .sec strong,.spec h4,.spec .sec h3,.doc-head h2{color:#14173a}
+.toc a{background:#eef0fb;color:#1c2045}.toc a:hover{background:#e0e4f8}
+.demo{background:#4f63d8;border-color:#4f63d8;color:#fff}.demo:hover{background:#3f52c4}
+.tbl{background:#fff;border-color:var(--line)}
+.tbl th{background:#f5f6fc;color:var(--muted)}
+.tbl th,.tbl td{border-bottom-color:var(--line);color:#2a2f55}
+.live{background:var(--panel);border-color:var(--line)}
+.seg-f{background:#ffe3ea;color:#b4234a}.seg-u{background:#e1f0ff;color:#1d5fa8}.seg-d{background:#fff3cf;color:#8a5a00}.seg-h{background:#dcf7e9;color:#17734a}
+.needle{background:#14173a;box-shadow:none}
+.chip{background:#eef0fb;color:var(--muted)}
+.chip[data-p="fast"]{background:#ffe3ea;color:#b4234a}.chip[data-p="uniform"]{background:#e1f0ff;color:#1d5fa8}
+.chip[data-p="decel"]{background:#fff3cf;color:#8a5a00}.chip[data-p="hold"],.chip[data-p="popup"]{background:#dcf7e9;color:#17734a}
+.tag{background:#fff3cf;color:#8a5a00}
+.spec pre,.spec code{background:#f5f6fc;border-color:var(--line);color:#3a2a7a}
+.note{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -253,12 +274,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
   <header class="doc-head">
     <span class="eyebrow">LUCKY STAR · MYSTERY BLIND BOX</span>
     <h2>Mystery Blind Box 抽奖改版 PRD</h2>
-    <dl class="doc-meta">
-      <div><dt>版本</dt><dd>v1.0</dd></div>
-      <div><dt>更新日期</dt><dd>2026-11-03</dd></div>
-      <div><dt>整理人</dt><dd>Luis</dd></div>
-      <div><dt>适用角色</dt><dd>PM / UI / RD / QA</dd></div>
-    </dl>
+    
     <p>本次改版：单个 DRAW 改为单抽 / 10连抽双按钮；新增 All Prizes Tab；新增 4 秒跑马灯、动态替换和固定中奖位；10连抽结果一屏展示。左侧原型可直接操作，每节的按钮会把原型切到对应状态。奖品价值与概率为示例数据。</p>
     <nav class="toc" aria-label="目录">
       <a href="#F1">F1 抽奖主页</a><a href="#F2">F2 跑马灯与替换</a><a href="#F3">F3 10连抽弹窗</a><a href="#F4">F4 All Prizes</a>
