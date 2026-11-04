@@ -9,14 +9,12 @@
 <style>
 /* Layout: two-pane spec board — sticky interactive phone prototype left, PRD-style spec right; stacks on phone */
 :root{
-  --bg:#eef1f4; --panel:#ffffff; --fg:#17202b; --muted:#5b6876; --line:#d9dfe6; --accent:#1d6fd6; --code:#f3f5f8;
+  --bg:#ffffff; --panel:#ffffff; --fg:#17202b; --muted:#5b6876; --line:#d9dfe6; --accent:#1d6fd6; --code:#f3f5f8;
   --red:#e5484d; --yellow:#f5b300; --green:#22b36b;
   --app-bg:#0d1c26; --app-row:#122733; --app-line:#1c3442; --app-fg:#ffffff; --app-muted:#8aa1b0; --app-accent:#2f9bff;
   --sans:"IBM Plex Sans","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f141a;--panel:#161d25;--fg:#e6ebf0;--muted:#93a1af;--line:#28323d;--accent:#5aa2ff;--code:#1d2630;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#0f141a;--panel:#161d25;--fg:#e6ebf0;--muted:#93a1af;--line:#28323d;--accent:#5aa2ff;--code:#1d2630;color-scheme:dark}
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 body{margin:0}
