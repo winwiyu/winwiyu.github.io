@@ -361,7 +361,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <div class="sec-hd"><h3><span class="fid">F3</span>中奖弹窗 · 10连抽</h3><button class="demo" data-demo="pop10">查看 10连弹窗</button></div>
     <ol>
       <li>同一个弹窗框，<strong>一屏</strong>展示 10 个奖品，2 列 × 5 行，不滚动。</li>
-      <li>按价值从高到低排，第 1 个加金色描边和 BEST 角标，和盘面第 1 格的奖品一致。</li>
+      <li><strong>BEST</strong> 角标加在本次 10 个结果中<strong>中奖概率最低</strong>的奖品上，排在第 1 个并加金色描边；概率相同时取价值更高的。其余奖品按价值从高到低排列。</li>
       <li>每个奖品显示的信息与原来弹窗显示的信息一致：奖品图、奖品名、领取指引。</li>
       <li>底部只有 1 个 Confirm。</li>
     </ol>
@@ -556,6 +556,11 @@ function hintHTML(p) {
 }
 function showPopup(list) {
   const multi = list.length > 1;
+  if (multi) {
+    let bi = 0;
+    list.forEach((p, i) => { if (p.w < list[bi].w || (p.w === list[bi].w && p.value > list[bi].value)) bi = i; });
+    list = [list[bi], ...list.filter((_, i) => i !== bi)];
+  }
   const body = multi
     ? '<div class="multi-grid">' + list.map((p, i) => '<div class="mitem' + (i === 0 ? ' best' : '') + '">' + (i === 0 ? '<span class="best-tag">BEST</span>' : '') + '<img src="' + IMG[p.id] + '" alt=""><div class="pname">' + p.name + '</div>' + hintHTML(p) + '</div>').join('') + '</div>'
     : '<img class="prize-img" src="' + IMG[list[0].id] + '" alt=""><div class="pname">' + list[0].name + '</div>' + hintHTML(list[0]);
