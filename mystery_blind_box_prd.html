@@ -95,7 +95,11 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
 .subtab{height:40px;border:0;border-radius:8px;background:transparent;font-weight:800;font-size:14px;cursor:pointer}
 .subtab[aria-selected="true"]{background:var(--gold);color:var(--gold-deep);font-weight:900}
 .feed{background:var(--blue-3);border-radius:8px;overflow-y:auto;height:108px}
-.feed div{display:flex;justify-content:space-between;align-items:center;gap:12px;height:36px;padding:0 12px;font-size:13px;font-weight:700}
+.feed div{display:flex;align-items:center;gap:8px;height:36px;padding:0 12px 0 8px;font-size:13px;font-weight:700}
+.feed img{width:24px;height:28px;object-fit:cover;border-radius:4px;flex:none}
+.feed .fn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.feed .fr{flex:none;font-variant-numeric:tabular-nums}
+.feed .cs{flex:none;height:22px;padding:0 10px;border:0;border-radius:6px;background:#ffd23f;color:#6b2a00;font-size:12px;font-weight:900;cursor:pointer}
 .feed div:nth-child(odd){background:rgba(255,255,255,.06)}
 .feed .new{color:#ffe34d}
 .feed .empty{justify-content:center;color:#c5cdfb;font-weight:600}
@@ -292,7 +296,9 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
         <tr><td>抽奖按钮</td><td>DRAW ×1 · 10 Points</td><td>单抽，价格显示在按钮内</td></tr>
         <tr><td></td><td>DRAW ×10 · 90 Points</td><td>10连抽，9 折，右上角标 SAVE 10%</td></tr>
         <tr><td>底部区</td><td>My Points</td><td>当前积分，抽奖成功后实时刷新</td></tr>
-        <tr><td></td><td>Recent Winners / My Rewards</td><td>区域内滚动；抽中后插入列表顶部</td></tr>
+        <tr><td></td><td>Recent Winners</td><td>每行：奖品缩略图 · 奖品名 · 中奖用户（脱敏，如 OKBet****88）</td></tr>
+        <tr><td></td><td>My Rewards</td><td>每行：奖品缩略图 · 奖品名 · 中奖时间（YYYY.MM.DD HH:mm:ss）；实物奖品右侧改为 Contact CS 按钮，点击跳转客服</td></tr>
+        <tr><td></td><td>列表规则</td><td>区域内滚动；抽中后插入列表顶部，最新一条高亮</td></tr>
       </tbody>
     </table></div>
     <ol>
@@ -359,6 +365,16 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
       <li>每个奖品显示的信息与原来弹窗显示的信息一致：奖品图、奖品名、领取指引。</li>
       <li>底部只有 1 个 Confirm。</li>
     </ol>
+    <h4>领取指引（单抽与 10连通用）</h4>
+    <div class="tbl"><table>
+      <thead><tr><th>奖品类型</th><th>领取指引文案</th><th>去向</th></tr></thead>
+      <tbody>
+        <tr><td>实物</td><td>Please “Contact CS”</td><td>联系客服</td></tr>
+        <tr><td>话费 / 流量包 / PISO</td><td>Please go to “Exchange Record”</td><td>兑换记录页</td></tr>
+        <tr><td>现金 / 积分</td><td>无指引文字，只显示奖品图和名称</td><td>—</td></tr>
+        <tr><td>其他虚拟奖品（优惠券、Free Spins 等）</td><td>Please go to “My voucher”</td><td>我的票券页</td></tr>
+      </tbody>
+    </table></div>
   </section>
 
   <section class="sec" id="F4">
@@ -396,7 +412,7 @@ const PRIZES = [
 const BY = Object.fromEntries(PRIZES.map(p => [p.id, p]));
 const RANK = (a, b) => b.value - a.value || a.w - b.w;
 const COST = {1:10, 10:90};
-const HINT = {spins:['Please go to ', 'My voucher'], points:['Please go to ', 'Exchange Record'], physical:['Please ', 'Contact CS'], load:null};
+const HINT = {physical:['Please ', 'Contact CS'], load:['Please go to ', 'Exchange Record'], points:null, spins:['Please go to ', 'My voucher']};
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString('en-US');
 const peso = n => '₱' + fmt(n);
@@ -404,8 +420,8 @@ const tier = p => p.value >= 1000 ? ['grand','GRAND PRIZE'] : p.value >= 50 ? ['
 
 let points = 1000000, running = false, board = ['iphone','globe5','spins10','pts100','globe20','pts50','spins20','globe10','globe50'];
 const ORIGINAL = [...board];
-const mine = [];
-const winners = [['Free Spins ×50','OKBet****88'],['Globe ₱20 Load','OKBet****21'],['100 Points','OKBet****07'],['Globe ₱5 Load','OKBet****63'],['Free Spins ×10','OKBet****35']];
+const mine = [['spins20','2026.11.03 21:15:42'],['globe10','2026.11.02 09:03:17']];
+const winners = [['spins50','OKBet****88'],['globe20','OKBet****21'],['pts100','OKBet****07'],['globe5','OKBet****63'],['spins10','OKBet****35']];
 let feedTab = 'win';
 
 /* ----- board ----- */
@@ -443,7 +459,12 @@ $('tabAll').onclick = () => setTab('all');
 /* ----- feed ----- */
 function renderFeed() {
   const rows = feedTab === 'win' ? winners : mine;
-  $('feed').innerHTML = rows.length ? rows.map((r, i) => '<div class="' + (r[2] ? 'new' : '') + '"><span>' + r[0] + '</span><span>' + r[1] + '</span></div>').join('') : '<div class="empty">No rewards yet. Try a draw.</div>';
+  $('feed').innerHTML = rows.length ? rows.map(r => {
+    const p = BY[r[0]];
+    const right = feedTab === 'mine' && p.type === 'physical' ? '<button class="cs" data-cs>Contact CS</button>' : '<span class="fr">' + r[1] + '</span>';
+    return '<div class="' + (r[2] ? 'new' : '') + '"><img src="' + IMG[p.id] + '" alt=""><span class="fn">' + p.name + '</span>' + right + '</div>';
+  }).join('') : '<div class="empty">No rewards yet. Try a draw.</div>';
+  $('feed').querySelectorAll('[data-cs]').forEach(b => { b.onclick = () => toast('Opening customer service'); });
   $('stWin').setAttribute('aria-selected', feedTab === 'win');
   $('stMine').setAttribute('aria-selected', feedTab === 'mine');
 }
@@ -520,7 +541,9 @@ async function draw(n) {
   await sleep(1000 * f);
   slots[0].classList.remove('on', 'win');
   setPhase('popup');
-  results.forEach(p => { mine.unshift([p.name, n === 1 ? 'DRAW ×1' : 'DRAW ×10', true]); winners.unshift([p.name, 'OKBet****you', true]); });
+  const d = new Date(), z = x => String(x).padStart(2, '0');
+  const stamp = d.getFullYear() + '.' + z(d.getMonth() + 1) + '.' + z(d.getDate()) + ' ' + z(d.getHours()) + ':' + z(d.getMinutes()) + ':' + z(d.getSeconds());
+  [...results].reverse().forEach(p => { mine.unshift([p.id, stamp, true]); winners.unshift([p.id, 'OKBet****88', true]); });
   showPopup(results);
 }
 $('draw1').onclick = () => draw(1);
