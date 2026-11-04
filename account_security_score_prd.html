@@ -18,6 +18,8 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f141a;--panel:#161d25;--fg:#e6ebf0;--muted:#93a1af;--line:#28323d;--accent:#5aa2ff;--code:#1d2630;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#0f141a;--panel:#161d25;--fg:#e6ebf0;--muted:#93a1af;--line:#28323d;--accent:#5aa2ff;--code:#1d2630;color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0}
 body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px;line-height:1.55;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px}
 .wrap{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:400px minmax(0,1fr);gap:28px;align-items:start}
@@ -134,7 +136,6 @@ code{font:12px var(--mono);background:var(--code);padding:1px 5px;border-radius:
           <button class="close" id="closeSheet">Close</button>
         </div>
       </div>
-      <div class="toast" id="toast" style="opacity:0"></div>
     </div></div>
     <div class="presets">
       <button data-p="new">New user · 20</button>
@@ -234,8 +235,6 @@ const done=k=>k==='auth'?(s.google||s.tg):s[k];
 const score=()=>items.filter(i=>done(i.k)).length*20;
 const level=v=>v>=100?{c:'var(--green)',b:'High',t:'Your account is well protected'}:v>=60?{c:'var(--yellow)',b:'Medium',t:'Almost there'}:{c:'var(--red)',b:'Low',t:'Your account is at risk'};
 const $=id=>document.getElementById(id);
-let toastT;
-function toast(m){const t=$('toast');t.textContent=m;t.style.opacity=1;clearTimeout(toastT);toastT=setTimeout(()=>t.style.opacity=0,1600)}
 
 function row(i){
   const d=done(i.k);
@@ -262,12 +261,11 @@ function render(){
   $('bTg').textContent=s.tg?'Unbind':'Bind';$('bTg').className=s.tg?'on':'';
 }
 function act(k){
-  if(k==='toggle'){toast('Opens Password Toggle Settings (not scored)');return}
+  if(k==='toggle')return;
   if(k==='auth'){$('mask').hidden=false;return}
   s[k]=!s[k];render();
 }
-function bind(p){const before=score();s[p]=!s[p];render();const a=score();
-  if(a===before)toast(s[p]?'Bound · score unchanged (max 20 for this item)':'Unbound · another account still bound');}
+function bind(p){s[p]=!s[p];render();}
 document.addEventListener('click',e=>{
   const r=e.target.closest('[data-k]');if(r&&r.closest('.screen')){act(r.dataset.k);return}
   const p=e.target.closest('[data-p]');if(p){s={...PRESETS[p.dataset.p]};render()}
