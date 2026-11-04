@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Account Security Score</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap">
+<style>
+/* Layout: two-pane spec board — sticky interactive phone prototype left, PRD-style spec right; stacks on phone */
+:root{
+  --bg:#eef1f4; --panel:#ffffff; --fg:#17202b; --muted:#5b6876; --line:#d9dfe6; --accent:#1d6fd6; --code:#f3f5f8;
+  --red:#e5484d; --yellow:#f5b300; --green:#22b36b;
+  --app-bg:#0d1c26; --app-row:#122733; --app-line:#1c3442; --app-fg:#ffffff; --app-muted:#8aa1b0; --app-accent:#2f9bff;
+  --sans:"IBM Plex Sans","Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f141a;--panel:#161d25;--fg:#e6ebf0;--muted:#93a1af;--line:#28323d;--accent:#5aa2ff;--code:#1d2630;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f141a;--panel:#161d25;--fg:#e6ebf0;--muted:#93a1af;--line:#28323d;--accent:#5aa2ff;--code:#1d2630;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:14px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px}
+.wrap{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:400px minmax(0,1fr);gap:28px;align-items:start}
+@media (max-width:900px){.wrap{grid-template-columns:minmax(0,1fr)}}
+.left{position:sticky;top:calc(16px + env(safe-area-inset-top,0px));display:flex;flex-direction:column;align-items:center;gap:12px}
+@media (max-width:900px){.left{position:static}}
+.presets{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.presets button{font:500 12px var(--sans);padding:6px 10px;border-radius:6px;border:1px solid var(--line);background:var(--panel);color:var(--fg);cursor:pointer}
+.presets button:hover{border-color:var(--accent);color:var(--accent)}
+.hint{font-size:12px;color:var(--muted);text-align:center;max-width:360px}
+/* phone */
+.phone{width:360px;max-width:100%;height:740px;border-radius:36px;padding:10px;background:#05090c;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.screen{position:relative;height:100%;border-radius:28px;overflow:hidden;background:var(--app-bg);color:var(--app-fg);display:flex;flex-direction:column}
+.nav{height:48px;display:flex;align-items:center;justify-content:center;position:relative;font-weight:600;font-size:16px;border-bottom:1px solid var(--app-line)}
+.nav .back{position:absolute;left:14px;top:50%;transform:translateY(-50%)}
+.scroll{flex:1;overflow-y:auto}
+.scorecard{margin:12px;padding:16px;border-radius:14px;background:linear-gradient(160deg,color-mix(in srgb,var(--lvl) 22%,var(--app-row)),var(--app-row));border:1px solid color-mix(in srgb,var(--lvl) 40%,transparent);display:flex;gap:16px;align-items:center;transition:background .3s}
+.ring{position:relative;width:92px;height:92px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .num b{font:700 28px var(--sans);line-height:1;font-variant-numeric:tabular-nums}
+.ring .num span{font-size:10px;color:var(--app-muted)}
+.sc-info{min-width:0;display:flex;flex-direction:column;gap:6px}
+.badge{align-self:flex-start;font:700 11px var(--sans);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:var(--lvl);color:#0d1c26}
+.sc-title{font-weight:600;font-size:15px}
+.sc-sub{font-size:12px;color:var(--app-muted)}
+.scale{margin:0 12px 6px;display:flex;gap:4px}
+.scale i{flex:1;height:6px;border-radius:3px;background:var(--app-line);transition:background .3s}
+.scale-l{margin:0 12px 10px;display:flex;justify-content:space-between;font:500 10px var(--mono);color:var(--app-muted)}
+.next{margin:0 12px 12px;padding:10px 12px;border-radius:10px;background:rgba(47,155,255,.12);border:1px dashed rgba(47,155,255,.5);display:flex;align-items:center;gap:10px;font-size:12px}
+.next b{color:var(--app-accent)}
+.next button{margin-left:auto;flex:none}
+.group{background:var(--app-row);margin-bottom:8px}
+.row{display:flex;align-items:center;gap:8px;min-height:46px;padding:0 12px;border-bottom:1px solid var(--app-line);cursor:pointer;font-size:14px}
+.row:last-child{border-bottom:0}
+.row:hover{background:rgba(255,255,255,.03)}
+.row .lbl{flex:1;min-width:0;display:flex;align-items:center;gap:8px}
+.dot{width:16px;height:16px;border-radius:50%;flex:none;display:grid;place-items:center}
+.dot.ok{background:var(--green)}
+.dot.todo{border:1.5px solid var(--app-muted)}
+.act{font-size:13px;color:var(--app-fg)}
+.pts{font:600 10px var(--mono);padding:2px 6px;border-radius:4px;background:rgba(245,179,0,.15);color:var(--yellow)}
+.cta{font:600 12px var(--sans);padding:5px 12px;border-radius:999px;border:0;background:var(--app-accent);color:#fff;cursor:pointer}
+.icons{display:flex;gap:4px;align-items:center}
+.ic{width:18px;height:18px;border-radius:50%;display:grid;place-items:center}
+.ic.tg{background:#2aa3e0}.ic.gg{background:#fff}
+.chev{color:var(--app-muted)}
+.foot-note{padding:12px 14px;font-size:11px;color:var(--app-muted)}
+/* sheet */
+.mask{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end}
+.sheet{width:100%;background:var(--app-row);border-radius:16px 16px 0 0;padding:16px 14px 22px;display:flex;flex-direction:column;gap:10px}
+.sheet h4{margin:0;font-size:15px;text-align:center}
+.sheet p{margin:0;font-size:12px;color:var(--app-muted);text-align:center}
+.prov{display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;background:var(--app-bg);border:1px solid var(--app-line)}
+.prov .name{flex:1}
+.prov button{font:600 12px var(--sans);padding:5px 12px;border-radius:999px;cursor:pointer;border:1px solid var(--app-accent);background:transparent;color:var(--app-accent)}
+.prov button.on{border-color:var(--app-line);color:var(--app-muted)}
+.close{align-self:center;background:none;border:0;color:var(--app-muted);font:500 13px var(--sans);cursor:pointer;padding:6px}
+.toast{position:absolute;left:50%;top:60px;transform:translateX(-50%);background:rgba(0,0,0,.8);padding:8px 14px;border-radius:8px;font-size:12px;white-space:nowrap;transition:opacity .3s}
+button:focus-visible,.row:focus-visible{outline:2px solid var(--app-accent);outline-offset:2px}
+/* spec */
+.spec{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:28px clamp(18px,3vw,36px);min-width:0}
+.spec h1{font-size:24px;margin:0 0 4px;text-wrap:balance}
+.meta{font:12px var(--mono);color:var(--muted);margin-bottom:20px}
+.spec h2{font-size:16px;margin:28px 0 10px;padding-top:16px;border-top:1px solid var(--line);text-wrap:balance}
+.spec h2 small{font:500 11px var(--mono);color:var(--accent);margin-right:8px;letter-spacing:.04em}
+.spec p,.spec li{max-width:46em}
+.spec{line-height:1.75}
+.spec ul,.spec ol{padding-left:20px;margin:6px 0}
+.spec li{margin:3px 0}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:520px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+td.n{font-family:var(--mono);font-variant-numeric:tabular-nums}
+code{font:12px var(--mono);background:var(--code);padding:1px 5px;border-radius:4px}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.callout{background:var(--code);border-left:3px solid var(--accent);padding:10px 14px;border-radius:4px;font-size:13px;margin:10px 0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="left">
+    <div class="phone"><div class="screen" id="screen">
+      <div class="nav"><svg class="back" width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2 2 10l8 8" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Account Security</div>
+      <div class="scroll">
+        <div class="scorecard" id="card">
+          <div class="ring">
+            <svg width="92" height="92" viewBox="0 0 92 92"><circle cx="46" cy="46" r="40" stroke="#1c3442" stroke-width="8" fill="none"/><circle id="arc" cx="46" cy="46" r="40" stroke="var(--lvl)" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3" style="transition:stroke-dashoffset .5s,stroke .3s"/></svg>
+            <div class="num"><b id="score">0</b><span>/ 100</span></div>
+          </div>
+          <div class="sc-info">
+            <span class="badge" id="badge">Low</span>
+            <div class="sc-title" id="title">Security Score</div>
+            <div class="sc-sub" id="sub"></div>
+          </div>
+        </div>
+        <div class="scale"><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="scale-l"><span>0</span><span>Low &lt;60</span><span>Medium 60–80</span><span>High 100</span></div>
+        <div class="next" id="next"></div>
+
+        <div class="group" id="g1"></div>
+        <div class="group" id="g2"></div>
+        <div class="foot-note">Each completed item adds 20 points. Password Toggle Settings does not affect your score.</div>
+      </div>
+      <div class="mask" id="mask" hidden>
+        <div class="sheet">
+          <h4>Authorization Login</h4>
+          <p>Link any one account to earn +20 points.</p>
+          <div class="prov"><span class="ic gg" id="pgIcon"></span><span class="name">Google</span><button id="bGoogle"></button></div>
+          <div class="prov"><span class="ic tg" id="ptIcon"></span><span class="name">Telegram</span><button id="bTg"></button></div>
+          <button class="close" id="closeSheet">Close</button>
+        </div>
+      </div>
+      <div class="toast" id="toast" style="opacity:0"></div>
+    </div></div>
+    <div class="presets">
+      <button data-p="new">New user · 20</button>
+      <button data-p="shot">Current screenshot · 80</button>
+      <button data-p="full">All done · 100</button>
+    </div>
+  </div>
+
+  <article class="spec" lang="zh-CN">
+    <h1>账户安全评分</h1>
+    <div class="meta">模块：Account Security · 平台：H5 / App / PC · 版本：v1.0 · 2026-11-04</div>
+
+    <h2><small>1</small>背景与目标</h2>
+    <p>目前不少用户没有完成安全设置，尤其是资金密码和安全问题，账户被盗风险高，资金类客诉也多。本需求在账户安全页增加满分 100 分的安全评分，分红、黄、绿三个等级，并引导用户逐项完成缺失的设置。</p>
+    <ul>
+      <li>让用户一眼看到自己账户的安全程度。</li>
+      <li>提升各安全项的完成率。</li>
+      <li>给出明确的下一步操作，而不只是一个被动的列表。</li>
+    </ul>
+
+    <h2><small>2</small>评分规则</h2>
+    <p>满分 100 分。共 5 个计分项，每项 20 分。得分 = 已完成项数 × 20。</p>
+    <div class="tbl"><table>
+      <thead><tr><th>项目</th><th>分值</th><th>完成判定</th><th>按钮文案（未完成 → 已完成）</th></tr></thead>
+      <tbody>
+        <tr><td>Password（登录密码）</td><td class="n">20</td><td>已设置登录密码</td><td>Set Up → Change</td></tr>
+        <tr><td>Fund Password（资金密码）</td><td class="n">20</td><td>已设置资金密码</td><td>Set Up → Change</td></tr>
+        <tr><td>Mobile Number（手机号）</td><td class="n">20</td><td>已绑定手机号并通过短信验证</td><td>Bind → Change</td></tr>
+        <tr><td>Authorization Login（授权登录）</td><td class="n">20</td><td>绑定任意一个第三方账号（Google 或 Telegram）即算完成，两个都绑定仍为 20 分</td><td>Bind → 已绑定图标 + 箭头</td></tr>
+        <tr><td>Security Question（安全问题）</td><td class="n">20</td><td>已设置安全问题及答案</td><td>Set Up → Change</td></tr>
+        <tr><td>Password Toggle Settings</td><td class="n">0</td><td>不计分</td><td>仅显示箭头</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2><small>3</small>等级划分</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>等级</th><th>分数区间</th><th>徽章文案</th><th>标题文案</th></tr></thead>
+      <tbody>
+        <tr><td>红色（低）</td><td class="n">0 – 59</td><td>LOW</td><td>Your account is at risk</td></tr>
+        <tr><td>黄色（中）</td><td class="n">60 – 80</td><td>MEDIUM</td><td>Almost there</td></tr>
+        <tr><td>绿色（高）</td><td class="n">100</td><td>HIGH</td><td>Your account is well protected</td></tr>
+      </tbody>
+    </table></div>
+    <p>等级颜色同时作用于分数圆环、等级徽章、评分卡底色和下方的分段进度条。</p>
+
+    <h2><small>4</small>页面结构</h2>
+    <ol>
+      <li><b>评分卡</b>（顶部）：圆形进度环，中间显示分数（<code>xx / 100</code>），右侧为等级徽章、标题和副标题。</li>
+      <li><b>分段进度条</b>：共 5 段，每段对应一个计分项，已完成的段用当前等级颜色填充。</li>
+      <li><b>下一步引导条</b>：显示第一个未完成的项目和按钮，满分时隐藏。</li>
+      <li><b>设置列表</b>：保持现有顺序和分组。每行左侧增加状态标识：绿色对勾为已完成，空心圆为未完成。</li>
+    </ol>
+
+    <h2><small>5</small>引导逻辑</h2>
+    <ul>
+      <li><b>副标题文案</b>：
+        <ul>
+          <li>未满分：<code>Complete N more item(s) to reach High.</code></li>
+          <li>红色等级时，前面加上：<code>+X pts to reach Medium.</code></li>
+          <li>满分：<code>All security items are completed.</code></li>
+        </ul>
+      </li>
+      <li><b>未完成的行</b>：显示 <code>+20</code> 标签，原来的文字按钮换成蓝色主按钮（<code>Set Up</code> 或 <code>Bind</code>）。</li>
+      <li><b>下一步引导条</b>：按以下优先级取第一个未完成项：Password → Fund Password → Mobile Number → Authorization Login → Security Question。文案示例：<code>Next: Set Up Fund Password +20</code>，点击 <code>Go</code> 进入该项现有的设置流程。</li>
+    </ul>
+
+    <h2><small>6</small>授权登录</h2>
+    <ul>
+      <li>点击该行弹出底部面板，列出 Google 和 Telegram，每项带 <code>Bind</code> 或 <code>Unbind</code> 按钮。</li>
+      <li>行内为每个已绑定账号显示一个小图标，后跟箭头。</li>
+      <li>绑定任意一个即得 20 分，绑定第二个不再加分。</li>
+    </ul>
+  </article>
+</div>
+
+<script>
+const TG='<svg width="10" height="10" viewBox="0 0 24 24"><path fill="#fff" d="M21.5 3.5 2.8 10.8c-1 .4-1 1.6.1 1.9l4.6 1.4 1.8 5.6c.3.8 1.3 1 1.9.4l2.6-2.4 4.8 3.5c.7.5 1.7.1 1.9-.8L23 4.7c.2-1-.6-1.6-1.5-1.2zM9.6 14.2l8.6-7.4-6.9 8.6-.3 3.2z"/></svg>';
+const GG='<svg width="10" height="10" viewBox="0 0 24 24"><text x="12" y="17.5" text-anchor="middle" font-family="Arial" font-weight="700" font-size="17" fill="#4285F4">G</text></svg>';
+const CHECK='<svg width="10" height="10" viewBox="0 0 12 12"><path d="M2.5 6.2 5 8.5l4.5-5" stroke="#0d1c26" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const CHEV='<svg class="chev" width="8" height="12" viewBox="0 0 8 12"><path d="M1.5 1.5 6 6l-4.5 4.5" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>';
+document.getElementById('pgIcon').innerHTML=GG;document.getElementById('ptIcon').innerHTML=TG;
+
+const items=[
+  {k:'password',n:'Password',todo:'Set Up'},
+  {k:'fund',n:'Fund Password',todo:'Set Up'},
+  {k:'mobile',n:'Mobile Number',todo:'Bind'},
+  {k:'auth',n:'Authorization Login',todo:'Bind'},
+  {k:'question',n:'Security Question',todo:'Set Up'}
+];
+const PRESETS={
+  new:{password:false,fund:false,mobile:true,question:false,google:false,tg:false},
+  shot:{password:true,fund:true,mobile:true,question:false,google:false,tg:true},
+  full:{password:true,fund:true,mobile:true,question:true,google:true,tg:true}
+};
+let s={...PRESETS.shot};
+const done=k=>k==='auth'?(s.google||s.tg):s[k];
+const score=()=>items.filter(i=>done(i.k)).length*20;
+const level=v=>v>=100?{c:'var(--green)',b:'High',t:'Your account is well protected'}:v>=60?{c:'var(--yellow)',b:'Medium',t:'Almost there'}:{c:'var(--red)',b:'Low',t:'Your account is at risk'};
+const $=id=>document.getElementById(id);
+let toastT;
+function toast(m){const t=$('toast');t.textContent=m;t.style.opacity=1;clearTimeout(toastT);toastT=setTimeout(()=>t.style.opacity=0,1600)}
+
+function row(i){
+  const d=done(i.k);
+  let right;
+  if(i.k==='auth'){
+    right=d?`<span class="icons">${s.google?`<span class="ic gg">${GG}</span>`:''}${s.tg?`<span class="ic tg">${TG}</span>`:''}</span>${CHEV}`:`<span class="pts">+20</span><button class="cta" tabindex="-1">Bind</button>`;
+  }else right=d?`<span class="act">Change</span>`:`<span class="pts">+20</span><button class="cta" tabindex="-1">${i.todo}</button>`;
+  return `<div class="row" tabindex="0" data-k="${i.k}"><span class="lbl"><span class="dot ${d?'ok':'todo'}">${d?CHECK:''}</span>${i.n}</span>${right}</div>`;
+}
+function render(){
+  const v=score(),L=level(v);
+  $('screen').style.setProperty('--lvl',L.c);
+  $('score').textContent=v;$('badge').textContent=L.b;$('title').textContent=L.t;
+  $('arc').style.strokeDashoffset=251.3*(1-v/100);
+  const left=items.filter(i=>!done(i.k)).length;
+  $('sub').textContent=v>=100?'All security items are completed.':(v<60?`+${60-v} pts to reach Medium. `:'')+`Complete ${left} more item${left>1?'s':''} to reach High.`;
+  document.querySelectorAll('.scale i').forEach((e,ix)=>e.style.background=ix<v/20?L.c:'');
+  const nx=items.find(i=>!done(i.k));
+  const n=$('next');n.hidden=!nx;
+  if(nx)n.innerHTML=`<span>Next: <b>${nx.todo} ${nx.n}</b> +20</span><button class="cta" data-k="${nx.k}">Go</button>`;
+  $('g1').innerHTML=items.slice(0,3).map(row).join('');
+  $('g2').innerHTML=items.slice(3).map(row).join('')+`<div class="row" tabindex="0" data-k="toggle"><span class="lbl">Password Toggle Settings</span>${CHEV}</div>`;
+  $('bGoogle').textContent=s.google?'Unbind':'Bind';$('bGoogle').className=s.google?'on':'';
+  $('bTg').textContent=s.tg?'Unbind':'Bind';$('bTg').className=s.tg?'on':'';
+}
+function act(k){
+  if(k==='toggle'){toast('Opens Password Toggle Settings (not scored)');return}
+  if(k==='auth'){$('mask').hidden=false;return}
+  s[k]=!s[k];render();
+}
+function bind(p){const before=score();s[p]=!s[p];render();const a=score();
+  if(a===before)toast(s[p]?'Bound · score unchanged (max 20 for this item)':'Unbound · another account still bound');}
+document.addEventListener('click',e=>{
+  const r=e.target.closest('[data-k]');if(r&&r.closest('.screen')){act(r.dataset.k);return}
+  const p=e.target.closest('[data-p]');if(p){s={...PRESETS[p.dataset.p]};render()}
+});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.row')){e.preventDefault();act(e.target.dataset.k)}});
+$('bGoogle').onclick=e=>{e.stopPropagation();bind('google')};
+$('bTg').onclick=e=>{e.stopPropagation();bind('tg')};
+$('closeSheet').onclick=()=>$('mask').hidden=true;
+$('mask').addEventListener('click',e=>{if(e.target.id==='mask')$('mask').hidden=true});
+render();
+</script>
+
+</body>
+</html>
