@@ -114,26 +114,16 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
 .feed.ticker:hover .track{animation-play-state:paused}
 @keyframes feedTick{from{transform:translateY(0)}to{transform:translateY(-50%)}}
 
-/* ---------- gift burst ---------- */
-.burst{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0}
-.burst .rays{position:absolute;width:520px;height:520px;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,226,120,.55) 0 8deg,transparent 8deg 22deg);-webkit-mask:radial-gradient(circle,#000 0 18%,transparent 62%);mask:radial-gradient(circle,#000 0 18%,transparent 62%);opacity:0;animation:raysIn 1.6s .42s ease-out forwards}
-.burst .flash{position:absolute;width:40px;height:40px;border-radius:50%;background:radial-gradient(circle,#fff 0 30%,rgba(255,236,150,.8) 50%,transparent 70%);opacity:0;animation:flash .5s .42s ease-out forwards}
-.gift{position:relative;width:96px;height:96px;animation:giftIn .26s ease-out,giftShake .26s .18s ease-in-out 1,giftOut .25s .62s ease-in forwards}
-.gift .box{position:absolute;left:8px;right:8px;bottom:0;height:62px;border-radius:8px;background:linear-gradient(90deg,transparent 42%,#ffd23f 42% 58%,transparent 58%),linear-gradient(180deg,#ff7a95,#e0405e);box-shadow:inset 0 -6px 0 rgba(0,0,0,.12)}
-.gift .lid{position:absolute;left:0;right:0;top:16px;height:22px;border-radius:6px;background:linear-gradient(90deg,transparent 42%,#ffe066 42% 58%,transparent 58%),linear-gradient(180deg,#ff90a6,#f0506d);animation:lidPop .45s .42s cubic-bezier(.2,.8,.3,1) forwards}
-.gift .lid::before,.gift .lid::after{content:"";position:absolute;top:-16px;width:22px;height:18px;border:5px solid #ffd23f;border-radius:50% 50% 10% 50%}
-.gift .lid::before{left:24px;transform:rotate(-20deg)}.gift .lid::after{right:24px;transform:scaleX(-1) rotate(-20deg)}
-.confetti{position:absolute;left:50%;top:50%;width:8px;height:12px;margin:-6px 0 0 -4px;border-radius:2px;opacity:0;animation:confetti 1.3s var(--d) cubic-bezier(.15,.7,.35,1) forwards}
-.confetti.star{width:10px;height:10px;border-radius:50%;background:radial-gradient(circle,#fff 0 30%,#ffe680 60%,transparent 70%)!important}
-.pop.wait{visibility:hidden;animation:none}
-@keyframes giftIn{from{transform:scale(.2)}70%{transform:scale(1.12)}to{transform:scale(1)}}
-@keyframes giftShake{25%{transform:rotate(-9deg)}50%{transform:rotate(8deg)}75%{transform:rotate(-5deg)}}
-@keyframes giftOut{to{transform:scale(1.35);opacity:0}}
-@keyframes lidPop{to{transform:translate(18px,-70px) rotate(28deg);opacity:0}}
-@keyframes flash{0%{opacity:1;transform:scale(.4)}100%{opacity:0;transform:scale(9)}}
-@keyframes raysIn{0%{opacity:0;transform:scale(.3) rotate(0)}25%{opacity:1}100%{opacity:0;transform:scale(1.1) rotate(70deg)}}
-@keyframes confetti{0%{opacity:1;transform:translate(0,0) rotate(0) scale(.6)}70%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1)}}
-@media (prefers-reduced-motion:reduce){.burst{display:none}}
+/* ---------- popup atmosphere ---------- */
+.burst{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;overflow:hidden}
+.burst .rays{position:absolute;width:640px;height:640px;border-radius:50%;background:repeating-conic-gradient(from 0deg,rgba(255,226,120,.42) 0 7deg,transparent 7deg 20deg);-webkit-mask:radial-gradient(circle,#000 0 14%,transparent 60%);mask:radial-gradient(circle,#000 0 14%,transparent 60%);animation:raysIn .5s ease-out both,raysSpin 14s linear infinite}
+.burst .glow{position:absolute;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(255,210,90,.45),rgba(255,120,150,.18) 45%,transparent 70%);animation:raysIn .5s ease-out both}
+.confetti{position:absolute;left:50%;top:50%;width:8px;height:12px;margin:-6px 0 0 -4px;border-radius:2px;opacity:0;animation:confetti 1.6s var(--d) cubic-bezier(.12,.7,.35,1) forwards}
+.twinkle{position:absolute;width:var(--s);height:var(--s);left:var(--l);top:var(--t);opacity:0;background:radial-gradient(circle,#fff 0 14%,transparent 18%),conic-gradient(from 45deg,transparent 0 40deg,#fff3b0 45deg,transparent 50deg 130deg,#fff3b0 135deg,transparent 140deg 220deg,#fff3b0 225deg,transparent 230deg 310deg,#fff3b0 315deg,transparent 320deg);border-radius:50%;animation:twinkle 1.8s var(--d) ease-in-out infinite}
+@keyframes raysIn{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
+@keyframes raysSpin{to{rotate:360deg}}
+@keyframes confetti{0%{opacity:1;transform:translate(0,0) rotate(0) scale(.5)}75%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1)}}
+@media (prefers-reduced-motion:reduce){.burst .rays,.confetti,.twinkle{animation:none}.confetti{display:none}}
 @media (prefers-reduced-motion:reduce){.board.idle .slot[data-i="0"]::after,.board.idle .slot[data-i="0"]::before,.board.idle .sparkle{animation:none}.feed .track{animation:none}.feed.ticker{overflow-y:auto}}
 .feed .new{color:#ffe34d}
 .feed .empty{justify-content:center;color:#c5cdfb;font-weight:600}
@@ -383,7 +373,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
       <li>最终中奖奖品固定落在第 1 格。</li>
       <li>10连抽时第 1 格放 10 个结果中<strong>中奖概率最低</strong>的那个（即弹窗里的 BEST 奖品）；概率相同时随机取一个。</li>
       <li>停格后第 1 格闪烁 1 秒，然后出现中奖弹窗。</li>
-      <li><strong>弹窗出场特效</strong>：先出现礼包弹入并抖动，约 0.4 秒后盒盖弹飞、礼包爆开，伴随白光闪烁、金色放射光芒和彩纸星光四散；约 0.7 秒时中奖弹窗弹出，彩纸继续飘散后消失。单抽和 10连抽都播放。</li>
+      <li><strong>弹窗氛围特效</strong>：中奖弹窗出现的同时，周边播放氛围效果，不额外延后弹窗。弹窗背后有暖金色光晕和缓慢旋转的放射光芒，持续到弹窗关闭；弹出瞬间彩纸从弹窗中心向四周喷散，约 1.5 秒后飘落消失；弹窗四周有星光轮流闪烁。单抽和 10连抽都播放。</li>
     </ol>
     <h4>d. 跑完后恢复原顺序</h4>
     <ol>
@@ -616,19 +606,20 @@ function showPopup(list) {
   const L = $('popLayer');
   const COLORS = ['#ffd23f', '#ff5f7a', '#4fd1ff', '#8a3ff5', '#6ee7a8', '#ffffff', '#ff9a3c'];
   let bits = '';
-  for (let k = 0; k < 36; k++) {
-    const a = Math.random() * Math.PI * 2, dist = 90 + Math.random() * 130;
-    bits += '<span class="confetti' + (k % 6 === 0 ? ' star' : '') + '" style="--x:' + (Math.cos(a) * dist).toFixed(0) + 'px;--y:' + (Math.sin(a) * dist + 40).toFixed(0) + 'px;--r:' + (Math.random() * 720 - 360).toFixed(0) + 'deg;--d:' + (0.42 + Math.random() * 0.12).toFixed(2) + 's;background:' + COLORS[k % COLORS.length] + '"></span>';
+  for (let k = 0; k < 44; k++) {
+    const a = Math.random() * Math.PI * 2, dist = 170 + Math.random() * 150;
+    bits += '<span class="confetti" style="--x:' + (Math.cos(a) * dist).toFixed(0) + 'px;--y:' + (Math.sin(a) * dist + 60).toFixed(0) + 'px;--r:' + (Math.random() * 720 - 360).toFixed(0) + 'deg;--d:' + (0.05 + Math.random() * 0.25).toFixed(2) + 's;background:' + COLORS[k % COLORS.length] + '"></span>';
   }
-  const burst = '<div class="burst" aria-hidden="true"><div class="rays"></div><div class="flash"></div><div class="gift"><div class="box"></div><div class="lid"></div></div>' + bits + '</div>';
-  L.innerHTML = burst + '<div class="pop wait' + (multi ? ' multi' : '') + '" role="dialog" aria-modal="true" aria-labelledby="popT" style="z-index:1">'
+  const SPOTS = [[8,14],[86,10],[4,46],[92,40],[10,82],[84,86],[48,4],[50,94],[22,28],[76,70]];
+  SPOTS.forEach((pt, k) => { bits += '<span class="twinkle" style="--l:' + pt[0] + '%;--t:' + pt[1] + '%;--s:' + (10 + (k % 3) * 5) + 'px;--d:' + (k * 0.18).toFixed(2) + 's"></span>'; });
+  const burst = '<div class="burst" aria-hidden="true"><div class="glow"></div><div class="rays"></div>' + bits + '</div>';
+  L.innerHTML = burst + '<div class="pop' + (multi ? ' multi' : '') + '" role="dialog" aria-modal="true" aria-labelledby="popT" style="z-index:1">'
     + '<img class="ribbon" src="' + RIBBON + '" alt="">'
     + '<button class="icon-btn pop-x" id="popX" aria-label="Close"><span class="close-dot"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 2l8 8M10 2L2 10" stroke="#fff" stroke-width="2.4" stroke-linecap="round"></path></svg></span></button>'
     + '<div class="frame"><div class="card"><div class="congrats" id="popT">CONGRATULATIONS</div>' + body
     + '<button class="confirm" id="popOk">Confirm</button></div></div></div>';
   L.hidden = false;
-  const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  setTimeout(() => { const pop = L.querySelector('.pop'); if (pop) { pop.classList.remove('wait'); $('popOk').focus(); } }, reduce ? 0 : 720);
+  $('popOk').focus();
   const close = () => { if (board[0] !== ORIGINAL[0]) { board[0] = ORIGINAL[0]; paint(0, true); } L.hidden = true; L.innerHTML = ''; $('needle').style.opacity = 0; setPhase('idle'); lock(false); renderFeed(); };
   $('popOk').onclick = close; $('popX').onclick = close;
 }
