@@ -339,8 +339,9 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <p class="note">减速段按二次曲线计算：原始间隔 85 + 335 × ((k − 24) / 11)²，再把 36 步整体缩放到总和 4000ms。</p>
     <h4>b. 动态替换</h4>
     <ol>
-      <li>高亮每离开一个格子，该格立即翻转（160ms）替换为奖池中<strong>当前盘面未展示</strong>的奖品。</li>
-      <li>已经跑过的奖品不固定在原位置，任何时刻盘面 9 格都不重复。奖池至少要配 10 个奖品，建议 ≥ 12 个，原型里是 13 个。</li>
+      <li><strong>触发条件</strong>：奖池奖品数 <strong>大于 9 个</strong>时才启用动态替换；奖池正好 9 个时盘面全部展示，跑马灯过程中不替换。</li>
+      <li>启用时，高亮每离开一个格子，该格立即翻转替换为奖池中<strong>当前盘面未展示</strong>的奖品。</li>
+      <li>已经跑过的奖品不固定在原位置，任何时刻盘面 9 格都不重复。原型奖池为 13 个。</li>
       <li>替换用的候选奖品从“未展示”集合里等概率随机取，只用于视觉展示，和中奖概率无关。</li>
     </ol>
     <h4>c. 中奖位置</h4>
@@ -534,7 +535,7 @@ async function draw(n) {
     await sleep(STEPS[k] * f);
     const prev = cur; cur = (cur + 1) % 9;
     slots[prev].classList.remove('on');
-    board[prev] = unshown(); paint(prev, true);
+    if (PRIZES.length > 9) { board[prev] = unshown(); paint(prev, true); }
     slots[cur].classList.add('on');
   }
   for (let i = 1; i < 9; i++) { if (board[i] !== ORIGINAL[i]) { board[i] = ORIGINAL[i]; paint(i, true); } }
