@@ -54,7 +54,14 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
 .slot[data-i="7"]{grid-column:1;grid-row:2}.slot[data-i="8"]{grid-column:1;grid-row:1}
 .slot::after{content:"";position:absolute;inset:-3px;border-radius:11px;box-shadow:0 0 0 3px transparent;pointer-events:none;transition:box-shadow .08s}
 .slot[data-i="0"]::after{border-radius:15px}
-.board.idle .slot[data-i="0"]::after{box-shadow:0 0 0 3px #ffd23f,0 0 12px 2px rgba(255,210,63,.45)}
+.board.idle .slot[data-i="0"]::after{box-shadow:0 0 0 3px #ffd23f,0 0 12px 2px rgba(255,210,63,.45);animation:goldPulse 1.6s ease-in-out infinite alternate}
+.board.idle .slot[data-i="0"]::before{content:"";position:absolute;inset:0;border-radius:12px;pointer-events:none;z-index:1;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.75) 48%,rgba(255,240,170,.9) 50%,rgba(255,255,255,.75) 52%,transparent 65%) no-repeat;background-size:250% 100%;background-position:150% 0;mix-blend-mode:screen;animation:goldSweep 2.6s ease-in-out infinite}
+.sparkle{position:absolute;width:14px;height:14px;pointer-events:none;z-index:3;opacity:0;background:radial-gradient(circle,#fff 0 18%,transparent 20%),conic-gradient(from 0deg,transparent 0 40deg,#fff6c2 45deg,transparent 50deg 130deg,#fff6c2 135deg,transparent 140deg 220deg,#fff6c2 225deg,transparent 230deg 310deg,#fff6c2 315deg,transparent 320deg);border-radius:50%}
+.board.idle .sparkle{animation:twinkle 2.4s ease-in-out infinite}
+.sparkle.s1{top:6px;right:8px}.sparkle.s2{bottom:30px;left:6px;animation-delay:.8s!important}.sparkle.s3{top:44%;right:-4px;animation-delay:1.6s!important;width:10px;height:10px}
+@keyframes goldPulse{from{box-shadow:0 0 0 3px #ffd23f,0 0 8px 1px rgba(255,210,63,.35)}to{box-shadow:0 0 0 3px #ffe680,0 0 20px 6px rgba(255,210,63,.7)}}
+@keyframes goldSweep{0%{background-position:150% 0}55%,100%{background-position:-60% 0}}
+@keyframes twinkle{0%,100%{opacity:0;transform:scale(.4) rotate(0)}50%{opacity:1;transform:scale(1) rotate(45deg)}}
 .slot.on{transform:scale(1.05);z-index:2}
 .slot.on::after{box-shadow:0 0 0 3px #fff36b,0 0 20px 6px rgba(255,226,80,.75)}
 .slot.swap img{animation:swap .16s ease-out}
@@ -106,7 +113,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
 .feed .track{animation:feedTick linear infinite}
 .feed.ticker:hover .track{animation-play-state:paused}
 @keyframes feedTick{from{transform:translateY(0)}to{transform:translateY(-50%)}}
-@media (prefers-reduced-motion:reduce){.feed .track{animation:none}.feed.ticker{overflow-y:auto}}
+@media (prefers-reduced-motion:reduce){.board.idle .slot[data-i="0"]::after,.board.idle .slot[data-i="0"]::before,.board.idle .sparkle{animation:none}.feed .track{animation:none}.feed.ticker{overflow-y:auto}}
 .feed .new{color:#ffe34d}
 .feed .empty{justify-content:center;color:#c5cdfb;font-weight:600}
 
@@ -298,7 +305,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
       <tbody>
         <tr><td>标题栏</td><td>MYSTERY BLIND BOX · 关闭</td><td>标题居中，关闭在右上角</td></tr>
         <tr><td>顶部 Tab</td><td>LUCKY STAR / ALL PRIZES</td><td>默认 LUCKY STAR；切换只换中间内容区，外框与底部不动</td></tr>
-        <tr><td>盘面</td><td>9 格奖品</td><td>第 1 格为中间大格（2×2），其余 8 格环绕；每格只有一张奖品图（图内含名称标签）。每局开始前（未抽奖状态）第 1 格带金色描边，抽奖开始后金边去掉，改由跑马灯高亮框显示；弹窗关闭后恢复金边</td></tr>
+        <tr><td>盘面</td><td>9 格奖品</td><td>第 1 格为中间大格（2×2），其余 8 格环绕；每格只有一张奖品图（图内含名称标签）。每局开始前（未抽奖状态）第 1 格带金色描边和闪光特效（金边呼吸发光、斜向扫光、星光闪烁），抽奖开始后金边去掉，改由跑马灯高亮框显示；弹窗关闭后恢复金边</td></tr>
         <tr><td>抽奖按钮</td><td>DRAW ×1 · 10 Points</td><td>单抽，价格显示在按钮内</td></tr>
         <tr><td></td><td>DRAW ×10 · 90 Points</td><td>10连抽。价格 = 单抽价格 × 10 × (1 − 折扣)。右上角标 SAVE X%，X 读取后台配置的 10连抽折扣；后台未配置折扣时不显示角标，按原价 10 倍收费。折扣最低可配置 1%。原型示例为 10%。</td></tr>
         <tr><td>底部区</td><td>My Points</td><td>当前积分，抽奖成功后实时刷新</td></tr>
@@ -445,6 +452,7 @@ for (let i = 0; i < 9; i++) {
   const s = document.createElement('div');
   s.className = 'slot'; s.dataset.i = i;
   s.innerHTML = '<img alt=""><span class="slot-no">' + (i + 1) + '</span>';
+  if (i === 0) s.insertAdjacentHTML('beforeend', '<span class="sparkle s1"></span><span class="sparkle s2"></span><span class="sparkle s3"></span>');
   boardEl.appendChild(s); slots.push(s); paint(i, false);
 }
 function paint(i, anim) {
