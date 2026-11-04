@@ -252,7 +252,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
         <div class="board" id="board"></div>
         <div class="draws">
           <button class="draw draw-1" id="draw1"><b>DRAW ×1</b><span class="cost"><span class="coin"></span><span id="c1">10</span> Points</span></button>
-          <button class="draw draw-10" id="draw10"><span class="save">SAVE 10%</span><b>DRAW ×10</b><span class="cost"><span class="coin"></span><span id="c10">90</span> Points</span></button>
+          <button class="draw draw-10" id="draw10"><span class="save" id="saveTag">SAVE 10%</span><b>DRAW ×10</b><span class="cost"><span class="coin"></span><span id="c10">90</span> Points</span></button>
         </div>
       </div>
       <div class="view" id="viewAll" role="tabpanel" aria-labelledby="tabAll" hidden>
@@ -294,7 +294,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
         <tr><td>顶部 Tab</td><td>LUCKY STAR / ALL PRIZES</td><td>默认 LUCKY STAR；切换只换中间内容区，外框与底部不动</td></tr>
         <tr><td>盘面</td><td>9 格奖品</td><td>第 1 格为中间大格（2×2），其余 8 格环绕；每格只有一张奖品图（图内含名称标签）</td></tr>
         <tr><td>抽奖按钮</td><td>DRAW ×1 · 10 Points</td><td>单抽，价格显示在按钮内</td></tr>
-        <tr><td></td><td>DRAW ×10 · 90 Points</td><td>10连抽，9 折，右上角标 SAVE 10%</td></tr>
+        <tr><td></td><td>DRAW ×10 · 90 Points</td><td>10连抽。价格 = 单抽价格 × 10 × (1 − 折扣)。右上角标 SAVE X%，X 读取后台配置的 10连抽折扣；后台未配置折扣时不显示角标，按原价 10 倍收费。折扣最低可配置 1%。原型示例为 10%。</td></tr>
         <tr><td>底部区</td><td>My Points</td><td>当前积分，抽奖成功后实时刷新</td></tr>
         <tr><td></td><td>Recent Winners</td><td>每行：奖品缩略图 · 奖品名 · 中奖用户（脱敏，如 OKBet****88）</td></tr>
         <tr><td></td><td>My Rewards</td><td>每行：奖品缩略图 · 奖品名 · 中奖时间（YYYY.MM.DD HH:mm:ss）；实物奖品右侧改为 Contact CS 按钮，点击跳转客服</td></tr>
@@ -415,7 +415,12 @@ const PRIZES = [
 const BY = Object.fromEntries(PRIZES.map(p => [p.id, p]));
 // 按中奖概率从低到高；概率相同随机排
 const byProb = list => list.map(p => [p, Math.random()]).sort((a, b) => a[0].w - b[0].w || a[1] - b[1]).map(x => x[0]);
-const COST = {1:10, 10:90};
+// 后台配置：单抽价格、10连折扣（%，不配置为 0，最低 1）
+const SINGLE_COST = 10, TEN_DISCOUNT = 10;
+const COST = {1: SINGLE_COST, 10: Math.ceil(SINGLE_COST * 10 * (1 - TEN_DISCOUNT / 100))};
+$('c1').textContent = COST[1]; $('c10').textContent = COST[10];
+$('saveTag').hidden = !(TEN_DISCOUNT >= 1);
+$('saveTag').textContent = 'SAVE ' + TEN_DISCOUNT + '%';
 const HINT = {physical:['Please ', 'Contact CS'], load:['Please go to ', 'Exchange Record'], points:null, spins:['Please go to ', 'My voucher']};
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString('en-US');
