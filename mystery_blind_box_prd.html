@@ -304,6 +304,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <ol>
       <li>点击抽奖按钮即扣积分。积分不足时按钮仍可点，toast 提示 “Not enough points”，不扣分、不播动画。</li>
       <li>10连抽 = 10 次独立抽取，每次都从完整奖池按权重抽，不设保底。只播放一次跑马灯，只弹一个汇总弹窗。</li>
+      <li><strong>10连抽结果排序</strong>：10 个奖品按<strong>中奖概率从低到高</strong>排序，概率相同的随机排序。排第 1 的奖品（概率最低）落在盘面第 1 格，并在弹窗中显示 BEST 角标。</li>
       <li>从点击抽奖到弹窗关闭之间，两个抽奖按钮、顶部 Tab 全部禁用。</li>
     </ol>
   </section>
