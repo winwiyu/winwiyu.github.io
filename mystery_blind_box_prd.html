@@ -418,9 +418,9 @@ const byProb = list => list.map(p => [p, Math.random()]).sort((a, b) => a[0].w -
 // 后台配置：单抽价格、10连折扣（%，不配置为 0，最低 1）
 const SINGLE_COST = 10, TEN_DISCOUNT = 10;
 const COST = {1: SINGLE_COST, 10: Math.ceil(SINGLE_COST * 10 * (1 - TEN_DISCOUNT / 100))};
-$('c1').textContent = COST[1]; $('c10').textContent = COST[10];
-$('saveTag').hidden = !(TEN_DISCOUNT >= 1);
-$('saveTag').textContent = 'SAVE ' + TEN_DISCOUNT + '%';
+document.getElementById('c1').textContent = COST[1]; document.getElementById('c10').textContent = COST[10];
+document.getElementById('saveTag').hidden = !(TEN_DISCOUNT >= 1);
+document.getElementById('saveTag').textContent = 'SAVE ' + TEN_DISCOUNT + '%';
 const HINT = {physical:['Please ', 'Contact CS'], load:['Please go to ', 'Exchange Record'], points:null, spins:['Please go to ', 'My voucher']};
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString('en-US');
