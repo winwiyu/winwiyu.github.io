@@ -54,6 +54,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
 .slot[data-i="7"]{grid-column:1;grid-row:2}.slot[data-i="8"]{grid-column:1;grid-row:1}
 .slot::after{content:"";position:absolute;inset:-3px;border-radius:11px;box-shadow:0 0 0 3px transparent;pointer-events:none;transition:box-shadow .08s}
 .slot[data-i="0"]::after{border-radius:15px}
+.board.idle .slot[data-i="0"]::after{box-shadow:0 0 0 3px #ffd23f,0 0 12px 2px rgba(255,210,63,.45)}
 .slot.on{transform:scale(1.05);z-index:2}
 .slot.on::after{box-shadow:0 0 0 3px #fff36b,0 0 20px 6px rgba(255,226,80,.75)}
 .slot.swap img{animation:swap .16s ease-out}
@@ -254,7 +255,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     </div>
     <div class="stage">
       <div class="view" id="viewLucky" role="tabpanel" aria-labelledby="tabLucky">
-        <div class="board" id="board"></div>
+        <div class="board idle" id="board"></div>
         <div class="draws">
           <button class="draw draw-1" id="draw1"><b>DRAW ×1</b><span class="cost"><span class="coin"></span><span id="c1">10</span> Points</span></button>
           <button class="draw draw-10" id="draw10"><span class="save" id="saveTag">SAVE 10%</span><b>DRAW ×10</b><span class="cost"><span class="coin"></span><span id="c10">90</span> Points</span></button>
@@ -297,7 +298,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
       <tbody>
         <tr><td>标题栏</td><td>MYSTERY BLIND BOX · 关闭</td><td>标题居中，关闭在右上角</td></tr>
         <tr><td>顶部 Tab</td><td>LUCKY STAR / ALL PRIZES</td><td>默认 LUCKY STAR；切换只换中间内容区，外框与底部不动</td></tr>
-        <tr><td>盘面</td><td>9 格奖品</td><td>第 1 格为中间大格（2×2），其余 8 格环绕；每格只有一张奖品图（图内含名称标签）</td></tr>
+        <tr><td>盘面</td><td>9 格奖品</td><td>第 1 格为中间大格（2×2），其余 8 格环绕；每格只有一张奖品图（图内含名称标签）。每局开始前（未抽奖状态）第 1 格带金色描边，抽奖开始后金边去掉，改由跑马灯高亮框显示；弹窗关闭后恢复金边</td></tr>
         <tr><td>抽奖按钮</td><td>DRAW ×1 · 10 Points</td><td>单抽，价格显示在按钮内</td></tr>
         <tr><td></td><td>DRAW ×10 · 90 Points</td><td>10连抽。价格 = 单抽价格 × 10 × (1 − 折扣)。右上角标 SAVE X%，X 读取后台配置的 10连抽折扣；后台未配置折扣时不显示角标，按原价 10 倍收费。折扣最低可配置 1%。原型示例为 10%。</td></tr>
         <tr><td>底部区</td><td>My Points</td><td>当前积分，抽奖成功后实时刷新</td></tr>
@@ -532,6 +533,7 @@ function pick() {
 function lock(on) {
   running = on;
   ['draw1','draw10','tabLucky','tabAll'].forEach(id => $(id).disabled = on);
+  $('board').classList.toggle('idle', !on);
 }
 function toast(msg) {
   const t = $('toast'); t.textContent = msg; t.hidden = false;
