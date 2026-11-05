@@ -123,6 +123,38 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
 @keyframes raysIn{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:scale(1)}}
 @keyframes raysSpin{to{rotate:360deg}}
 @keyframes confetti{0%{opacity:1;transform:translate(0,0) rotate(0) scale(.5)}75%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r)) scale(1)}}
+
+/* ---------- admin mock ---------- */
+.adm{border:1px solid var(--line);border-radius:12px;background:#fff;padding:16px;display:flex;flex-direction:column;gap:10px;font-size:13px;color:#2a2f55}
+.adm input[type=number],.adm input[type=text],.adm select{height:32px;border:1px solid #d5d9ea;border-radius:6px;padding:0 8px;font:inherit;color:#1c2045;background:#fff;min-width:0}
+.adm input:focus,.adm select:focus{outline:2px solid #4f63d8;outline-offset:0;border-color:#4f63d8}
+.adm-price{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.adm-f{display:inline-flex;align-items:center;gap:6px}
+.adm-f input{width:72px}
+.adm-sw{display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.adm-sw input{position:absolute;opacity:0;width:1px;height:1px}
+.adm-sw span{width:36px;height:20px;border-radius:10px;background:#c9cde3;position:relative;transition:background .15s}
+.adm-sw span::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:8px;background:#fff;transition:transform .15s}
+.adm-sw input:checked+span{background:#4f63d8}.adm-sw input:checked+span::after{transform:translateX(16px)}
+.adm-sw input:focus-visible+span{outline:2px solid #4f63d8;outline-offset:2px}
+.adm-preview{flex-basis:100%;color:#4f63d8;font-weight:700}
+.adm-head,.adm-row{display:grid;grid-template-columns:64px 104px minmax(0,1fr) 96px 44px;gap:8px;align-items:center}
+.adm-head{color:var(--muted);font-weight:700;font-size:12px}
+.adm-row{padding:4px 0}
+.adm-row b{font-weight:700}
+.adm-pct{display:flex;align-items:center}.adm-pct input{width:100%;border-radius:6px 0 0 6px}.adm-pct i{font-style:normal;height:32px;display:flex;align-items:center;padding:0 8px;border:1px solid #d5d9ea;border-left:0;border-radius:0 6px 6px 0;background:#f5f6fc;color:var(--muted)}
+.adm-del{height:32px;border:0;background:none;color:#d23b53;font:inherit;font-weight:700;cursor:pointer;padding:0}
+.adm-add-row{display:flex;align-items:center;gap:12px;padding-top:4px}
+.adm-add{height:34px;padding:0 14px;border:1px dashed #4f63d8;border-radius:8px;background:#f2f4ff;color:#3446b8;font:inherit;font-weight:700;cursor:pointer}
+.adm-add:disabled{border-color:#c9cde3;background:#f5f6fa;color:#9aa0c0;cursor:not-allowed}
+.adm-count{color:var(--muted)}
+.adm-foot{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;padding-top:12px;border-top:1px solid var(--line)}
+.adm-foot b{font-variant-numeric:tabular-nums;color:#17734a}
+.adm-foot b.bad{color:#d23b53}
+.adm-msg{flex:1;min-width:0;font-weight:600}
+.adm-msg.bad{color:#d23b53}.adm-msg.ok{color:#17734a}
+.adm-save{height:34px;padding:0 18px;border:0;border-radius:8px;background:#4f63d8;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+@media (max-width:520px){.adm-head{display:none}.adm-row{grid-template-columns:52px minmax(0,1fr) 44px;grid-template-areas:"n t d" "n m m" "n p p"}.adm-row>:nth-child(1){grid-area:n}.adm-row>:nth-child(2){grid-area:t}.adm-row>:nth-child(3){grid-area:m}.adm-row>:nth-child(4){grid-area:p}.adm-row>:nth-child(5){grid-area:d}}
 @media (prefers-reduced-motion:reduce){.burst .rays,.confetti,.twinkle{animation:none}.confetti{display:none}}
 @media (prefers-reduced-motion:reduce){.board.idle .slot[data-i="0"]::after,.board.idle .slot[data-i="0"]::before,.board.idle .sparkle{animation:none}.feed .track{animation:none}.feed.ticker{overflow-y:auto}}
 .feed .new{color:#ffe34d}
@@ -303,11 +335,62 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <span class="eyebrow">LUCKY STAR · MYSTERY BLIND BOX</span>
     <h2>Mystery Blind Box 抽奖改版 PRD</h2>
     
-    <p>本次改版：单个 DRAW 改为单抽 / 10连抽双按钮；新增 All Prizes Tab；新增 4 秒跑马灯、动态替换和固定中奖位；10连抽结果一屏展示。左侧原型可直接操作，每节的按钮会把原型切到对应状态。奖品与概率为示例数据。</p>
+    <p>本次改版分为管理后台和前台两部分。后台：盲盒奖品数量可从 9 个扩展到最多 15 个，新增 10连抽折扣配置。前台：单个 DRAW 改为单抽 / 10连抽双按钮；新增 All Prizes Tab；新增 4 秒跑马灯、动态替换和固定中奖位；10连抽结果一屏展示。左侧原型可直接操作，每节的按钮会把原型切到对应状态。奖品与概率为示例数据。</p>
     <nav class="toc" aria-label="目录">
-      <a href="#F1">F1 抽奖主页</a><a href="#F2">F2 跑马灯与替换</a><a href="#F3">F3 10连抽弹窗</a><a href="#F4">F4 All Prizes</a>
+      <a href="#A1">A1 后台奖品配置</a><a href="#A2">A2 10连抽折扣</a><a href="#F1">F1 抽奖主页</a><a href="#F2">F2 跑马灯与替换</a><a href="#F3">F3 10连抽弹窗</a><a href="#F4">F4 All Prizes</a>
     </nav>
   </header>
+
+  <section class="sec" id="A1">
+    <div class="sec-hd"><h3><span class="fid">A1</span>管理后台 · 盲盒奖品配置</h3></div>
+    <p>入口：积分商城 › 商品管理 › 商品类型选「盲盒」。在现有配置页上做以下调整，单个奖品的配置项保持不变。</p>
+    <h4>a. 奖品数量</h4>
+    <ol>
+      <li>默认显示 <strong>9 个</strong>奖品配置行（奖品1–奖品9），这是最低标准。</li>
+      <li>奖品9 下方新增「<strong>+ 新增奖品</strong>」按钮。点击后追加「奖品10」，依次递增，<strong>最多 15 个</strong>；达到 15 个后按钮置灰，提示“最多配置 15 个奖品”。</li>
+      <li>新增的奖品行配置项与现有一致：奖品类型、奖品子类、奖品名称、商品图片、排序（1–999999）、中奖概率（%）。</li>
+      <li>奖品10 及以后的行右侧显示「<strong>删除</strong>」，奖品1–9 不可删除，始终保留最低 9 个。删除后，后面的奖品编号自动前移。</li>
+      <li>奖品超过 9 个时，前台跑马灯启用动态替换（见 F2）。</li>
+    </ol>
+    <h4>b. 保存校验</h4>
+    <ol>
+      <li>列表底部实时显示「中奖概率合计」。</li>
+      <li>所有奖品的中奖概率合计<strong>必须等于 100%</strong> 才能保存；不等于时合计变红，并提示“中奖概率合计需等于 100%，当前为 X%”。</li>
+      <li>奖品名称、商品图片、中奖概率为必填。</li>
+    </ol>
+  </section>
+
+  <section class="sec" id="A2">
+    <div class="sec-hd"><h3><span class="fid">A2</span>管理后台 · 10连抽折扣配置</h3></div>
+    <ol>
+      <li>在「购买价格（积分）」下方新增「<strong>10连抽折扣</strong>」配置：一个开关加一个折扣输入框（%）。</li>
+      <li>开关关闭或折扣未填写时：前台 DRAW ×10 不显示折扣角标，实际扣费 = 单抽价格 × 10。</li>
+      <li>开关打开时，折扣填写 <strong>1–99 的整数</strong>，最低 1%。前台 10连抽实际扣费 = 单抽价格 × 10 × (1 − 折扣%)，按钮右上角显示角标 <strong>SAVE X%</strong>。</li>
+      <li>输入框旁实时预览：「10连实际扣费 N 积分 · 前台角标 SAVE X%」。</li>
+      <li>扣费算出来不是整数时向上取整 <span class="tag">待确认</span></li>
+    </ol>
+  </section>
+
+  <section class="sec" id="ADM">
+    <div class="sec-hd"><h3><span class="fid">示意</span>后台配置交互</h3></div>
+    <p class="note">可直接操作：新增和删除奖品、修改概率、调整 10连抽折扣。点「保存」后，左侧原型的 10连抽价格和角标会同步更新。商品图片、排序等配置同现有页面，这里省略。</p>
+    <div class="adm" id="adm">
+      <div class="adm-price">
+        <label class="adm-f">购买价格 <input id="admPrice" type="number" min="1" value="10"> 积分</label>
+        <label class="adm-sw"><input type="checkbox" id="admDiscOn" checked><span></span>10连抽折扣</label>
+        <label class="adm-f"><input id="admDisc" type="number" min="1" max="99" value="10"> %</label>
+        <span class="adm-preview" id="admPreview"></span>
+      </div>
+      <div class="adm-head"><span>奖品</span><span>奖品类型</span><span>奖品名称</span><span>中奖概率</span><span></span></div>
+      <div id="admRows"></div>
+      <div class="adm-add-row"><button class="adm-add" id="admAdd">+ 新增奖品</button><span class="adm-count" id="admCount"></span></div>
+      <div class="adm-foot">
+        <span>中奖概率合计 <b id="admSum">100%</b></span>
+        <span class="adm-msg" id="admMsg" role="status"></span>
+        <button class="adm-save" id="admSave">保存</button>
+      </div>
+    </div>
+  </section>
 
   <section class="sec" id="F1">
     <div class="sec-hd"><h3><span class="fid">F1</span>抽奖主页（LUCKY STAR）</h3><button class="demo" data-demo="lucky">在原型中查看</button></div>
@@ -318,7 +401,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
         <tr><td>顶部 Tab</td><td>LUCKY STAR / ALL PRIZES</td><td>默认 LUCKY STAR；切换只换中间内容区，外框与底部不动</td></tr>
         <tr><td>盘面</td><td>9 格奖品</td><td>第 1 格为中间大格（2×2），其余 8 格环绕；每格只有一张奖品图（图内含名称标签）。每局开始前（未抽奖状态）第 1 格带金色描边和闪光特效（金边呼吸发光、斜向扫光、星光闪烁），抽奖开始后金边去掉，改由跑马灯高亮框显示；弹窗关闭后恢复金边</td></tr>
         <tr><td>抽奖按钮</td><td>DRAW ×1 · 10 Points</td><td>单抽，价格显示在按钮内</td></tr>
-        <tr><td></td><td>DRAW ×10 · 90 Points</td><td>10连抽。价格 = 单抽价格 × 10 × (1 − 折扣)。右上角标 SAVE X%，X 读取后台配置的 10连抽折扣；后台未配置折扣时不显示角标，按原价 10 倍收费。折扣最低可配置 1%。原型示例为 10%。</td></tr>
+        <tr><td></td><td>DRAW ×10 · 90 Points</td><td>10连抽。价格 = 单抽价格 × 10 × (1 − 折扣)。右上角标 SAVE X%，X 读取后台配置的 10连抽折扣（见 A2）；后台未配置折扣时不显示角标，按原价 10 倍收费。原型示例为 10%。</td></tr>
         <tr><td>底部区</td><td>My Points</td><td>当前积分，抽奖成功后实时刷新</td></tr>
         <tr><td></td><td>Recent Winners</td><td>每行：奖品缩略图 · 奖品名 · 中奖用户（脱敏，如 OKBet****88）。列表自动向上慢速循环滚动，约 3 秒滚过一条；手指按住或鼠标悬停时暂停。超过 3 条才滚动</td></tr>
         <tr><td></td><td>My Rewards</td><td>每行：奖品缩略图 · 奖品名 · 中奖时间（YYYY.MM.DD HH:mm:ss）；实物奖品右侧改为 Contact CS 按钮，点击跳转客服</td></tr>
@@ -441,11 +524,13 @@ const BY = Object.fromEntries(PRIZES.map(p => [p.id, p]));
 // 按中奖概率从低到高；概率相同随机排
 const byProb = list => list.map(p => [p, Math.random()]).sort((a, b) => a[0].w - b[0].w || a[1] - b[1]).map(x => x[0]);
 // 后台配置：单抽价格、10连折扣（%，不配置为 0，最低 1）
-const SINGLE_COST = 10, TEN_DISCOUNT = 10;
-const COST = {1: SINGLE_COST, 10: Math.ceil(SINGLE_COST * 10 * (1 - TEN_DISCOUNT / 100))};
-document.getElementById('c1').textContent = COST[1]; document.getElementById('c10').textContent = COST[10];
-document.getElementById('saveTag').hidden = !(TEN_DISCOUNT >= 1);
-document.getElementById('saveTag').textContent = 'SAVE ' + TEN_DISCOUNT + '%';
+const COST = {1: 10, 10: 90};
+function applyPricing(single, disc) {
+  COST[1] = single; COST[10] = Math.ceil(single * 10 * (1 - (disc || 0) / 100));
+  document.getElementById('c1').textContent = COST[1]; document.getElementById('c10').textContent = COST[10];
+  const tag = document.getElementById('saveTag'); tag.hidden = !(disc >= 1); tag.textContent = 'SAVE ' + disc + '%';
+}
+applyPricing(10, 10);
 const HINT = {physical:['Please ', 'Contact CS'], load:['Please go to ', 'Exchange Record'], points:null, spins:['Please go to ', 'My voucher']};
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString('en-US');
@@ -641,6 +726,68 @@ function demo(k) {
   else if (k === 'pop10') { setTab('lucky'); lock(true); setPhase('popup'); showPopup(byProb(SAMPLE10)); }
 }
 document.querySelectorAll('[data-demo]').forEach(b => { b.onclick = () => demo(b.dataset.demo); });
+
+/* ----- admin mock ----- */
+const ADM_SEED = [['实物','iPhone 17 Pro Max 256GB',0.1],['虚拟物品','Globe ₱100 Load',2],['虚拟物品','Free Spins ×50',5],['积分','500 Points',5],['虚拟物品','Globe ₱20 Load',10],['虚拟物品','Free Spins ×20',12],['虚拟物品','Globe ₱10 Load',15],['积分','100 Points',20],['虚拟物品','Globe ₱5 Load',30.9]];
+let admRows = ADM_SEED.map(r => ({type: r[0], name: r[1], pct: r[2]}));
+const ADM_MIN = 9, ADM_MAX = 15, TYPES = ['虚拟物品', '实物', '积分', '现金'];
+const esc = v => String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+function admRender() {
+  $('admRows').innerHTML = admRows.map((r, i) => '<div class="adm-row"><b>奖品' + (i + 1) + '</b>'
+    + '<select id="admType' + i + '" aria-label="奖品' + (i + 1) + ' 奖品类型" data-i="' + i + '" data-k="type">' + TYPES.map(t => '<option' + (t === r.type ? ' selected' : '') + '>' + t + '</option>').join('') + '</select>'
+    + '<input type="text" id="admName' + i + '" aria-label="奖品' + (i + 1) + ' 奖品名称" data-i="' + i + '" data-k="name" value="' + esc(r.name) + '" placeholder="奖品名称">'
+    + '<span class="adm-pct"><input type="number" id="admPct' + i + '" aria-label="奖品' + (i + 1) + ' 中奖概率" data-i="' + i + '" data-k="pct" min="0" max="100" step="0.1" value="' + r.pct + '"><i>%</i></span>'
+    + (i >= ADM_MIN ? '<button class="adm-del" data-del="' + i + '">删除</button>' : '<span></span>') + '</div>').join('');
+  $('admAdd').disabled = admRows.length >= ADM_MAX;
+  $('admCount').textContent = admRows.length + ' / ' + ADM_MAX + (admRows.length >= ADM_MAX ? '，最多配置 15 个奖品' : '');
+  admSum();
+}
+function admSum() {
+  const sum = Math.round(admRows.reduce((a, r) => a + (parseFloat(r.pct) || 0), 0) * 1000) / 1000;
+  $('admSum').textContent = sum + '%';
+  $('admSum').classList.toggle('bad', Math.abs(sum - 100) > 1e-9);
+  return sum;
+}
+function admDisc() {
+  const on = $('admDiscOn').checked, v = parseInt($('admDisc').value, 10);
+  $('admDisc').disabled = !on;
+  return on && v >= 1 && v <= 99 ? v : 0;
+}
+function admPreview() {
+  const single = Math.max(1, parseInt($('admPrice').value, 10) || 0), d = admDisc();
+  const ten = Math.ceil(single * 10 * (1 - d / 100));
+  $('admPreview').textContent = '10连实际扣费 ' + ten + ' 积分 · ' + (d ? '前台角标 SAVE ' + d + '%' : '前台无折扣角标');
+}
+$('admRows').addEventListener('input', e => {
+  const t = e.target, i = +t.dataset.i; if (isNaN(i)) return;
+  admRows[i][t.dataset.k] = t.value; if (t.dataset.k === 'pct') admSum();
+  $('admMsg').textContent = ''; $('admMsg').className = 'adm-msg';
+});
+$('admRows').addEventListener('click', e => {
+  const b = e.target.closest('[data-del]'); if (!b) return;
+  admRows.splice(+b.dataset.del, 1); admRender();
+  $('admMsg').textContent = ''; $('admMsg').className = 'adm-msg';
+});
+$('admAdd').onclick = () => {
+  if (admRows.length >= ADM_MAX) return;
+  admRows.push({type: '虚拟物品', name: '', pct: 0}); admRender();
+  $('admName' + (admRows.length - 1)).focus();
+};
+['admPrice', 'admDisc'].forEach(id => $(id).addEventListener('input', admPreview));
+$('admDiscOn').addEventListener('change', admPreview);
+$('admSave').onclick = () => {
+  const m = $('admMsg'), sum = admSum();
+  const emptyName = admRows.findIndex(r => !String(r.name).trim());
+  const rawDisc = parseInt($('admDisc').value, 10);
+  if (emptyName >= 0) { m.textContent = '请填写奖品' + (emptyName + 1) + '的奖品名称'; m.className = 'adm-msg bad'; return; }
+  if (Math.abs(sum - 100) > 1e-9) { m.textContent = '中奖概率合计需等于 100%，当前为 ' + sum + '%'; m.className = 'adm-msg bad'; return; }
+  if ($('admDiscOn').checked && $('admDisc').value !== '' && !(rawDisc >= 1 && rawDisc <= 99)) { m.textContent = '10连抽折扣请填写 1–99 的整数'; m.className = 'adm-msg bad'; return; }
+  if (running) { m.textContent = '左侧原型正在抽奖，请结束后再保存'; m.className = 'adm-msg bad'; return; }
+  const single = Math.max(1, parseInt($('admPrice').value, 10) || 1);
+  applyPricing(single, admDisc());
+  m.textContent = '已保存，左侧原型的抽奖价格已更新'; m.className = 'adm-msg ok';
+};
+admRender(); admPreview();
 </script>
 
 </body>
