@@ -341,6 +341,27 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     </nav>
   </header>
 
+  <section class="sec" id="ADM">
+    <div class="sec-hd"><h3><span class="fid">示意</span>后台配置交互</h3></div>
+    <p class="note">可直接操作：新增和删除奖品、修改概率、调整 10连抽折扣。点「保存」后，左侧原型的 10连抽价格和角标会同步更新。商品图片、排序等配置同现有页面，这里省略。</p>
+    <div class="adm" id="adm">
+      <div class="adm-price">
+        <label class="adm-f">购买价格 <input id="admPrice" type="number" min="1" value="10"> 积分</label>
+        <label class="adm-sw"><input type="checkbox" id="admDiscOn" checked><span></span>10连抽折扣</label>
+        <label class="adm-f"><input id="admDisc" type="number" min="1" max="99" value="10"> %</label>
+        <span class="adm-preview" id="admPreview"></span>
+      </div>
+      <div class="adm-head"><span>奖品</span><span>奖品类型</span><span>奖品名称</span><span>中奖概率</span><span></span></div>
+      <div id="admRows"></div>
+      <div class="adm-add-row"><button class="adm-add" id="admAdd">+ 新增奖品</button><span class="adm-count" id="admCount"></span></div>
+      <div class="adm-foot">
+        <span>中奖概率合计 <b id="admSum">100%</b></span>
+        <span class="adm-msg" id="admMsg" role="status"></span>
+        <button class="adm-save" id="admSave">保存</button>
+      </div>
+    </div>
+  </section>
+
   <section class="sec" id="A1">
     <div class="sec-hd"><h3><span class="fid">A1</span>管理后台 · 盲盒奖品配置</h3></div>
     <p>入口：积分商城 › 商品管理 › 商品类型选「盲盒」。在现有配置页上做以下调整，单个奖品的配置项保持不变。</p>
@@ -371,26 +392,6 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     </ol>
   </section>
 
-  <section class="sec" id="ADM">
-    <div class="sec-hd"><h3><span class="fid">示意</span>后台配置交互</h3></div>
-    <p class="note">可直接操作：新增和删除奖品、修改概率、调整 10连抽折扣。点「保存」后，左侧原型的 10连抽价格和角标会同步更新。商品图片、排序等配置同现有页面，这里省略。</p>
-    <div class="adm" id="adm">
-      <div class="adm-price">
-        <label class="adm-f">购买价格 <input id="admPrice" type="number" min="1" value="10"> 积分</label>
-        <label class="adm-sw"><input type="checkbox" id="admDiscOn" checked><span></span>10连抽折扣</label>
-        <label class="adm-f"><input id="admDisc" type="number" min="1" max="99" value="10"> %</label>
-        <span class="adm-preview" id="admPreview"></span>
-      </div>
-      <div class="adm-head"><span>奖品</span><span>奖品类型</span><span>奖品名称</span><span>中奖概率</span><span></span></div>
-      <div id="admRows"></div>
-      <div class="adm-add-row"><button class="adm-add" id="admAdd">+ 新增奖品</button><span class="adm-count" id="admCount"></span></div>
-      <div class="adm-foot">
-        <span>中奖概率合计 <b id="admSum">100%</b></span>
-        <span class="adm-msg" id="admMsg" role="status"></span>
-        <button class="adm-save" id="admSave">保存</button>
-      </div>
-    </div>
-  </section>
 
   <section class="sec" id="F1">
     <div class="sec-hd"><h3><span class="fid">F1</span>抽奖主页（LUCKY STAR）</h3><button class="demo" data-demo="lucky">在原型中查看</button></div>
