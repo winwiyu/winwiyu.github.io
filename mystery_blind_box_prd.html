@@ -415,7 +415,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <ol>
       <li>点击抽奖按钮即扣积分。积分不足时按钮仍可点，toast 提示 “Not enough points”，不扣分、不播动画。</li>
       <li>10连抽 = 10 次独立抽取，每次都从完整奖池按权重抽，不设保底。只播放一次跑马灯，只弹一个汇总弹窗。</li>
-      <li><strong>10连抽结果排序</strong>：10 个奖品按<strong>中奖概率从低到高</strong>排序，概率相同的随机排序。排第 1 的奖品（概率最低）落在盘面第 1 格，并在弹窗中显示 BEST 角标。</li>
+      <li><strong>10连抽结果排序</strong>：10 个奖品按<strong>中奖概率从低到高</strong>排序，概率相同的随机排序。排第 1 的奖品（概率最低）就是跑马灯停下的奖品，并在弹窗中显示 BEST 角标。</li>
       <li>从点击抽奖到弹窗关闭之间，两个抽奖按钮、顶部 Tab 全部禁用。</li>
     </ol>
   </section>
@@ -435,7 +435,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <h4>a. 高亮轮播 <span class="tag">参考建议</span></h4>
     <ol>
       <li>高亮框顺时针在 9 格中移动：1（中间大格）→ 2 右上 → 3 右中 → 4 右下 → 5、6、7 底排从右到左 → 8 左中 → 9 左上 → 回到 1。</li>
-      <li>总时长 4 秒，跑 4 圈共 36 步。每次从第 1 格出发，停回第 1 格。</li>
+      <li>总时长 4 秒，约跑 4 圈，每次从第 1 格出发。奖品超过 9 个时跑 36 步停回第 1 格；正好 9 个时停在中奖奖品所在的格子，步数为 27–36 步，三段节奏各占约 1/3，总时长不变。</li>
       <li>高亮样式为亮黄描边加外发光，并轻微放大。</li>
     </ol>
     <div class="tbl"><table>
@@ -444,7 +444,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
         <tr><td>前期 · 快速</td><td class="num">1–12</td><td class="num">≈ 53.6ms</td><td class="num">≈ 643ms</td></tr>
         <tr><td>中期 · 匀速</td><td class="num">13–24</td><td class="num">≈ 82.9ms</td><td class="num">≈ 995ms</td></tr>
         <tr><td>后期 · 减速</td><td class="num">25–36</td><td class="num">82.9 → 409.7ms</td><td class="num">≈ 2,362ms</td></tr>
-        <tr><td>停在第 1 格</td><td class="num">—</td><td class="num">—</td><td class="num">1,000ms</td></tr>
+        <tr><td>停在中奖格</td><td class="num">—</td><td class="num">—</td><td class="num">1,000ms</td></tr>
       </tbody>
     </table></div>
     <p class="note">减速段按二次曲线计算：原始间隔 85 + 335 × ((k − 24) / 11)²，再把 36 步整体缩放到总和 4000ms。</p>
@@ -458,13 +458,15 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     </ol>
     <h4>c. 中奖位置</h4>
     <ol>
-      <li>最终中奖奖品固定落在第 1 格。</li>
-      <li>10连抽时第 1 格放 10 个结果中<strong>中奖概率最低</strong>的那个（即弹窗里的 BEST 奖品）；概率相同时随机取一个。</li>
-      <li>停格后第 1 格闪烁 1 秒，然后出现中奖弹窗。</li>
+      <li><strong>奖品超过 9 个</strong>：最终中奖奖品固定落在第 1 格（中间大格）。</li>
+      <li><strong>奖品正好 9 个</strong>：每个奖品位置固定，抽中哪个就停在哪个奖品所在的格子，<strong>不引导到中间位置</strong>，盘面不做任何替换。</li>
+      <li>10连抽时，停格的奖品取 10 个结果中<strong>中奖概率最低</strong>的那个（即弹窗里的 BEST 奖品）；概率相同时随机取一个。</li>
+      <li>停格后中奖格闪烁 1 秒，然后出现中奖弹窗。</li>
       <li><strong>弹窗氛围特效</strong>：中奖弹窗出现的同时，周边播放氛围效果，不额外延后弹窗。弹窗背后有暖金色光晕和缓慢旋转的放射光芒，持续到弹窗关闭；弹出瞬间彩纸从弹窗中心向四周喷散，约 1.5 秒后飘落消失；弹窗四周有星光轮流闪烁。单抽和 10连抽都播放。</li>
     </ol>
     <h4>d. 跑完后恢复原顺序</h4>
     <ol>
+      <li>仅奖品超过 9 个时适用；正好 9 个时盘面全程不变，无需恢复。</li>
       <li>跑马灯停下时，第 2–9 格立即恢复为抽奖前的原始奖品和顺序，第 1 格显示中奖奖品。</li>
       <li>关闭中奖弹窗后，第 1 格也恢复为原来的奖品，整个盘面和抽奖前完全一致。</li>
       <li>动态替换只发生在跑马灯过程中，不改变盘面的原始配置。</li>
@@ -477,7 +479,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <ol>
       <li>同一个弹窗框，<strong>一屏</strong>展示 10 个奖品，2 列 × 5 行，不滚动。</li>
       <li>10 个奖品按<strong>中奖概率从低到高</strong>排列，概率相同的随机排序。</li>
-      <li>排第 1 个（概率最低）的奖品加金色描边和 <strong>BEST</strong> 角标，与盘面第 1 格的奖品一致。</li>
+      <li>排第 1 个（概率最低）的奖品加金色描边和 <strong>BEST</strong> 角标，与跑马灯停下的奖品一致。</li>
       <li>每个奖品显示的信息与原来弹窗显示的信息一致：奖品图、奖品名、领取指引。</li>
       <li>底部只有 1 个 Confirm。</li>
     </ol>
@@ -608,20 +610,22 @@ $('stMine').onclick = () => { feedTab = 'mine'; renderFeed(); };
 renderFeed();
 
 /* ----- timing ----- */
-function schedule() {
-  const a = [];
-  for (let k = 0; k < 12; k++) a.push(55);
-  for (let k = 0; k < 12; k++) a.push(85);
-  for (let k = 0; k < 12; k++) a.push(85 + 335 * Math.pow(k / 11, 2));
+// n 步：前 1/3 快速、中 1/3 匀速、后 1/3 二次曲线减速，总和缩放到 4000ms
+function schedule(n) {
+  const n1 = Math.round(n / 3), n2 = Math.round(n / 3), n3 = n - n1 - n2, a = [];
+  for (let k = 0; k < n1; k++) a.push(55);
+  for (let k = 0; k < n2; k++) a.push(85);
+  for (let k = 0; k < n3; k++) a.push(85 + 335 * Math.pow(n3 > 1 ? k / (n3 - 1) : 1, 2));
   const sum = a.reduce((x, y) => x + y, 0);
-  return a.map(x => x * 4000 / sum);
+  const steps = a.map(x => x * 4000 / sum); steps.n1 = n1; steps.n2 = n2;
+  return steps;
 }
-const STEPS = schedule();
+const STEPS = schedule(36);
 const segF = STEPS.slice(0, 12).reduce((a, b) => a + b, 0), segU = STEPS.slice(12, 24).reduce((a, b) => a + b, 0), segD = 4000 - segF - segU;
 const TOTAL = 5000;
 $('segF').style.width = segF / TOTAL * 100 + '%'; $('segU').style.width = segU / TOTAL * 100 + '%';
 $('segD').style.width = segD / TOTAL * 100 + '%'; $('segH').style.width = 1000 / TOTAL * 100 + '%';
-const PHASE = {idle:'待抽奖', fast:'前期 · 快速轮播', uniform:'中期 · 匀速', decel:'后期 · 减速停格', hold:'停在第 1 格 · 1s', popup:'中奖弹窗'};
+const PHASE = {idle:'待抽奖', fast:'前期 · 快速轮播', uniform:'中期 · 匀速', decel:'后期 · 减速停格', hold:'停在中奖格 · 1s', popup:'中奖弹窗'};
 function setPhase(p) { $('phase').dataset.p = p; $('phaseTxt').textContent = PHASE[p]; }
 const slowF = () => 1;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -657,25 +661,30 @@ async function draw(n) {
   points -= COST[n]; $('myPts').textContent = fmt(points);
   const results = byProb(Array.from({length: n}, pick));
   const best = results[0];
+  const swapMode = PRIZES.length > 9;
+  // 超过 9 个：停回第 1 格；正好 9 个：停在中奖奖品所在格
+  const target = swapMode ? 0 : Math.max(0, board.indexOf(best.id));
+  const plan = schedule(target === 0 ? 36 : 27 + target);
   lock(true); setTab('lucky');
   const f = slowF();
-  slots[0].classList.remove('win');
   runNeedle(performance.now(), f);
   let cur = 0; slots[0].classList.add('on');
-  for (let k = 0; k < STEPS.length; k++) {
-    setPhase(k < 12 ? 'fast' : k < 24 ? 'uniform' : 'decel');
-    await sleep(STEPS[k] * f);
+  for (let k = 0; k < plan.length; k++) {
+    setPhase(k < plan.n1 ? 'fast' : k < plan.n1 + plan.n2 ? 'uniform' : 'decel');
+    await sleep(plan[k] * f);
     const prev = cur; cur = (cur + 1) % 9;
     slots[prev].classList.remove('on');
-    if (PRIZES.length > 9) { board[prev] = unshown(); paint(prev, true); }
+    if (swapMode) { board[prev] = unshown(); paint(prev, true); }
     slots[cur].classList.add('on');
   }
-  for (let i = 1; i < 9; i++) { if (board[i] !== ORIGINAL[i]) { board[i] = ORIGINAL[i]; paint(i, true); } }
-  board[0] = best.id; paint(0, true);
-  slots[0].classList.add('win');
+  if (swapMode) {
+    for (let i = 1; i < 9; i++) { if (board[i] !== ORIGINAL[i]) { board[i] = ORIGINAL[i]; paint(i, true); } }
+    board[0] = best.id; paint(0, true);
+  }
+  slots[cur].classList.add('win');
   setPhase('hold');
   await sleep(1000 * f);
-  slots[0].classList.remove('on', 'win');
+  slots[cur].classList.remove('on', 'win');
   setPhase('popup');
   const d = new Date(), z = x => String(x).padStart(2, '0');
   const stamp = d.getFullYear() + '.' + z(d.getMonth() + 1) + '.' + z(d.getDate()) + ' ' + z(d.getHours()) + ':' + z(d.getMinutes()) + ':' + z(d.getSeconds());
