@@ -409,7 +409,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
       <li>开关关闭或折扣未填写时：前台 DRAW ×10 不显示折扣角标，实际扣费 = 单抽价格 × 10。</li>
       <li>开关打开时，折扣填写 <strong>1–99 的整数</strong>，最低 1%。前台 10连抽实际扣费 = 单抽价格 × 10 × (1 − 折扣%)，按钮右上角显示角标 <strong>SAVE X%</strong>。</li>
       <li>输入框旁实时预览：「10连实际扣费 N 积分 · 前台角标 SAVE X%」。</li>
-      <li>扣费算出来不是整数时向上取整 <span class="tag">待确认</span></li>
+      <li>扣费算出来不是整数时向上取整。</li>
     </ol>
   </section>
 
@@ -547,7 +547,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <ol>
       <li><strong>单抽</strong>：生成 1 条记录，显示奖品图、时间、奖品名称、积分和状态。</li>
       <li><strong>10连抽</strong>：同一次 10连抽里<strong>相同的奖品合并为 1 条</strong>，名称后用红字显示数量，如 <span class="rec-x">x2</span>、<span class="rec-x">x3</span>；只有 1 个时不显示数量。不同奖品各占 1 条。</li>
-      <li>每条记录的积分 = 单件价格 × 数量。单件价格 = 本次实际扣费 ÷ 抽数，例如 10连抽 90 积分时单件为 9 积分 <span class="tag">待确认</span></li>
+      <li>每条记录的积分 = 单件价格 × 数量。单件价格 = 本次实际扣费 ÷ 抽数，例如 10连抽 90 积分时单件为 9 积分。</li>
     </ol>
     <div class="rec-cards" aria-label="前台兑换记录示例">
       <div class="rec-card"><img data-art="pts100" alt=""><div class="rc-body"><span class="rc-time">2026-11-05 10:24:02</span><span class="rc-name">100 Points <span class="rec-x">x2</span></span><span class="rc-foot"><span class="rc-pts"><i></i>18</span><span class="rc-st">Completed</span></span></div></div>
