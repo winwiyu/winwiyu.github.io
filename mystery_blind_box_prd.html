@@ -230,6 +230,8 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
 .tbl th,.tbl td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line)}
 .tbl th{color:var(--muted);font-weight:700;background:#171b40}
 .tbl tr:last-child td{border-bottom:0}
+.rec-list{white-space:nowrap;line-height:1.7}
+#A3 th,#A3 td{white-space:nowrap;vertical-align:top}
 .tbl td.num{text-align:right;font-variant-numeric:tabular-nums}
 .note{font-size:12.5px;color:var(--muted)}
 
@@ -339,7 +341,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     
     <p>本次改版分为管理后台和前台两部分。后台：盲盒奖品数量可从 9 个扩展到最多 15 个，新增 10连抽折扣配置。前台：单个 DRAW 改为单抽 / 10连抽双按钮；新增 All Prizes Tab；新增 4 秒跑马灯、动态替换和固定中奖位；10连抽结果一屏展示。左侧原型可直接操作，每节的按钮会把原型切到对应状态。奖品与概率为示例数据。</p>
     <nav class="toc" aria-label="目录">
-      <a href="#A1">A1 后台奖品配置</a><a href="#A2">A2 10连抽折扣</a><a href="#F1">F1 抽奖主页</a><a href="#F2">F2 跑马灯与替换</a><a href="#F3">F3 10连抽弹窗</a><a href="#F4">F4 All Prizes</a>
+      <a href="#A1">A1 后台奖品配置</a><a href="#A2">A2 10连抽折扣</a><a href="#F1">F1 抽奖主页</a><a href="#F2">F2 跑马灯与替换</a><a href="#F3">F3 10连抽弹窗</a><a href="#F4">F4 All Prizes</a><a href="#A3">A3 盲盒抽奖记录</a>
     </nav>
   </header>
 
@@ -505,6 +507,23 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     </ol>
   </section>
 
+  <section class="sec" id="A3">
+    <div class="sec-hd"><h3><span class="fid">A3</span>管理后台 · 盲盒抽奖记录</h3></div>
+    <p>入口：积分商城 › 商品兑换记录 › 盲盒抽奖记录。筛选条件和其他列保持不变，只调整「抽奖价格」和「盲盒奖品」两列的显示。</p>
+    <ol>
+      <li><strong>抽奖价格</strong>：显示抽奖方式和实际扣费，格式为「单抽（10积分）」或「10连抽（90积分）」。扣费按抽奖当时的价格和折扣记录，后台之后修改价格或折扣，不影响已有记录。</li>
+      <li><strong>盲盒奖品</strong>：单抽显示 1 个奖品名称；10连抽在同一行里按 1–10 编号列出 10 个奖品，每个占一行，顺序和前台弹窗一致（中奖概率从低到高）。</li>
+      <li>一次 10连抽对应一个订单号、一行记录，不拆成 10 条。</li>
+    </ol>
+    <div class="tbl"><table>
+      <thead><tr><th>订单号</th><th>会员名</th><th>创建时间</th><th>币种</th><th>盲盒名称</th><th>盲盒奖品</th><th>抽奖价格</th></tr></thead>
+      <tbody>
+        <tr><td>BX20261105001</td><td>okbet_88</td><td>2026-11-05 10:21:35</td><td>PHP</td><td>Lucky Star</td><td>Free Spins ×50</td><td>单抽（10积分）</td></tr>
+        <tr><td>BX20261105002</td><td>okbet_88</td><td>2026-11-05 10:24:02</td><td>PHP</td><td>Lucky Star</td><td class="rec-list">1. iPhone 17 Pro Max 256GB<br>2. Globe ₱100 Load<br>3. Free Spins ×50<br>4. 500 Points<br>5. Globe ₱20 Load<br>6. Free Spins ×20<br>7. Globe ₱10 Load<br>8. 100 Points<br>9. 100 Points<br>10. Globe ₱5 Load</td><td>10连抽（90积分）</td></tr>
+      </tbody>
+    </table></div>
+    <p class="note">表格为示例数据。</p>
+  </section>
   </aside>
 
 </div>
