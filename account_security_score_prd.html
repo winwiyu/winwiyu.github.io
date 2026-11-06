@@ -118,18 +118,18 @@ code{font:12px var(--mono);background:var(--code);padding:1px 5px;border-radius:
             <div class="sc-sub" id="sub"></div>
           </div>
         </div>
-        <div class="scale"><i></i><i></i><i></i><i></i><i></i></div>
-        <div class="scale-l"><span>0</span><span>Low &lt;60</span><span>Medium 60–80</span><span>High 100</span></div>
+        <div class="scale"><i></i><i></i><i></i><i></i></div>
+        <div class="scale-l"><span>0</span><span>Low &lt;50</span><span>Medium 50–75</span><span>High 100</span></div>
         <div class="next" id="next"></div>
 
         <div class="group" id="g1"></div>
         <div class="group" id="g2"></div>
-        <div class="foot-note">Each completed item adds 20 points. Password Toggle Settings does not affect your score.</div>
+        <div class="foot-note">Each completed item adds 25 points. Password Toggle Settings does not affect your score.</div>
       </div>
       <div class="mask" id="mask" hidden>
         <div class="sheet">
           <h4>Authorization Login</h4>
-          <p>Link any one account to earn +20 points.</p>
+          <p>Link any one account to earn +25 points.</p>
           <div class="prov"><span class="ic gg" id="pgIcon"></span><span class="name">Google</span><button id="bGoogle"></button></div>
           <div class="prov"><span class="ic tg" id="ptIcon"></span><span class="name">Telegram</span><button id="bTg"></button></div>
           <button class="close" id="closeSheet">Close</button>
@@ -137,8 +137,8 @@ code{font:12px var(--mono);background:var(--code);padding:1px 5px;border-radius:
       </div>
     </div></div>
     <div class="presets">
-      <button data-p="new" class="on">New user · 20</button>
-      <button data-p="shot">Current screenshot · 80</button>
+      <button data-p="new" class="on">New user · 25</button>
+      <button data-p="shot">Medium · 75</button>
       <button data-p="full">All done · 100</button>
     </div>
   </div>
@@ -156,15 +156,14 @@ code{font:12px var(--mono);background:var(--code);padding:1px 5px;border-radius:
     </ul>
 
     <h2><small>2</small>评分规则</h2>
-    <p>满分 100 分。共 5 个计分项，每项 20 分。得分 = 已完成项数 × 20。</p>
+    <p>满分 100 分。共 4 个计分项，每项 25 分。得分 = 已完成项数 × 25。</p>
     <div class="tbl"><table>
       <thead><tr><th>项目</th><th>分值</th><th>完成判定</th><th>按钮文案（未完成 → 已完成）</th></tr></thead>
       <tbody>
-        <tr><td>Password（登录密码）</td><td class="n">20</td><td>已设置登录密码</td><td>Set Up → Change</td></tr>
-        <tr><td>Fund Password（资金密码）</td><td class="n">20</td><td>已设置资金密码</td><td>Set Up → Change</td></tr>
-        <tr><td>Mobile Number（手机号）</td><td class="n">20</td><td>已绑定手机号并通过短信验证</td><td>Bind → Change</td></tr>
-        <tr><td>Authorization Login（授权登录）</td><td class="n">20</td><td>绑定任意一个第三方账号（Google 或 Telegram）即算完成，两个都绑定仍为 20 分</td><td>Bind → 已绑定图标 + 箭头</td></tr>
-        <tr><td>Security Question（安全问题）</td><td class="n">20</td><td>已设置安全问题及答案</td><td>Set Up → Change</td></tr>
+        <tr><td>Password（登录密码）</td><td class="n">25</td><td>已设置登录密码</td><td>Set Up → Change</td></tr>
+        <tr><td>Fund Password（资金密码）</td><td class="n">25</td><td>已设置资金密码</td><td>Set Up → Change</td></tr>
+        <tr><td>Mobile Number（手机号）</td><td class="n">25</td><td>已绑定手机号并通过短信验证</td><td>Bind → Change</td></tr>
+        <tr><td>Authorization Login（授权登录）</td><td class="n">25</td><td>绑定任意一个第三方账号（Google 或 Telegram）即算完成，两个都绑定仍为 25 分</td><td>Bind → 已绑定图标 + 箭头</td></tr>
         <tr><td>Password Toggle Settings</td><td class="n">0</td><td>不计分</td><td>仅显示箭头</td></tr>
       </tbody>
     </table></div>
@@ -173,8 +172,8 @@ code{font:12px var(--mono);background:var(--code);padding:1px 5px;border-radius:
     <div class="tbl"><table>
       <thead><tr><th>等级</th><th>分数区间</th><th>徽章文案</th><th>标题文案</th></tr></thead>
       <tbody>
-        <tr><td>红色（低）</td><td class="n">0 – 59</td><td>LOW</td><td>Your account is at risk</td></tr>
-        <tr><td>黄色（中）</td><td class="n">60 – 80</td><td>MEDIUM</td><td>Almost there</td></tr>
+        <tr><td>红色（低）</td><td class="n">0 – 49</td><td>LOW</td><td>Your account is at risk</td></tr>
+        <tr><td>黄色（中）</td><td class="n">50 – 75</td><td>MEDIUM</td><td>Almost there</td></tr>
         <tr><td>绿色（高）</td><td class="n">100</td><td>HIGH</td><td>Your account is well protected</td></tr>
       </tbody>
     </table></div>
@@ -183,7 +182,7 @@ code{font:12px var(--mono);background:var(--code);padding:1px 5px;border-radius:
     <h2><small>4</small>页面结构</h2>
     <ol>
       <li><b>评分卡</b>（顶部）：圆形进度环，中间显示分数（<code>xx / 100</code>），右侧为等级徽章、标题和副标题。</li>
-      <li><b>分段进度条</b>：共 5 段，每段对应一个计分项，已完成的段用当前等级颜色填充。</li>
+      <li><b>分段进度条</b>：共 4 段，每段对应一个计分项，已完成的段用当前等级颜色填充。</li>
       <li><b>下一步引导条</b>：显示第一个未完成的项目和按钮，满分时隐藏。</li>
       <li><b>设置列表</b>：保持现有顺序和分组。每行左侧增加状态标识：绿色对勾为已完成，空心圆为未完成。</li>
     </ol>
@@ -197,15 +196,15 @@ code{font:12px var(--mono);background:var(--code);padding:1px 5px;border-radius:
           <li>满分：<code>All security items are completed.</code></li>
         </ul>
       </li>
-      <li><b>未完成的行</b>：显示 <code>+20</code> 标签，原来的文字按钮换成蓝色主按钮（<code>Set Up</code> 或 <code>Bind</code>）。</li>
-      <li><b>下一步引导条</b>：按以下优先级取第一个未完成项：Password → Fund Password → Mobile Number → Authorization Login → Security Question。文案示例：<code>Next: Set Up Fund Password +20</code>，点击 <code>Go</code> 进入该项现有的设置流程。</li>
+      <li><b>未完成的行</b>：显示 <code>+25</code> 标签，原来的文字按钮换成蓝色主按钮（<code>Set Up</code> 或 <code>Bind</code>）。</li>
+      <li><b>下一步引导条</b>：按以下优先级取第一个未完成项：Password → Fund Password → Mobile Number → Authorization Login。文案示例：<code>Next: Set Up Fund Password +25</code>，点击 <code>Go</code> 进入该项现有的设置流程。</li>
     </ul>
 
     <h2><small>6</small>授权登录</h2>
     <ul>
       <li>点击该行弹出底部面板，列出 Google 和 Telegram，每项带 <code>Bind</code> 或 <code>Unbind</code> 按钮。</li>
       <li>行内为每个已绑定账号显示一个小图标，后跟箭头。</li>
-      <li>绑定任意一个即得 20 分，绑定第二个不再加分。</li>
+      <li>绑定任意一个即得 25 分，绑定第二个不再加分。</li>
     </ul>
   </article>
 </div>
@@ -221,26 +220,25 @@ const items=[
   {k:'password',n:'Password',todo:'Set Up'},
   {k:'fund',n:'Fund Password',todo:'Set Up'},
   {k:'mobile',n:'Mobile Number',todo:'Bind'},
-  {k:'auth',n:'Authorization Login',todo:'Bind'},
-  {k:'question',n:'Security Question',todo:'Set Up'}
+  {k:'auth',n:'Authorization Login',todo:'Bind'}
 ];
 const PRESETS={
-  new:{password:false,fund:false,mobile:true,question:false,google:false,tg:false},
-  shot:{password:true,fund:true,mobile:true,question:false,google:false,tg:true},
-  full:{password:true,fund:true,mobile:true,question:true,google:true,tg:true}
+  new:{password:false,fund:false,mobile:true,google:false,tg:false},
+  shot:{password:true,fund:true,mobile:true,google:false,tg:false},
+  full:{password:true,fund:true,mobile:true,google:false,tg:true}
 };
 let s={...PRESETS.new};
 const done=k=>k==='auth'?(s.google||s.tg):s[k];
-const score=()=>items.filter(i=>done(i.k)).length*20;
-const level=v=>v>=100?{c:'var(--green)',b:'High',t:'Your account is well protected'}:v>=60?{c:'var(--yellow)',b:'Medium',t:'Almost there'}:{c:'var(--red)',b:'Low',t:'Your account is at risk'};
+const score=()=>items.filter(i=>done(i.k)).length*25;
+const level=v=>v>=100?{c:'var(--green)',b:'High',t:'Your account is well protected'}:v>=50?{c:'var(--yellow)',b:'Medium',t:'Almost there'}:{c:'var(--red)',b:'Low',t:'Your account is at risk'};
 const $=id=>document.getElementById(id);
 
 function row(i){
   const d=done(i.k);
   let right;
   if(i.k==='auth'){
-    right=d?`<span class="icons">${s.google?`<span class="ic gg">${GG}</span>`:''}${s.tg?`<span class="ic tg">${TG}</span>`:''}</span>${CHEV}`:`<span class="pts">+20</span><button class="cta" tabindex="-1">Bind</button>`;
-  }else right=d?`<span class="act">Change</span>`:`<span class="pts">+20</span><button class="cta" tabindex="-1">${i.todo}</button>`;
+    right=d?`<span class="icons">${s.google?`<span class="ic gg">${GG}</span>`:''}${s.tg?`<span class="ic tg">${TG}</span>`:''}</span>${CHEV}`:`<span class="pts">+25</span><button class="cta" tabindex="-1">Bind</button>`;
+  }else right=d?`<span class="act">Change</span>`:`<span class="pts">+25</span><button class="cta" tabindex="-1">${i.todo}</button>`;
   return `<div class="row" tabindex="0" data-k="${i.k}"><span class="lbl"><span class="dot ${d?'ok':'todo'}">${d?CHECK:''}</span>${i.n}</span>${right}</div>`;
 }
 function render(){
@@ -249,11 +247,11 @@ function render(){
   $('score').textContent=v;$('badge').textContent=L.b;$('title').textContent=L.t;
   $('arc').style.strokeDashoffset=251.3*(1-v/100);
   const left=items.filter(i=>!done(i.k)).length;
-  $('sub').textContent=v>=100?'All security items are completed.':(v<60?`+${60-v} pts to reach Medium. `:'')+`Complete ${left} more item${left>1?'s':''} to reach High.`;
-  document.querySelectorAll('.scale i').forEach((e,ix)=>e.style.background=ix<v/20?L.c:'');
+  $('sub').textContent=v>=100?'All security items are completed.':(v<50?`+${50-v} pts to reach Medium. `:'')+`Complete ${left} more item${left>1?'s':''} to reach High.`;
+  document.querySelectorAll('.scale i').forEach((e,ix)=>e.style.background=ix<v/25?L.c:'');
   const nx=items.find(i=>!done(i.k));
   const n=$('next');n.hidden=!nx;
-  if(nx)n.innerHTML=`<span>Next: <b>${nx.todo} ${nx.n}</b> +20</span><button class="cta" data-k="${nx.k}">Go</button>`;
+  if(nx)n.innerHTML=`<span>Next: <b>${nx.todo} ${nx.n}</b> +25</span><button class="cta" data-k="${nx.k}">Go</button>`;
   $('g1').innerHTML=items.slice(0,3).map(row).join('');
   $('g2').innerHTML=items.slice(3).map(row).join('')+`<div class="row" tabindex="0" data-k="toggle"><span class="lbl">Password Toggle Settings</span>${CHEV}</div>`;
   $('bGoogle').textContent=s.google?'Unbind':'Bind';$('bGoogle').className=s.google?'on':'';
