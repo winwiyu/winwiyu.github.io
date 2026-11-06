@@ -547,12 +547,12 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <ol>
       <li><strong>单抽</strong>：生成 1 条记录，显示奖品图、时间、奖品名称、积分和状态。</li>
       <li><strong>10连抽</strong>：同一次 10连抽里<strong>相同的奖品合并为 1 条</strong>，名称后用红字显示数量，如 <span class="rec-x">x2</span>、<span class="rec-x">x3</span>；只有 1 个时不显示数量。不同奖品各占 1 条。</li>
-      <li>每条记录的积分 = 单件价格 × 数量。单件价格 = 本次实际扣费 ÷ 抽数，例如 10连抽 90 积分时单件为 9 积分。</li>
+      <li>每条记录的积分 = 单件价格 × 数量。单件价格<strong>按原价</strong>，即单抽价格，不计 10连抽折扣。例如单抽 10 积分时，10连抽抽中的每件奖品都按 10 积分记录。</li>
     </ol>
     <div class="rec-cards" aria-label="前台兑换记录示例">
-      <div class="rec-card"><img data-art="pts100" alt=""><div class="rc-body"><span class="rc-time">2026-11-05 10:24:02</span><span class="rc-name">100 Points <span class="rec-x">x2</span></span><span class="rc-foot"><span class="rc-pts"><i></i>18</span><span class="rc-st">Completed</span></span></div></div>
-      <div class="rec-card"><img data-art="spins50" alt=""><div class="rc-body"><span class="rc-time">2026-11-05 10:24:02</span><span class="rc-name">Free Spins ×50</span><span class="rc-foot"><span class="rc-pts"><i></i>9</span><span class="rc-st">Completed</span></span></div></div>
-      <div class="rec-card"><img data-art="spins20" alt=""><div class="rc-body"><span class="rc-time">2026-11-05 10:24:02</span><span class="rc-name">Free Spins ×20</span><span class="rc-foot"><span class="rc-pts"><i></i>9</span><span class="rc-st">Completed</span></span></div></div>
+      <div class="rec-card"><img data-art="pts100" alt=""><div class="rc-body"><span class="rc-time">2026-11-05 10:24:02</span><span class="rc-name">100 Points <span class="rec-x">x2</span></span><span class="rc-foot"><span class="rc-pts"><i></i>20</span><span class="rc-st">Completed</span></span></div></div>
+      <div class="rec-card"><img data-art="spins50" alt=""><div class="rc-body"><span class="rc-time">2026-11-05 10:24:02</span><span class="rc-name">Free Spins ×50</span><span class="rc-foot"><span class="rc-pts"><i></i>10</span><span class="rc-st">Completed</span></span></div></div>
+      <div class="rec-card"><img data-art="spins20" alt=""><div class="rc-body"><span class="rc-time">2026-11-05 10:24:02</span><span class="rc-name">Free Spins ×20</span><span class="rc-foot"><span class="rc-pts"><i></i>10</span><span class="rc-st">Completed</span></span></div></div>
       <div class="rec-card"><img data-art="globe5" alt=""><div class="rc-body"><span class="rc-time">2026-11-05 10:21:35</span><span class="rc-name">Globe ₱5 Load</span><span class="rc-foot"><span class="rc-pts"><i></i>10</span><span class="rc-st">Completed</span></span></div></div>
     </div>
     <p class="note">示例：前 3 条来自同一次 10连抽（90 积分），其中 100 Points 抽中 2 个合并显示；最后 1 条为单抽（10 积分）。</p>
@@ -570,13 +570,13 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <div class="tbl"><table class="rec-tbl">
       <thead><tr><th>订单号</th><th>会员名</th><th>创建时间</th><th>币种</th><th>商品名称</th><th>商品奖励</th><th class="num">购买价格</th><th class="num">购买数量</th><th class="num">总价</th><th>订单状态</th></tr></thead>
       <tbody>
-        <tr><td>BX20261105002-A</td><td>okbet_88</td><td>2026-11-05 10:24:02</td><td>PHP</td><td>Lucky Star</td><td>iPhone 17 Pro Max 256GB</td><td class="num">9 积分</td><td class="num">1</td><td class="num">9 积分</td><td>审核通过</td></tr>
-        <tr><td>BX20261105002-B</td><td>okbet_88</td><td>2026-11-05 10:24:02</td><td>PHP</td><td>Lucky Star</td><td>Free Spins ×50</td><td class="num">9 积分</td><td class="num">1</td><td class="num">9 积分</td><td>审核通过</td></tr>
-        <tr><td>BX20261105002-H</td><td>okbet_88</td><td>2026-11-05 10:24:02</td><td>PHP</td><td>Lucky Star</td><td>100 Points</td><td class="num">9 积分</td><td class="num">2</td><td class="num">18 积分</td><td>审核通过</td></tr>
+        <tr><td>BX20261105002-A</td><td>okbet_88</td><td>2026-11-05 10:24:02</td><td>PHP</td><td>Lucky Star</td><td>iPhone 17 Pro Max 256GB</td><td class="num">10 积分</td><td class="num">1</td><td class="num">10 积分</td><td>审核通过</td></tr>
+        <tr><td>BX20261105002-B</td><td>okbet_88</td><td>2026-11-05 10:24:02</td><td>PHP</td><td>Lucky Star</td><td>Free Spins ×50</td><td class="num">10 积分</td><td class="num">1</td><td class="num">10 积分</td><td>审核通过</td></tr>
+        <tr><td>BX20261105002-H</td><td>okbet_88</td><td>2026-11-05 10:24:02</td><td>PHP</td><td>Lucky Star</td><td>100 Points</td><td class="num">10 积分</td><td class="num">2</td><td class="num">20 积分</td><td>审核通过</td></tr>
         <tr><td>BX20261105001-A</td><td>okbet_88</td><td>2026-11-05 10:21:35</td><td>PHP</td><td>Lucky Star</td><td>Globe ₱5 Load</td><td class="num">10 积分</td><td class="num">1</td><td class="num">10 积分</td><td>审核通过</td></tr>
       </tbody>
     </table></div>
-    <p class="note">示例数据，只列部分行。同一次 10连抽（BX20261105002）共 9 种奖品，对应 -A 到 -I 共 9 行，各行总价合计 90 积分。</p>
+    <p class="note">示例数据，只列部分行。同一次 10连抽（BX20261105002）共 9 种奖品，对应 -A 到 -I 共 9 行。各行按原价记录，总价合计 100 积分；实际扣费以抽奖记录（A3）为准，为 90 积分。</p>
   </section>
   </aside>
 
