@@ -185,6 +185,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
 .mitem img{width:46px;height:54px;object-fit:cover;border-radius:6px}
 .mitem .pname{font-size:13px}
 .mitem .hint{font-size:10.5px}
+.qty-tag{position:absolute;top:6px;right:6px;height:18px;padding:0 7px;border-radius:9px;background:#f2546a;color:#fff;font-size:11px;font-weight:900;display:flex;align-items:center;font-variant-numeric:tabular-nums}
 .best-tag{position:absolute;top:6px;left:6px;height:16px;padding:0 6px;border-radius:8px;background:var(--gold);color:var(--gold-deep);font-size:9px;font-weight:900;display:flex;align-items:center}
 @keyframes popIn{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
 
@@ -483,6 +484,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
       <li>10 个奖品按<strong>中奖概率从低到高</strong>排列，概率相同时按后台奖品序号从小到大排序。</li>
       <li>排第 1 个（概率最低）的奖品加金色描边和 <strong>BEST</strong> 角标，与跑马灯停下的奖品一致。</li>
       <li>每个奖品显示的信息与原来弹窗显示的信息一致：奖品图、奖品名、领取指引。</li>
+      <li><strong>相同奖品合并</strong>：10 个结果中相同的奖品合并为一个展示，右上角显示数量，如 *2、*3；只有 1 个时不显示数量。合并后仍按中奖概率从低到高排列。</li>
       <li>底部只有 1 个 Confirm。</li>
     </ol>
     <h4>领取指引（单抽与 10连通用）</h4>
@@ -512,14 +514,14 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <p>入口：积分商城 › 商品兑换记录 › 盲盒抽奖记录。筛选条件和其他列保持不变，只调整「抽奖价格」和「盲盒奖品」两列的显示。</p>
     <ol>
       <li><strong>抽奖价格</strong>：显示抽奖方式和实际扣费，格式为「单抽（10积分）」或「10连抽（90积分）」。扣费按抽奖当时的价格和折扣记录，后台之后修改价格或折扣，不影响已有记录。</li>
-      <li><strong>盲盒奖品</strong>：单抽显示 1 个奖品名称；10连抽在同一行里按 1–10 编号列出 10 个奖品，每个占一行。</li>
+      <li><strong>盲盒奖品</strong>：单抽显示 1 个奖品名称；10连抽在同一行里按编号列出奖品，每个占一行；相同奖品合并为一行，名称后显示 *数量（如 *2），所以编号最多到 10。</li>
       <li>一次 10连抽对应一个订单号、一行记录，不拆成 10 条。</li>
     </ol>
     <div class="tbl"><table>
       <thead><tr><th>订单号</th><th>会员名</th><th>创建时间</th><th>币种</th><th>盲盒名称</th><th>盲盒奖品</th><th>抽奖价格</th></tr></thead>
       <tbody>
         <tr><td>BX20261105001</td><td>okbet_88</td><td>2026-11-05 10:21:35</td><td>PHP</td><td>Lucky Star</td><td>Free Spins ×50</td><td>单抽（10积分）</td></tr>
-        <tr><td>BX20261105002</td><td>okbet_88</td><td>2026-11-05 10:24:02</td><td>PHP</td><td>Lucky Star</td><td class="rec-list">1. iPhone 17 Pro Max 256GB<br>2. Globe ₱100 Load<br>3. Free Spins ×50<br>4. 500 Points<br>5. Globe ₱20 Load<br>6. Free Spins ×20<br>7. Globe ₱10 Load<br>8. 100 Points<br>9. 100 Points<br>10. Globe ₱5 Load</td><td>10连抽（90积分）</td></tr>
+        <tr><td>BX20261105002</td><td>okbet_88</td><td>2026-11-05 10:24:02</td><td>PHP</td><td>Lucky Star</td><td class="rec-list">1. iPhone 17 Pro Max 256GB<br>2. Globe ₱100 Load<br>3. Free Spins ×50<br>4. 500 Points<br>5. Globe ₱20 Load<br>6. Free Spins ×20<br>7. Globe ₱10 Load<br>8. 100 Points *2<br>9. Globe ₱5 Load</td><td>10连抽（90积分）</td></tr>
       </tbody>
     </table></div>
     <p class="note">表格为示例数据。</p>
@@ -719,10 +721,16 @@ function hintHTML(p) {
   const h = HINT[p.type];
   return h ? '<div class="hint">' + h[0] + '“<em>' + h[1] + '</em>”</div>' : '';
 }
+// 相同奖品合并，保留排序后的先后顺序
+function groupSame(list) {
+  const out = [], at = {};
+  list.forEach(p => { if (at[p.id] !== undefined) out[at[p.id]].n++; else { at[p.id] = out.length; out.push({p, n: 1}); } });
+  return out;
+}
 function showPopup(list) {
   const multi = list.length > 1;
   const body = multi
-    ? '<div class="multi-grid">' + list.map((p, i) => '<div class="mitem' + (i === 0 ? ' best' : '') + '">' + (i === 0 ? '<span class="best-tag">BEST</span>' : '') + '<img src="' + IMG[p.id] + '" alt=""><div class="pname">' + p.name + '</div>' + hintHTML(p) + '</div>').join('') + '</div>'
+    ? '<div class="multi-grid">' + groupSame(list).map((g, i) => '<div class="mitem' + (i === 0 ? ' best' : '') + '">' + (i === 0 ? '<span class="best-tag">BEST</span>' : '') + (g.n > 1 ? '<span class="qty-tag">*' + g.n + '</span>' : '') + '<img src="' + IMG[g.p.id] + '" alt=""><div class="pname">' + g.p.name + '</div>' + hintHTML(g.p) + '</div>').join('') + '</div>'
     : '<img class="prize-img" src="' + IMG[list[0].id] + '" alt=""><div class="pname">' + list[0].name + '</div>' + hintHTML(list[0]);
   const L = $('popLayer');
   const COLORS = ['#ffd23f', '#ff5f7a', '#4fd1ff', '#8a3ff5', '#6ee7a8', '#ffffff', '#ff9a3c'];
