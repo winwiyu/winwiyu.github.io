@@ -417,7 +417,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <ol>
       <li>点击抽奖按钮即扣积分。积分不足时按钮仍可点，toast 提示 “Not enough points”，不扣分、不播动画。</li>
       <li>10连抽 = 10 次独立抽取，每次都从完整奖池按权重抽，不设保底。只播放一次跑马灯，只弹一个汇总弹窗。</li>
-      <li><strong>10连抽结果排序</strong>：10 个奖品按<strong>中奖概率从低到高</strong>排序，概率相同的随机排序。排第 1 的奖品（概率最低）就是跑马灯停下的奖品，并在弹窗中显示 BEST 角标。</li>
+      <li><strong>10连抽结果排序</strong>：10 个奖品按<strong>中奖概率从低到高</strong>排序，概率相同时按后台奖品序号从小到大排序。排第 1 的奖品（概率最低）就是跑马灯停下的奖品，并在弹窗中显示 BEST 角标。</li>
       <li>从点击抽奖到弹窗关闭之间，两个抽奖按钮、顶部 Tab 全部禁用。</li>
     </ol>
   </section>
@@ -462,7 +462,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <ol>
       <li><strong>奖品超过 9 个</strong>：最终中奖奖品固定落在第 1 格（中间大格）。</li>
       <li><strong>奖品正好 9 个</strong>：每个奖品位置固定，抽中哪个就停在哪个奖品所在的格子，<strong>不引导到中间位置</strong>，盘面不做任何替换。</li>
-      <li>10连抽时，停格的奖品取 10 个结果中<strong>中奖概率最低</strong>的那个（即弹窗里的 BEST 奖品）；概率相同时随机取一个。</li>
+      <li>10连抽时，停格的奖品取 10 个结果中<strong>中奖概率最低</strong>的那个（即弹窗里的 BEST 奖品）；概率相同时取后台奖品序号较小的那个。</li>
       <li>停格后中奖格闪烁 1 秒，然后出现中奖弹窗。</li>
       <li><strong>弹窗氛围特效</strong>：中奖弹窗出现的同时，周边播放氛围效果，不额外延后弹窗。弹窗背后有暖金色光晕和缓慢旋转的放射光芒，持续到弹窗关闭；弹出瞬间彩纸从弹窗中心向四周喷散，约 1.5 秒后飘落消失；弹窗四周有星光轮流闪烁。单抽和 10连抽都播放。</li>
     </ol>
@@ -480,7 +480,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <div class="sec-hd"><h3><span class="fid">F3</span>中奖弹窗 · 10连抽</h3><button class="demo" data-demo="pop10">查看 10连弹窗</button></div>
     <ol>
       <li>同一个弹窗框，<strong>一屏</strong>展示 10 个奖品，2 列 × 5 行，不滚动。</li>
-      <li>10 个奖品按<strong>中奖概率从低到高</strong>排列，概率相同的随机排序。</li>
+      <li>10 个奖品按<strong>中奖概率从低到高</strong>排列，概率相同时按后台奖品序号从小到大排序。</li>
       <li>排第 1 个（概率最低）的奖品加金色描边和 <strong>BEST</strong> 角标，与跑马灯停下的奖品一致。</li>
       <li>每个奖品显示的信息与原来弹窗显示的信息一致：奖品图、奖品名、领取指引。</li>
       <li>底部只有 1 个 Confirm。</li>
@@ -502,7 +502,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
     <ol>
       <li>和 LUCKY STAR 并列为顶部 Tab，默认停在 LUCKY STAR，点击 ALL PRIZES 切换。</li>
       <li>列出奖池全部奖品，每行<strong>只显示奖品图和奖品名称</strong>，不展示概率和等级标签。</li>
-      <li>排序按<strong>中奖概率从低到高</strong>，概率相同的随机排序。</li>
+      <li>排序按<strong>中奖概率从低到高</strong>，概率相同时按后台奖品序号从小到大排序。</li>
       <li>内容区高度和盘面一致，超出时在区域内滚动。抽奖过程中不可切换。</li>
     </ol>
   </section>
@@ -547,8 +547,9 @@ let PRIZES = [
   {id:'pts50', name:'50 Points', type:'points', value:5, w:21.9}
 ];
 let BY = Object.fromEntries(PRIZES.map(p => [p.id, p]));
-// 按中奖概率从低到高；概率相同随机排
-const byProb = list => list.map(p => [p, Math.random()]).sort((a, b) => a[0].w - b[0].w || a[1] - b[1]).map(x => x[0]);
+// 按中奖概率从低到高；概率相同按后台奖品序号从小到大
+const seqOf = p => { const i = PRIZES.indexOf(p); return i < 0 ? 999 : i; };
+const byProb = list => [...list].sort((a, b) => a.w - b.w || seqOf(a) - seqOf(b));
 // 后台配置：单抽价格、10连折扣（%，不配置为 0，最低 1）
 const COST = {1: 10, 10: 90};
 function applyPricing(single, disc) {
