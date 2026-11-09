@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>需求：指定召回活动 奖励配置表格化 + 统计新增指定会员表查询</title>
+<style>
+  :root{
+    --ink:#303133; --sub:#5c6370; --line:#e4e7ed; --line2:#ebeef5; --soft:#f5f7fa;
+    --pri:#1f6fd1; --pri-bg:#eef4fc; --mark:#d9480f; --warn-bg:#fff6e8; --warn:#8a4b08;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#eef0f3;color:var(--ink);font:14px/1.7 "PingFang SC","Microsoft YaHei",system-ui,sans-serif}
+  .wrap{max-width:1440px;margin:0 auto;padding:28px 20px 60px}
+  header.top{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px 26px;margin-bottom:20px}
+  header.top h1{font-size:20px;line-height:1.4;margin:0 0 6px;color:#1f2329}
+  header.top .meta{color:var(--sub);font-size:13px;display:flex;flex-wrap:wrap;gap:4px 18px}
+  header.top .bg{margin:10px 0 0;color:var(--sub)}
+
+  .screen{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;margin-bottom:28px}
+  .proto{flex:999 1 640px;min-width:0;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .notes{flex:1 1 340px;max-width:100%;background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px 22px;position:sticky;top:16px}
+  @media (max-width:1040px){.notes{position:static}}
+  .screen-title{display:flex;align-items:center;gap:10px;font-size:16px;font-weight:600;color:#1f2329;margin:0 0 12px}
+  .screen-title .no{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;background:var(--pri);color:#fff;font-size:13px}
+
+  /* marker */
+  .m{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--mark);color:#fff;font-size:12px;font-weight:700;line-height:1;flex:none;vertical-align:middle}
+
+  /* notes */
+  .notes h2{font-size:16px;margin:0 0 4px;color:#1f2329}
+  .notes .lead{color:var(--sub);font-size:13px;margin:0 0 14px}
+  .note{display:flex;gap:10px;padding:12px 0;border-top:1px solid var(--line2)}
+  .note:first-of-type{border-top:none;padding-top:4px}
+  .note h3{font-size:14px;margin:0 0 4px;color:#1f2329}
+  .note p,.note li{margin:2px 0;color:#414750}
+  .note ul{margin:4px 0;padding-left:18px}
+  .note code{background:var(--soft);border:1px solid var(--line);border-radius:4px;padding:0 5px;font-size:12px}
+  table.rule{width:100%;border-collapse:collapse;font-size:12.5px;margin:6px 0}
+  table.rule th,table.rule td{border:1px solid var(--line);padding:5px 7px;text-align:left;vertical-align:top}
+  table.rule th{background:var(--soft);color:var(--sub);font-weight:600}
+
+  /* prototype (admin look) */
+  .tabs{display:flex;background:var(--soft);border-bottom:1px solid var(--line);height:40px}
+  .tabs span{display:flex;align-items:center;padding:0 20px;color:var(--sub)}
+  .tabs span.on{background:#fff;color:var(--pri);border-right:1px solid var(--line);margin-bottom:-1px}
+  .pbody{margin:14px;border:1px solid var(--line);border-radius:4px;padding:20px 12px 18px;display:flex;flex-direction:column;gap:22px;font-size:13px}
+  .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .lab{width:72px;text-align:right;color:var(--sub);flex:none}
+  .req{color:#d93025}
+  .box{display:inline-flex;align-items:center;gap:24px;border:1px solid #dcdfe6;border-radius:4px;height:32px;padding:0 14px}
+  .ctl{height:30px;border:1px solid #dcdfe6;border-radius:4px;padding:0 8px;font:inherit;font-size:13px;color:var(--ink);background:#fff}
+  .num{width:96px;text-align:center}
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--line2);border-radius:4px}
+  table.cfg{width:100%;border-collapse:collapse;min-width:600px}
+  table.cfg th{background:var(--soft);color:var(--sub);font-weight:600;text-align:left;height:38px;padding:0 12px;border-bottom:1px solid var(--line2)}
+  table.cfg td{height:42px;padding:0 12px;border-bottom:1px solid var(--line2)}
+  table.cfg tr:last-child td{border-bottom:none}
+  .dash{color:#73777f}
+  .hint{margin:0;color:var(--sub);font-size:12px}
+  .btn{height:32px;padding:0 16px;border-radius:4px;font:inherit;font-size:13px;border:1px solid #dcdfe6;background:#fff;color:var(--ink)}
+  .btn.pri{background:var(--pri);border-color:var(--pri);color:#fff}
+  .filters{display:flex;flex-wrap:wrap;align-items:center;gap:12px 22px;padding:14px 16px}
+  .filters label,.filters .fl{font-weight:600}
+  .f{display:flex;align-items:center;gap:6px}
+  table.st{width:100%;border-collapse:collapse;min-width:720px;text-align:center;border:1px solid var(--line2)}
+  table.st th,table.st td{border:1px solid var(--line2);height:40px;padding:0 8px}
+  table.st th{color:var(--sub);font-weight:600}
+  .pager{display:flex;justify-content:flex-end;align-items:center;gap:16px;padding:14px 8px 2px;color:var(--sub)}
+  .pager .cur{color:var(--pri);font-weight:600}
+  .pager .pg{color:var(--ink);font-weight:600}
+
+  footer.todo{background:#fff;border:1px solid var(--line);border-radius:10px;padding:20px 26px}
+  footer.todo h2{font-size:16px;margin:0 0 8px;color:#1f2329}
+  footer.todo ol{margin:4px 0;padding-left:20px}
+  .callout{background:var(--warn-bg);border-radius:8px;padding:10px 14px;color:var(--warn);font-size:13px;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <h1>指定召回活动：奖励配置改成表格 + 活动统计新增"指定会员表"查询</h1>
+  <div class="meta"><span>版本 v1.0</span><span>2026-11-09</span><span>涉及：活动设置、活动统计、领取记录</span></div>
+  <p class="bg">背景：现在的奖励配置是 20 行纵向表单（"指定会员表一 ~ 二十"），可读性差，核对配置也费劲；活动统计不能按会员表查，运营看不到每个名单各自的领取情况。</p>
+</header>
+
+<!-- ============ 1. 活动设置 ============ -->
+<div class="screen-title"><span class="no">1</span>活动设置</div>
+<div class="screen">
+  <div class="proto" aria-label="活动设置原型">
+    <div class="tabs"><span class="on">活动设置</span><span>活动统计</span></div>
+    <div class="pbody">
+      <div class="row">
+        <span class="lab"><span class="req">*</span> 活动时间:</span>
+        <span class="box"><span>2026-07-31 00:00:00</span><span>~</span><span>2027-12-23 23:59:59</span></span>
+      </div>
+      <div class="row">
+        <span class="lab"><span class="req">*</span> 活动状态:</span>
+        <label style="color:var(--pri)"><input type="radio" name="st" checked> 开启</label>
+        <label style="margin-left:12px"><input type="radio" name="st"> 关闭</label>
+      </div>
+      <div class="row" style="align-items:flex-start">
+        <span class="lab" style="padding-top:9px">奖励配置:</span>
+        <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:12px">
+          <div class="tbl-wrap">
+            <table class="cfg">
+              <thead><tr>
+                <th style="width:120px">指定会员表 <span class="m">1</span></th>
+                <th style="width:170px">奖励类型 <span class="m">2</span></th>
+                <th>奖励配置 <span class="m">3</span></th>
+                <th style="width:130px">数量 <span class="m">3</span></th>
+              </tr></thead>
+              <tbody id="cfg"></tbody>
+            </table>
+          </div>
+          <p class="hint">积分 / 礼金 / 大奖池抽奖券：奖励配置为"—"，直接填写数量；免费旋转 / 优惠券：选择配置模板，数量默认为 1。</p>
+          <div class="row" style="padding-top:10px;border-top:1px solid var(--line2)">
+            <label for="wr">彩金流水倍数</label>
+            <input id="wr" class="ctl" value="1" style="width:150px;text-align:center"> 倍
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <span class="lab">其他条件:</span><span>指定名单的会员可以领取</span>
+      </div>
+      <div class="row" style="justify-content:flex-end">
+        <button class="btn">重置</button>
+        <button class="btn pri">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <aside class="notes">
+    <h2>需求说明 · 活动设置</h2>
+    <p class="lead">原来 20 行纵向表单改成一张表格，固定 20 行。</p>
+
+    <div class="note"><span class="m">1</span><div>
+      <h3>指定会员表</h3>
+      <p>名称统一改为 <b>列表1 ~ 列表20</b>，只读，替换原来的"指定会员表一 ~ 二十"。</p>
+    </div></div>
+
+    <div class="note"><span class="m">2</span><div>
+      <h3>奖励类型</h3>
+      <p>下拉选择，选项和现在一样：积分、礼金、大奖池抽奖券、免费旋转、优惠券。</p>
+    </div></div>
+
+    <div class="note"><span class="m">3</span><div>
+      <h3>奖励配置 / 数量（随类型联动）</h3>
+      <table class="rule">
+        <thead><tr><th>奖励类型</th><th>奖励配置</th><th>数量</th></tr></thead>
+        <tbody>
+          <tr><td>积分 / 礼金 / 大奖池抽奖券</td><td>显示"—"</td><td>直接输入，礼金允许两位小数</td></tr>
+          <tr><td>免费旋转</td><td>下拉选厂商游戏配置</td><td>默认 1</td></tr>
+          <tr><td>优惠券</td><td>下拉选优惠券模板</td><td>默认 1</td></tr>
+        </tbody>
+      </table>
+      <p>切换奖励类型时，奖励配置和数量要清空，重新按新类型填写。</p>
+    </div></div>
+
+  </aside>
+</div>
+
+<!-- ============ 2. 活动统计 ============ -->
+<div class="screen-title"><span class="no">2</span>活动统计</div>
+<div class="screen">
+  <div class="proto" aria-label="活动统计原型">
+    <div class="tabs"><span>活动设置</span><span class="on">活动统计</span></div>
+    <div class="filters">
+      <div class="f"><label for="acc">会员账号:</label><input id="acc" class="ctl" placeholder="请输入账号" style="width:140px"></div>
+      <div class="f"><label for="lst">指定会员表:</label><select id="lst" class="ctl" style="width:110px"></select><span class="m">1</span></div>
+      <div class="f"><span class="fl">申请领取时间:</span><span class="box" style="gap:28px"><span>2026-10-10</span><span>~</span><span>2026-11-09</span></span></div>
+      <div class="f"><label for="rt">奖励类型:</label><select id="rt" class="ctl" style="width:120px;color:#73777f"><option>请选择</option></select></div>
+      <div class="f"><button class="btn pri">搜索</button><button class="btn pri">导出</button></div>
+    </div>
+    <div style="margin:0 16px 16px;border:1px solid var(--line);border-radius:4px;padding:12px">
+      <div style="overflow-x:auto">
+        <table class="st">
+          <thead><tr><th>账号</th><th>指定会员表 <span class="m">2</span></th><th>领取时间</th><th>奖励类型</th><th>奖励金额</th></tr></thead>
+          <tbody id="st"></tbody>
+        </table>
+      </div>
+      <p id="empty" hidden style="text-align:center;color:#73777f;margin:20px 0">暂无数据</p>
+      <div class="pager"><span>Total <span id="total">38</span></span><span class="cur">1</span><span id="more" class="pg">2&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;4</span></div>
+    </div>
+  </div>
+
+  <aside class="notes">
+    <h2>需求说明 · 活动统计</h2>
+    <p class="lead">新增按"指定会员表"查询领取记录。左侧下拉可以直接切换试用。</p>
+
+    <div class="note"><span class="m">1</span><div>
+      <h3>筛选栏新增"指定会员表"</h3>
+      <ul>
+        <li>放在"会员账号"后面，下拉选项：全部、列表1 ~ 列表20，默认"全部"。</li>
+        <li>和会员账号、申请领取时间、奖励类型这几个条件是"且"的关系。</li>
+      </ul>
+    </div></div>
+
+    <div class="note"><span class="m">2</span><div>
+      <h3>列表新增"指定会员表"列</h3>
+      <ul>
+        <li>放在"账号"后面，显示"列表N"。</li>
+        <li>归属以领取时写入的 <code>member_list_id</code>（1–20）为准，之后名单再怎么改，已有记录的归属都不变。</li>
+        <li>历史记录没有这个字段的显示"-"；筛选具体某个列表时，这些记录查不到。</li>
+      </ul>
+    </div></div>
+
+  </aside>
+</div>
+
+
+</div>
+
+<script>
+(function(){
+  var spin = 'YGR厂商（单游戏 May Got Jackpot）';
+  var base = [
+    ['积分','', '1000'],
+    ['积分','', '2222'],
+    ['免费旋转', spin, '1'],
+    ['优惠券','中奖加奖券30%+流水倍数','1'],
+    ['大奖池抽奖券','', '3'],
+    ['积分','', '3000'],
+    ['优惠券','存送10%-有效期240小时','1'],
+    ['大奖池抽奖券','', '333']
+  ];
+  var types = ['积分','礼金','大奖池抽奖券','免费旋转','优惠券'];
+  var html = '';
+  for (var i = 0; i < 20; i++) {
+    var b = base[i] || ['礼金','', '0'];
+    if (i === 19) b = ['免费旋转', spin, '1'];
+    var name = '列表' + (i + 1);
+    var opts = types.map(function(t){ return '<option' + (t === b[0] ? ' selected' : '') + '>' + t + '</option>'; }).join('');
+    var cfg = b[1]
+      ? '<select class="ctl" aria-label="' + name + ' 奖励配置" style="width:100%;max-width:260px"><option>' + b[1] + '</option></select>'
+      : '<span class="dash">—</span>';
+    html += '<tr><td><b>' + name + '</b></td>'
+         + '<td><select class="ctl" aria-label="' + name + ' 奖励类型" style="width:140px">' + opts + '</select></td>'
+         + '<td>' + cfg + '</td>'
+         + '<td><input class="ctl num" aria-label="' + name + ' 数量" value="' + b[2] + '"></td></tr>';
+  }
+  document.getElementById('cfg').innerHTML = html;
+
+  var rows = [
+    ['okbet89****np','列表5','2026-11-03 17:19:58','大奖池抽奖券','3'],
+    ['okbet88****de','列表7','2026-11-03 17:05:52','优惠券','优惠券 x1'],
+    ['xn****8','列表6','2026-10-27 13:28:55','积分','3000'],
+    ['okbet04****7t','列表2','2026-10-22 17:24:25','积分','2222'],
+    ['okbet81****bj','列表4','2026-10-22 16:25:29','优惠券','优惠券 x1'],
+    ['okbet04****n8','列表2','2026-10-22 15:56:15','积分','2222'],
+    ['okbet04****01','列表2','2026-10-22 15:06:53','积分','2222'],
+    ['okbet53****2s','列表3','2026-10-22 14:41:27','免费旋转','免费旋转 x1'],
+    ['okbet04****4i','列表2','2026-10-22 14:37:43','积分','2222'],
+    ['okbet81****6c','-','2026-10-22 11:31:03','优惠券','优惠券 x1']
+  ];
+  var sel = document.getElementById('lst');
+  var o = '<option value="all">全部</option>';
+  for (var k = 1; k <= 20; k++) o += '<option>列表' + k + '</option>';
+  sel.innerHTML = o;
+  function render(){
+    var v = sel.value;
+    var list = v === 'all' ? rows : rows.filter(function(r){ return r[1] === v; });
+    document.getElementById('st').innerHTML = list.map(function(r){
+      return '<tr>' + r.map(function(c){ return '<td>' + c + '</td>'; }).join('') + '</tr>';
+    }).join('');
+    document.getElementById('empty').hidden = list.length > 0;
+    document.getElementById('total').textContent = v === 'all' ? 38 : list.length;
+    document.getElementById('more').hidden = v !== 'all';
+  }
+  sel.addEventListener('change', render);
+  render();
+})();
+</script>
+</body>
+</html>
