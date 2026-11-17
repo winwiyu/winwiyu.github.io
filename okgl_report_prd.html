@@ -258,7 +258,7 @@ body.nomark .oldwrap{display:none}
       <li>活动管理只管理活动，点击活动名称跳到对应活动报表</li>
       <li>受邀会员「关联会员ID」改为 VIP / Companion 单选，列表新增导出按钮</li>
       <li>删除「奖品类别管理」菜单和奖品的类别名称</li>
-      <li>小游戏管理删除排队二维码，已发放数量取员工后台中奖名单，新增导出按钮</li>
+      <li>小游戏管理删除排队二维码，已发放数量取员工后台中奖名单</li>
       <li>员工后台小游戏取消排队，改为按签到ID添加中奖名单，跟抽奖游戏一样</li>
     </ol>
     <p class="lead">左侧原型可以直接点，每节下方的按钮会切到对应页面。原型里的数据都是示例。</p>
@@ -372,7 +372,6 @@ body.nomark .oldwrap{display:none}
       <ol>
         <li><span class="tag-d">删除</span>每行操作列的「排队二维码」按钮，操作列只保留「修改」「删除」。</li>
         <li>奖品列的<strong>已发放数量 = 员工后台为该小游戏、该奖品添加的中奖名单条数</strong>。员工每添加 1 人，已发放 +1，实时更新。</li>
-              <li>页面右上角<span class="tag-a">新增</span>「导出」按钮，放在「＋ 新增小游戏」左边，导出小游戏列表。</li>
       </ol>
       <p>原型里在员工后台添加一名会员，再切回这里，可以看到已发放数量变化。</p>
     </section>
@@ -571,7 +570,7 @@ function pagePrizes(){
   </tbody></table></div>`;
 }
 function pageMini(){
-  return `${topbar}<div class="ph"><div><h1>小游戏管理</h1><p>小游戏即「游戏类」发奖站点，下挂的奖品就是它可出的奖品。</p></div><div style="display:flex;gap:8px"><span class="chg" data-n="6" style="display:inline-flex"><button class="b" id="expMini">导出</button></span><button class="b gold">＋ 新增小游戏</button></div></div>
+  return `${topbar}<div class="ph"><div><h1>小游戏管理</h1><p>小游戏即「游戏类」发奖站点，下挂的奖品就是它可出的奖品。</p></div><button class="b gold">＋ 新增小游戏</button></div>
   <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>ID</th><th>活动名称</th><th>小游戏名称</th><th>奖品（库存 · 已发放）</th><th>创建时间</th><th>最后修改时间</th><th>操作</th></tr></thead><tbody>
   ${games.map(g=>`<tr><td class="mono">${g.id}<br>${g.code}</td><td>${esc(actOf(g.act).name)}</td><td><b>${esc(g.name)}</b></td>
     <td><div class="pz chg" data-n="6" style="padding:4px 6px">${g.prizes.map(p=>{const i=issued(g.id,p.n);return `<div><b>${esc(p.n)}</b> 库存数量 ${p.s} · <span class="iss">已发放 ${i}</span></div>`}).join('')}</div></td>
@@ -675,7 +674,6 @@ document.addEventListener('click',e=>{
   if(t.closest('#fR')){S.rf={g:'',p:'',q:'',size:S.rf.size,page:1};S.keepScroll=true;render();return}
   const sz=t.closest('[data-size]');if(sz){S.rf.size=+sz.dataset.size;S.rf.page=1;S.keepScroll=true;render();return}
   const pgb=t.closest('[data-pg]');if(pgb){S.rf.page+=+pgb.dataset.pg;S.keepScroll=true;render();return}
-  if(t.closest('#expMini')){toast('已导出小游戏列表（原型示意）');return}
   if(t.closest('#expMem')){toast('已导出受邀会员列表（原型示意）');return}
   if(t.closest('#addMem')){S.modal='member';S.mErr='';render();return}
   if(t.closest('#addPrize')){S.modal='prize';render();return}
