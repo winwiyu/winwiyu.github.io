@@ -251,25 +251,26 @@ body.nomark .oldwrap{display:none}
   <aside class="spec" aria-label="需求说明">
     <div class="eyebrow">OKGL 赛事系统 · 需求变更</div>
     <h2 class="t">活动报表整合 &amp; 后台精简 PRD</h2>
-    <p class="lead" style="margin-bottom:6px">本次共 7 处改动：</p>
+    <p class="lead" style="margin-bottom:6px">本次共 8 处改动：</p>
     <ol class="lead-list">
       <li>活动详情页归到「活动报表」，标题改为活动切换，「最近签到」换成小游戏报表</li>
       <li>删除左侧菜单「小游戏报表」</li>
       <li>活动管理只管理活动，点击活动名称跳到对应活动报表</li>
       <li>受邀会员「关联会员ID」改为 VIP / Companion 单选，列表新增导出按钮</li>
-      <li>删除「奖品类别管理」菜单和奖品的类别名称</li>
-      <li>小游戏管理删除排队二维码，已发放数量取员工后台中奖名单</li>
+      <li>删除「奖品类别管理」菜单和奖品的类别名称，奖品列表新增活动名称列和活动筛选</li>
+      <li>小游戏管理删除排队二维码，已发放数量取员工后台中奖名单，新增活动筛选</li>
       <li>员工后台小游戏取消排队，改为按签到ID添加中奖名单，跟抽奖游戏一样</li>
+      <li>抽奖游戏管理新增活动筛选</li>
     </ol>
     <p class="lead">左侧原型可以直接点，每节下方的按钮会切到对应页面。原型里的数据都是示例。</p>
     <dl class="meta">
       <div><dt>版本</dt><dd>v1.0</dd></div>
       <div><dt>日期</dt><dd>2026-11-17</dd></div>
       <div><dt>涉及端</dt><dd>管理后台 / 员工后台</dd></div>
-      <div><dt>改动点</dt><dd>7 项</dd></div>
+      <div><dt>改动点</dt><dd>8 项</dd></div>
     </dl>
     <nav class="toc" aria-label="目录">
-      <a href="#s1"><i>1</i>活动报表看板</a><a href="#s2"><i>2</i>删小游戏报表菜单</a><a href="#s3"><i>3</i>活动管理</a><a href="#s4"><i>4</i>VIP/Companion</a><a href="#s5"><i>5</i>删奖品类别</a><a href="#s6"><i>6</i>小游戏管理</a><a href="#s7"><i>7</i>员工后台中奖名单</a>
+      <a href="#s1"><i>1</i>活动报表看板</a><a href="#s2"><i>2</i>删小游戏报表菜单</a><a href="#s3"><i>3</i>活动管理</a><a href="#s4"><i>4</i>VIP/Companion</a><a href="#s5"><i>5</i>奖品管理</a><a href="#s6"><i>6</i>小游戏管理</a><a href="#s7"><i>7</i>员工后台中奖名单</a><a href="#s8"><i>8</i>抽奖游戏管理</a>
     </nav>
 
     <section class="sec" id="s1">
@@ -354,7 +355,7 @@ body.nomark .oldwrap{display:none}
     </section>
 
     <section class="sec" id="s5">
-      <h3><span class="n">5</span>删除奖品类别</h3>
+      <h3><span class="n">5</span>奖品管理</h3>
       <div class="loc">位置：<b>左侧菜单 › 奖品管理分组</b>、<b>奖品管理</b>页</div>
       <div class="demo"><button data-go="prizes">查看奖品管理</button><button data-go="prizes" data-open="prizeModal">打开新增奖品弹窗</button></div>
       <ol>
@@ -362,6 +363,8 @@ body.nomark .oldwrap{display:none}
         <li>奖品管理新增 / 修改弹窗<span class="tag-d">删除</span>「类别名称」选项。</li>
         <li>奖品管理列表<span class="tag-d">删除</span>「类别名称」列和顶部「全部类别」筛选，只保留编号 / 奖品名称搜索。页面说明文字改为「跨赛事查看奖品，可按编号或奖品名称搜索」。</li>
         <li>已有奖品的类别数据不再展示，不影响奖品本身和已发放记录。</li>
+              <li>奖品管理列表<span class="tag-a">新增</span>「活动名称」列，放在 ID 后面。</li>
+        <li>奖品管理顶部<span class="tag-a">新增</span>「活动名称」筛选，选项为「全部活动」和各活动。</li>
       </ol>
     </section>
 
@@ -372,6 +375,7 @@ body.nomark .oldwrap{display:none}
       <ol>
         <li><span class="tag-d">删除</span>每行操作列的「排队二维码」按钮，操作列只保留「修改」「删除」。</li>
         <li>奖品列的<strong>已发放数量 = 员工后台为该小游戏、该奖品添加的中奖名单条数</strong>。员工每添加 1 人，已发放 +1，实时更新。</li>
+              <li>列表上方<span class="tag-a">新增</span>「活动名称」筛选，选项为「全部活动」和各活动，带搜索、重置按钮。</li>
       </ol>
       <p>原型里在员工后台添加一名会员，再切回这里，可以看到已发放数量变化。</p>
     </section>
@@ -395,6 +399,15 @@ body.nomark .oldwrap{display:none}
         <li>输入框占位文字「Member ID」，员工输入签到ID（即会员编号，如 048）。</li>
         <li>底部按钮：Cancel、Submit。</li>
         <li>Submit 后：名单追加一行；Stock left −1；小游戏管理「已发放」+1；活动报表看板的小游戏报表新增一条记录，操作人为当前员工账号。</li>
+      </ol>
+    </section>
+
+    <section class="sec" id="s8">
+      <h3><span class="n">8</span>抽奖游戏管理</h3>
+      <div class="loc">位置：<b>游戏管理 › 抽奖游戏管理</b></div>
+      <div class="demo"><button data-go="lg">查看抽奖游戏管理</button></div>
+      <ol>
+        <li>列表上方<span class="tag-a">新增</span>「活动名称」筛选，选项为「全部活动」和各活动，带搜索、重置按钮。</li>
       </ol>
     </section>
 
@@ -446,18 +459,18 @@ let records=[
   R('e51d0b9f','e7a1c2d0','186','Okgames-Merch','2026/10/31 16:40:05'),R('a0c4f3d2','e7a1c2d0','120','Okgames-Merch','2026/10/31 16:31:47')
 ];
 const prizes=[
-  {id:'55947b96',n:'Okgames-Merch',code:'OKGAMESMERCH4Q1',s:'300',g:'Lobby - Hoop Mania'},
-  {id:'93f16d43',n:'Dyson',code:'DYSON8KT2',s:'1',g:'奖品发放'},
-  {id:'5f505232',n:'Evolution Towel',code:'EVOLUTIONTOW7M3',s:'300',g:'EVO - Snakes And Ladder'},
-  {id:'424c20ce',n:'Slot Bag',code:'SLOTBAG2W9',s:'100',g:'奖品发放'},
-  {id:'297468dd',n:'Ballpan',code:'BALLPAN5R8',s:'300',g:'EVO - Rock-Paper-Scissors'},
-  {id:'3df6266c',n:'₱1 million',code:'1MILLION7DU2',s:'1',g:'奖品发放'},
-  {id:'ae6c4a9b',n:'₱500K',code:'500K8UWS',s:'1',g:'奖品发放'},
-  {id:'4a215e06',n:'200K E-credit',code:'ECREDIT200KCL82',s:'1',g:'奖品发放'}
+  {id:'55947b96',n:'Okgames-Merch',code:'OKGAMESMERCH4Q1',s:'300',g:'Lobby - Hoop Mania',act:'bacc'},
+  {id:'93f16d43',n:'Dyson',code:'DYSON8KT2',s:'1',g:'奖品发放',act:'bacc'},
+  {id:'5f505232',n:'Evolution Towel',code:'EVOLUTIONTOW7M3',s:'300',g:'EVO - Snakes And Ladder',act:'bacc'},
+  {id:'424c20ce',n:'Slot Bag',code:'SLOTBAG2W9',s:'100',g:'奖品发放',act:'bacc'},
+  {id:'297468dd',n:'Ballpan',code:'BALLPAN5R8',s:'300',g:'EVO - Rock-Paper-Scissors',act:'bacc'},
+  {id:'3df6266c',n:'₱1 million',code:'1MILLION7DU2',s:'1',g:'奖品发放',act:'bacc'},
+  {id:'ae6c4a9b',n:'₱500K',code:'500K8UWS',s:'1',g:'奖品发放',act:'bacc'},
+  {id:'4a215e06',n:'200K E-credit',code:'ECREDIT200KCL82',s:'1',g:'奖品发放',act:'bacc'}
 ];
 const stats={bacc:[297,157,140,227,'76%',579],a2:[0,0,0,0,'0%',0]};
 
-const S={mode:'admin',page:'report',act:'bacc',lastAct:'bacc',sw:false,swq:'',rf:{g:'',p:'',q:'',size:10,page:1},
+const S={pf:'',mf:'',lf:'',mode:'admin',page:'report',act:'bacc',lastAct:'bacc',sw:false,swq:'',rf:{g:'',p:'',q:'',size:10,page:1},
   modal:null,mErr:'',staffGame:'e7a1c2d0',sheet:null,justAdded:null,toast:''};
 
 const actOf=k=>activities.find(a=>a.key===k);
@@ -562,17 +575,28 @@ function pageMembers(){
   ${members.map(m=>`<tr${S.justAdded===m.num?' style="background:#fff8e6"':''}><td class="mono">${m.signed?m.num:'—'}</td><td><b style="color:var(--gold-d)">${esc(m.name)}</b><div style="font-size:11px;color:var(--muted)">${esc(m.acc)}</div></td><td style="font-size:12px">${esc(actOf(m.act).name)}<div style="font-size:11px;color:var(--muted)">${actOf(m.act).code}</div></td><td class="mono">+63 9*****${m.ph}</td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'已签到':'未签到'}</span></td><td class="dc">—</td><td><span class="pill ${m.type==='VIP'?'p-vip':'p-comp'}">${m.type}</span></td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'是':'未签'}</span></td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'是':'未签'}</span></td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`).join('')}
   </tbody></table></div>`;
 }
+function actSel(id,val){return `<span class="chg" data-n="${id==='fpA'?5:id==='fmA'?6:8}" style="display:inline-flex"><select id="${id}" aria-label="活动名称" style="width:200px"><option value="">全部活动</option>${activities.map(a=>`<option value="${a.key}"${val===a.key?' selected':''}>${esc(a.name)}</option>`).join('')}</select></span>`}
+const lotto=[['1960d45c','1st Prize','₱10K',0,5,'2026/10/26 18:44:03','2026/10/26 18:44:03'],['5d926ada','2nd Prize','₱5K',0,10,'2026/10/26 18:45:30','2026/10/26 18:45:30'],['2a3776e5','3rd Prize','₱2K',4,16,'2026/10/26 18:45:53','2026/10/26 18:45:53'],['b84a744b','4th Prize','₱1K',7,53,'2026/10/26 18:47:45','2026/10/26 18:47:45'],['204705c5','5th Prize','5K E-credit',0,10,'2026/10/26 18:48:08','2026/10/27 11:04:05'],['9a5d3f1c','6th Prize','2K E-credit',0,10,'2026/10/26 18:48:28','2026/10/26 18:48:28'],['d7aaf19a','7th Prize','1K E-credit',0,30,'2026/10/26 18:48:59','2026/10/26 18:48:59'],['08532723','branding1','Mini Printer',1,0,'2026/10/27 17:41:36','2026/10/27 17:42:00'],['d42251cf','branding2','Samsung Galaxy A9 Phone',1,0,'2026/10/27 17:42:12','2026/10/27 17:42:12'],['ae555b78','branding3','Samsung Galaxy A9 Tablet',1,0,'2026/10/27 17:42:27','2026/10/27 17:42:27']].map(r=>({id:r[0],act:'bacc',tier:r[1],prize:r[2],left:r[3],win:r[4],c:r[5],u:r[6]}));
+function pageLotto(){
+  const rows=lotto.filter(r=>!S.lf||r.act===S.lf);
+  return `${topbar}<div class="ph"><div><h1>抽奖游戏管理</h1><p>按活动配置抽奖奖项，每个奖项关联一件奖品；员工端录入中奖即扣该奖品一件库存。已有抽奖记录的奖项不能删除。</p></div><button class="b gold">＋ 新增奖项</button></div>
+  <div class="card flt" style="margin-bottom:14px">${actSel('flA',S.lf)}<button class="b gold" data-q="l">搜索</button><button class="b" data-r="l">重置</button></div>
+  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>ID</th><th>活动名称</th><th>奖项名称</th><th>奖品名称</th><th>剩余库存</th><th>中奖人数</th><th>创建时间</th><th>最后修改时间</th><th>操作</th></tr></thead><tbody>
+  ${rows.length?rows.map(r=>`<tr><td class="mono">${r.id}</td><td>${esc(actOf(r.act).name)}</td><td><b>${esc(r.tier)}</b></td><td>${esc(r.prize)}</td><td>${r.left}</td><td>${r.win}</td><td class="mono">${r.c}</td><td class="mono">${r.u}</td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`).join(''):'<tr><td colspan="9"><div class="empty">该活动暂无抽奖奖项</div></td></tr>'}
+  </tbody></table></div><div class="pg">共 ${rows.length} 条</div>`;
+}
 function pagePrizes(){
   return `${topbar}<div class="ph"><div><h1>奖品管理</h1><p>跨赛事查看奖品，可按编号或奖品名称搜索。图片填 http(s) 地址。</p></div><button class="b gold" id="addPrize">＋ 新增</button></div>
-  <div class="card flt" style="margin-bottom:14px"><span class="del">全部类别</span><input placeholder="输入编号或奖品名称查询"><button class="b gold">搜索</button><button class="b">重置</button></div>
-  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>ID</th><th class="dc">类别名称</th><th>奖品名称</th><th>奖品图片</th><th>库存</th><th>挂载</th><th>操作</th></tr></thead><tbody>
-  ${prizes.map(p=>`<tr><td class="mono">${p.id}</td><td class="dc">${/₱|credit/i.test(p.n)?'cash prizes':'Physical prizes'}</td><td><b>${esc(p.n)}</b><div class="mono">${p.code}</div></td><td>—</td><td>${p.s}</td><td style="font-size:12px">${esc(p.g)}</td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`).join('')}
+  <div class="card flt" style="margin-bottom:14px"><span class="del">全部类别</span>${actSel('fpA',S.pf)}<input placeholder="输入编号或奖品名称查询"><button class="b gold" data-q="p">搜索</button><button class="b" data-r="p">重置</button></div>
+  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>ID</th><th><span class="chg" data-n="5" style="padding:2px 4px">活动名称</span></th><th class="dc">类别名称</th><th>奖品名称</th><th>奖品图片</th><th>库存</th><th>挂载</th><th>操作</th></tr></thead><tbody>
+  ${(()=>{const l=prizes.filter(p=>!S.pf||p.act===S.pf);return l.length?l:null})()?.map(p=>`<tr><td class="mono">${p.id}</td><td>${esc(actOf(p.act).name)}</td><td class="dc">${/₱|credit/i.test(p.n)?'cash prizes':'Physical prizes'}</td><td><b>${esc(p.n)}</b><div class="mono">${p.code}</div></td><td>—</td><td>${p.s}</td><td style="font-size:12px">${esc(p.g)}</td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`).join('')??'<tr><td colspan="8"><div class="empty">该活动暂无奖品</div></td></tr>'}
   </tbody></table></div>`;
 }
 function pageMini(){
   return `${topbar}<div class="ph"><div><h1>小游戏管理</h1><p>小游戏即「游戏类」发奖站点，下挂的奖品就是它可出的奖品。</p></div><button class="b gold">＋ 新增小游戏</button></div>
+  <div class="card flt" style="margin-bottom:14px">${actSel('fmA',S.mf)}<button class="b gold" data-q="m">搜索</button><button class="b" data-r="m">重置</button></div>
   <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>ID</th><th>活动名称</th><th>小游戏名称</th><th>奖品（库存 · 已发放）</th><th>创建时间</th><th>最后修改时间</th><th>操作</th></tr></thead><tbody>
-  ${games.map(g=>`<tr><td class="mono">${g.id}<br>${g.code}</td><td>${esc(actOf(g.act).name)}</td><td><b>${esc(g.name)}</b></td>
+  ${games.filter(g=>!S.mf||g.act===S.mf).map(g=>`<tr><td class="mono">${g.id}<br>${g.code}</td><td>${esc(actOf(g.act).name)}</td><td><b>${esc(g.name)}</b></td>
     <td><div class="pz chg" data-n="6" style="padding:4px 6px">${g.prizes.map(p=>{const i=issued(g.id,p.n);return `<div><b>${esc(p.n)}</b> 库存数量 ${p.s} · <span class="iss">已发放 ${i}</span></div>`}).join('')}</div></td>
     <td class="mono">${g.c}</td><td class="mono">${g.u}</td><td><div class="ops"><span class="del" style="justify-content:center">排队二维码</span><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`).join('')}
   </tbody></table></div>`;
@@ -642,7 +666,7 @@ function render(){
   $('#mAdmin').setAttribute('aria-pressed',S.mode==='admin');$('#mStaff').setAttribute('aria-pressed',S.mode==='staff');
   const f=$('#frame');
   if(S.mode==='staff'){f.innerHTML=staff()+(S.toast?`<div class="toast">${S.toast}</div>`:'');if(S.sheet){const i=$('#aid');i.focus();i.setSelectionRange(i.value.length,i.value.length)}return}
-  const pg={report:pageReport,activity:pageActivity,members:pageMembers,prizes:pagePrizes,minigame:pageMini}[S.page]||pageOther;
+  const pg={report:pageReport,activity:pageActivity,members:pageMembers,prizes:pagePrizes,minigame:pageMini,lg:pageLotto}[S.page]||pageOther;
   const scroll=f.querySelector('.main')?.scrollTop||0;
   f.innerHTML=side()+`<main class="main">${pg()}</main>`+modal()+(S.toast?`<div class="toast">${S.toast}</div>`:'');
   const mm=f.querySelector('.main');if(mm&&S.keepScroll)mm.scrollTop=scroll;S.keepScroll=false;
@@ -674,6 +698,8 @@ document.addEventListener('click',e=>{
   if(t.closest('#fR')){S.rf={g:'',p:'',q:'',size:S.rf.size,page:1};S.keepScroll=true;render();return}
   const sz=t.closest('[data-size]');if(sz){S.rf.size=+sz.dataset.size;S.rf.page=1;S.keepScroll=true;render();return}
   const pgb=t.closest('[data-pg]');if(pgb){S.rf.page+=+pgb.dataset.pg;S.keepScroll=true;render();return}
+  const qb=t.closest('[data-q]');if(qb){const k=qb.dataset.q;S[k+'f']=$('#f'+k+'A').value;S.keepScroll=true;render();return}
+  const rb=t.closest('[data-r]');if(rb){S[rb.dataset.r+'f']='';S.keepScroll=true;render();return}
   if(t.closest('#expMem')){toast('已导出受邀会员列表（原型示意）');return}
   if(t.closest('#addMem')){S.modal='member';S.mErr='';render();return}
   if(t.closest('#addPrize')){S.modal='prize';render();return}
