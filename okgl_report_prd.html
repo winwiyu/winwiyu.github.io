@@ -125,7 +125,7 @@ th.dc,td.dc{background:var(--del-l);color:var(--del);text-decoration:line-throug
 .rc h3,.qr h3{margin:0 0 8px;font-size:16px;font-weight:900;font-family:var(--cn);display:flex;align-items:center;gap:10px}
 .rc h3 small{font-size:12px;font-weight:500;color:var(--muted)}
 .rc .flt{padding:4px 0 10px}
-.rc .flt select{width:150px}
+.rc .flt select{width:130px}.rc .flt input{min-width:140px}.pill{white-space:nowrap}.rc .tbl td.mono{white-space:nowrap}
 .qr{padding:16px;text-align:center}
 .qr h3{justify-content:flex-start}
 .qr svg{width:150px;height:150px;margin:6px auto}
@@ -254,8 +254,8 @@ body.nomark .oldwrap{display:none}
     <h2 class="t">活动报表整合 &amp; 后台精简 PRD</h2>
     <p class="lead" style="margin-bottom:6px">本次共 8 处改动：</p>
     <ol class="lead-list">
-      <li>活动详情页归到「活动报表」，标题改为活动切换，二维码移到活动切换下方，「最近签到」换成小游戏报表，下方新增抽奖活动报表、受邀会员管理</li>
-      <li>删除左侧菜单「小游戏报表」</li>
+      <li>活动详情页归到「活动报表」，标题改为活动切换，二维码移到活动切换下方，「最近签到」换成小游戏报表（新增导出），下方新增抽奖活动报表、受邀会员管理</li>
+      <li>删除左侧菜单「小游戏报表」「抽奖活动报表」「受邀会员管理」</li>
       <li>活动管理只管理活动，点击活动名称跳到对应活动报表</li>
       <li>受邀会员「关联会员ID」改为 VIP / Companion 单选，新增 VIP/Companion、签到状态筛选和导出按钮</li>
       <li>删除「奖品类别管理」菜单和奖品的类别名称，奖品列表新增活动名称列和活动筛选</li>
@@ -271,7 +271,7 @@ body.nomark .oldwrap{display:none}
       <div><dt>改动点</dt><dd>8 项</dd></div>
     </dl>
     <nav class="toc" aria-label="目录">
-      <a href="#s1"><i>1</i>活动报表看板</a><a href="#s2"><i>2</i>删小游戏报表菜单</a><a href="#s3"><i>3</i>活动管理</a><a href="#s4"><i>4</i>VIP/Companion</a><a href="#s5"><i>5</i>奖品管理</a><a href="#s6"><i>6</i>小游戏管理</a><a href="#s7"><i>7</i>员工后台中奖名单</a><a href="#s8"><i>8</i>抽奖游戏管理</a>
+      <a href="#s1"><i>1</i>活动报表看板</a><a href="#s2"><i>2</i>删除菜单</a><a href="#s3"><i>3</i>活动管理</a><a href="#s4"><i>4</i>VIP/Companion</a><a href="#s5"><i>5</i>奖品管理</a><a href="#s6"><i>6</i>小游戏管理</a><a href="#s7"><i>7</i>员工后台中奖名单</a><a href="#s8"><i>8</i>抽奖游戏管理</a>
     </nav>
 
     <section class="sec" id="s1">
@@ -305,7 +305,7 @@ body.nomark .oldwrap{display:none}
         <tr><td>操作人</td><td>员工后台添加中奖名单的员工账号</td></tr>
         <tr><td>操作时间</td><td>YYYY/MM/DD HH:mm:ss</td></tr>
       </tbody></table>
-      <p>字段和原「小游戏报表」页<strong>完全一致，全部保留</strong>。</p>
+      <p>字段和原「小游戏报表」页<strong>完全一致，全部保留</strong>。筛选栏「重置」右边<span class="tag-a">新增</span>「导出」按钮。</p>
       <h4>d. 抽奖活动报表、受邀会员管理</h4>
       <ol>
         <li>小游戏报表下方<span class="tag-a">新增</span>「抽奖活动报表」，再往下<span class="tag-a">新增</span>「受邀会员管理」。</li>
@@ -316,11 +316,11 @@ body.nomark .oldwrap{display:none}
     </section>
 
     <section class="sec" id="s2">
-      <h3><span class="n">2</span>删除左侧菜单「小游戏报表」</h3>
+      <h3><span class="n">2</span>删除左侧菜单</h3>
       <div class="loc">位置：<b>左侧菜单 › 活动管理分组</b></div>
       <div class="demo"><button data-go="report">查看菜单</button></div>
       <ol>
-        <li><span class="tag-d">删除</span>菜单项「小游戏报表」。原页面的功能已并入活动报表看板（见 1-c）。</li>
+        <li><span class="tag-d">删除</span>菜单项「小游戏报表」「抽奖活动报表」「受邀会员管理」。三个页面的功能已并入活动报表看板（见 1-c、1-d）。</li>
         <li>旧页面地址（书签、外链）访问时，重定向到「活动报表」。</li>
       </ol>
     </section>
@@ -338,8 +338,8 @@ body.nomark .oldwrap{display:none}
 
     <section class="sec" id="s4">
       <h3><span class="n">4</span>受邀会员：关联会员ID → VIP / Companion</h3>
-      <div class="loc">位置：<b>用户管理 › 受邀会员管理</b>（新增 / 修改弹窗、列表）</div>
-      <div class="demo"><button data-go="members">查看列表</button><button data-go="members" data-open="memberModal">打开新增弹窗</button></div>
+      <div class="loc">位置：<b>活动报表看板 › 受邀会员管理</b>（新增 / 修改弹窗、列表）</div>
+      <div class="demo"><button data-go="report" data-open="members">查看列表</button><button data-go="report" data-open="memberModal">打开新增弹窗</button></div>
       <h4>a. 新增 / 修改弹窗</h4>
       <ol>
         <li><span class="tag-d">删除</span>「关联会员ID（选填，填写已有会员ID）」输入框。</li>
@@ -349,7 +349,7 @@ body.nomark .oldwrap{display:none}
       <ol>
         <li><span class="tag-d">删除</span>「关联会员ID」列。</li>
         <li><span class="tag-a">新增</span>「VIP/Companion」列，放在原「关联会员ID」的位置，每行显示 <strong>VIP</strong> 或 <strong>Companion</strong> 标签。</li>
-        <li>顶部筛选<span class="tag-a">新增</span>「VIP/Companion」筛选（全部类型 / VIP / Companion）和「签到状态」筛选（全部签到状态 / 已签到 / 未签到），放在「全部活动」右边。</li>
+        <li>顶部筛选<span class="tag-a">新增</span>「VIP/Companion」筛选（全部类型 / VIP / Companion）和「签到状态」筛选（全部签到状态 / 已签到 / 未签到），放在搜索框左边。</li>
       </ol>
       <h4>c. 会员编号规则</h4>
       <ol>
@@ -358,7 +358,7 @@ body.nomark .oldwrap{display:none}
         <li>会员签到成功时分配编号，分配后不再变化。员工后台添加中奖名单时输入的签到ID 就是这个编号。</li>
       </ol>
       <h4>d. 导出</h4>
-      <p>页面右上角<span class="tag-a">新增</span>「导出」按钮，放在「上传名单」左边，导出受邀会员列表。</p>
+      <p>模块右上角<span class="tag-a">新增</span>「导出」按钮，放在「上传名单」左边，导出受邀会员列表。</p>
       <h4>e. 历史数据</h4>
       <p>已填「关联会员ID」的会员标为 <strong>Companion</strong>，未填的标为 <strong>VIP</strong>。</p>
     </section>
@@ -492,8 +492,8 @@ const hex8=()=>Array.from({length:8},()=>'0123456789abcdef'[Math.random()*16|0])
 
 const ico='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2.5"/></svg>';
 const MENU=[
-  ['活动管理',[['activity','活动管理',2],['report','活动报表',2],['x2','小游戏报表',445],['bac','百家乐报表'],['lot','抽奖活动报表',134],['sig','签署留证']]],
-  ['用户管理',[['members','受邀会员管理',297],['staffm','现场工作人员管理',21],['adm','管理员',7]]],
+  ['活动管理',[['activity','活动管理',2],['report','活动报表',2],['x2','小游戏报表',445],['bac','百家乐报表'],['x2b','抽奖活动报表',134],['sig','签署留证']]],
+  ['用户管理',[['x2c','受邀会员管理',297],['staffm','现场工作人员管理',21],['adm','管理员',7]]],
   ['奖品管理',[['x5','奖品类别管理',3],['prizes','奖品管理',26]]],
   ['游戏管理',[['bg','百家乐游戏管理',5],['br','百家乐轮次管理',4],['minigame','小游戏管理',7],['lg','抽奖游戏管理',10]]]
 ];
@@ -504,7 +504,7 @@ function side(){
   MENU.forEach(([g,items])=>{
     h+=`<div class="grp">${g}</div>`;
     items.forEach(([k,label,c])=>{
-      if(k==='x2'||k==='x5'){h+=`<div class="mi gone chg" data-n="${k==='x2'?2:5}" style="outline-color:var(--del)">${ico}${label}<span class="c">删除</span></div>`;return}
+      if(k==='x2'||k==='x2b'||k==='x2c'||k==='x5'){h+=`<div class="mi gone chg" data-n="${k==='x5'?5:2}" style="outline-color:var(--del)">${ico}${label}<span class="c">删除</span></div>`;return}
       const on=S.page===k;
       const mark=(k==='report'&&S.page==='report')?' chg" data-n="1':'';
       h+=`<button class="mi${on?' on':''}${mark}" data-page="${k}">${ico}${label}${c!=null?`<span class="c">${c}</span>`:''}</button>`;
@@ -562,7 +562,7 @@ function pageReport(){
         <select id="fG" aria-label="小游戏"><option value="">全部小游戏</option>${gs.map(g=>`<option value="${g.id}"${rf.g===g.id?' selected':''}>${esc(g.name)}</option>`).join('')}</select>
         <select id="fP" aria-label="奖品"><option value="">全部奖品</option>${pnames.map(p=>`<option${rf.p===p?' selected':''}>${esc(p)}</option>`).join('')}</select>
         <input id="fQ" placeholder="输入受邀会员姓名或编号查询" value="${esc(rf.q)}">
-        <button class="b gold" id="fS">搜索</button><button class="b" id="fR">重置</button></div>
+        <button class="b gold" id="fS">搜索</button><button class="b" id="fR">重置</button><span class="chg" data-n="1" style="display:inline-flex"><button class="b" id="fE">导出</button></span></div>
       <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>ID</th><th>活动名称</th><th>小游戏名称</th><th>受邀会员</th><th>奖品名称</th><th>操作人</th><th>操作时间</th></tr></thead><tbody>
       ${rows.length?rows.map(r=>{const m=memberOf(r.num);return `<tr${S.justAdded===r.id?' style="background:#fff8e6"':''}><td class="mono nw">${r.id}</td><td>${esc(a.name)}</td><td>${esc(gameOf(r.g).name)}</td><td>${r.num} · ${esc(m?m.name:'')}</td><td>${esc(r.prize)}</td><td class="nw">${esc(r.op)}</td><td class="mono nw">${r.t.replace(' ','<br>')}</td></tr>`}).join(''):`<tr><td colspan="7"><div class="empty">该活动暂无小游戏发放记录</div></td></tr>`}
       </tbody></table></div>
@@ -574,9 +574,9 @@ function pageReport(){
       <div class="flt"><select id="rlT" aria-label="奖项"><option value="">全部奖项</option>${lotto.filter(l=>l.act===a.key).map(l=>`<option${S.rl.t===l.tier?' selected':''}>${l.tier}</option>`).join('')}</select><input id="rlQ" placeholder="输入受邀会员姓名或编号查询" value="${esc(S.rl.q)}"><button class="b gold" id="rlS">搜索</button><button class="b" id="rlR">重置</button><button class="b">导出</button></div>
       <div style="overflow-x:auto"><table class="tbl">${ldHead}<tbody>${lrows.length?lrows.map(ldRow).join(''):'<tr><td colspan="9"><div class="empty">该活动暂无中奖记录</div></td></tr>'}</tbody></table></div>
     </div>
-    <div class="card rc chg" data-n="1">
-      <h3>受邀会员管理<small>共 ${mrows.length} 条</small></h3>
-      <div class="flt"><select id="rmT" style="width:130px" aria-label="VIP/Companion"><option value="">全部类型</option>${['VIP','Companion'].map(v=>`<option${S.rm.t===v?' selected':''}>${v}</option>`).join('')}</select><select id="rmS" style="width:140px" aria-label="签到状态"><option value="">全部签到状态</option><option value="1"${S.rm.s==='1'?' selected':''}>已签到</option><option value="0"${S.rm.s==='0'?' selected':''}>未签到</option></select><input id="rmQ" placeholder="输入编号、手机号码或姓名查询" value="${esc(S.rm.q)}"><button class="b gold" id="rmS2">搜索</button><button class="b" id="rmR">重置</button><button class="b">导出</button></div>
+    <div class="card rc chg" data-n="1" id="rmCard">
+      <h3>受邀会员管理<small>共 ${mrows.length} 条</small><span style="margin-left:auto;display:flex;gap:8px"><span class="chg" data-n="4" style="display:inline-flex"><button class="b sm" id="expMem">导出</button></span><button class="b sm">上传名单</button><button class="b gold sm" id="addMem">＋ 新增</button></span></h3>
+      <div class="flt"><span class="chg" data-n="4" style="display:inline-flex;gap:8px"><select id="rmT" style="width:130px" aria-label="VIP/Companion"><option value="">全部类型</option>${['VIP','Companion'].map(v=>`<option${S.rm.t===v?' selected':''}>${v}</option>`).join('')}</select><select id="rmS" style="width:140px" aria-label="签到状态"><option value="">全部签到状态</option><option value="1"${S.rm.s==='1'?' selected':''}>已签到</option><option value="0"${S.rm.s==='0'?' selected':''}>未签到</option></select></span><input id="rmQ" placeholder="输入编号、手机号码或姓名查询" value="${esc(S.rm.q)}"><button class="b gold" id="rmS2">搜索</button><button class="b" id="rmR">重置</button></div>
       <div style="overflow-x:auto;max-height:520px"><table class="tbl mt">${memberHead}<tbody>${mrows.length?mrows.map(memberRow).join(''):'<tr><td colspan="10"><div class="empty">该活动暂无受邀会员</div></td></tr>'}</tbody></table></div>
     </div>
   </div>
@@ -713,6 +713,7 @@ function go(page,open){
   if(page==='staff'){S.mode='staff';if(open==='addMember'){const g=gameOf(S.staffGame);S.sheet={i:0,v:''}}}
   else{S.mode='admin';S.page=page;if(page==='report'&&open==='switch'){S.sw=true;S.swq=''}if(open==='memberModal'){S.modal='member';S.mErr=''}if(open==='prizeModal')S.modal='prize'}
   render();
+  if(open==='members'){const c=document.getElementById('rmCard');const m=document.querySelector('.main');if(c&&m)m.scrollTop=c.offsetTop-20}
   if(window.matchMedia('(max-width:1200px)').matches)document.querySelector('.proto').scrollIntoView({behavior:'smooth'});
 }
 
@@ -742,6 +743,7 @@ document.addEventListener('click',e=>{
   if(t.closest('#ldR')){S.ld={a:'',t:'',q:''};render();return}
   const qb=t.closest('[data-q]');if(qb){const k=qb.dataset.q;S[k+'f']=$('#f'+k+'A').value;S.keepScroll=true;render();return}
   const rb=t.closest('[data-r]');if(rb){S[rb.dataset.r+'f']='';S.keepScroll=true;render();return}
+  if(t.closest('#fE')){toast('已导出小游戏报表（原型示意）');return}
   if(t.closest('#expMem')){toast('已导出受邀会员列表（原型示意）');return}
   if(t.closest('#addMem')){S.modal='member';S.mErr='';render();return}
   if(t.closest('#addPrize')){S.modal='prize';render();return}
