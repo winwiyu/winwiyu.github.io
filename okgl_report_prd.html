@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OKGL 赛事系统 · 活动报表整合与菜单精简 PRD</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{color-scheme:light;
+  --bg:#f4f1ec;--card:#fff;--side:#151413;--side-t:#cfc8bc;--side-m:#7d766b;
+  --gold:#b8913a;--gold-d:#8a6a22;--gold-l:#f3ead6;--btn:#ebe6de;--btn-h:#e2dbcf;
+  --line:#e7e1d6;--line-2:#d9d2c5;--text:#1d1b18;--muted:#7a7368;--red:#d61f1f;--green:#16a34a;--green-l:#e3f6ea;
+  --chg:#e8541e;--del:#c62828;--del-l:#fdecea;
+  --cn:'Noto Sans SC','PingFang SC','Microsoft YaHei',system-ui,sans-serif;
+  --ui:'Inter','Noto Sans SC',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:#faf8f5;color:var(--text);font-family:var(--cn)}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+.wrap{display:flex;gap:28px;max-width:1520px;margin:0 auto;padding:20px 20px 60px;align-items:flex-start}
+.proto{flex:1 1 960px;min-width:0;position:sticky;top:12px;display:flex;flex-direction:column;gap:10px}
+.spec{flex:0 1 400px;min-width:320px}
+@media (max-width:1200px){.wrap{flex-direction:column}.proto{position:static;width:100%}.spec{max-width:820px;flex-basis:auto;width:100%}}
+
+/* toolbar */
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px}
+.seg{display:inline-flex;background:#ece7df;border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;height:32px;padding:0 14px;border-radius:8px;font-size:13px;font-weight:700;color:#5f584d}
+.seg button[aria-pressed=true]{background:#fff;color:var(--text);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.sw{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;cursor:pointer;user-select:none}
+.sw input{position:absolute;opacity:0;width:1px;height:1px}
+.sw span{width:34px;height:20px;border-radius:10px;background:#cfc8bc;position:relative;transition:background .15s}
+.sw span::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:8px;background:#fff;transition:transform .15s}
+.sw input:checked+span{background:var(--chg)}.sw input:checked+span::after{transform:translateX(14px)}
+.sw input:focus-visible+span{outline:2px solid var(--gold);outline-offset:2px}
+.legend{font-size:12px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+.legend i{display:inline-block;width:14px;height:10px;vertical-align:-1px;margin-right:4px;border-radius:2px}
+.legend .l1{border:2px dashed var(--chg)}.legend .l2{background:var(--del-l);border:1px dashed var(--del)}
+body.nomark .legend{visibility:hidden}
+
+/* frame */
+.fscroll{overflow-x:auto;border-radius:14px;box-shadow:0 0 0 1px var(--line-2),0 18px 50px rgba(40,30,10,.12)}
+.frame{position:relative;min-width:960px;height:clamp(620px,calc(100vh - 80px),820px);display:flex;background:var(--bg);font-family:var(--ui);font-size:13px;overflow:hidden}
+.side{width:200px;flex:none;background:var(--side);color:var(--side-t);display:flex;flex-direction:column;overflow-y:auto}
+.logo{display:flex;align-items:center;gap:10px;padding:16px 14px 10px}
+.logo b{display:block;font-size:18px;letter-spacing:3px;color:var(--gold);font-weight:800}
+.logo small{font-size:9px;color:var(--side-m)}
+.logo .sh{width:34px;height:34px;border:2px solid var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center}
+.grp{font-size:10px;color:var(--side-m);padding:14px 16px 6px}
+.mi{display:flex;align-items:center;gap:10px;margin:2px 8px;padding:0 10px;height:36px;border-radius:8px;border:0;background:transparent;color:var(--side-t);font-size:13px;width:calc(100% - 16px);text-align:left;font-family:var(--cn)}
+.mi svg{flex:none;opacity:.8}
+.mi .c{margin-left:auto;font-size:11px;color:var(--side-m);font-family:var(--ui)}
+.mi:hover{background:#24221f}
+.mi.on{background:var(--gold);color:#1a1408;font-weight:700}.mi.on .c{color:#3d2e0e}
+.mi.gone{color:#e07a6e;text-decoration:line-through;background:rgba(198,40,40,.12);cursor:default}
+body.nomark .mi.gone{display:none}
+.lang{margin:auto 10px 12px;display:inline-flex;align-self:flex-start;border:1px solid #333;border-radius:8px;overflow:hidden;font-size:11px}
+.lang span{padding:5px 10px}.lang span:first-child{background:var(--gold);color:#1a1408;font-weight:700}
+.main{flex:1;min-width:0;overflow:auto;padding:18px 24px 30px;position:relative}
+.top{display:flex;justify-content:flex-end;align-items:center;gap:10px;margin-bottom:14px;font-size:12px;color:var(--muted)}
+.top b{color:var(--text)}
+.b{height:34px;padding:0 14px;border:0;border-radius:9px;background:var(--btn);font-size:12.5px;font-weight:700;font-family:var(--cn);display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.b:hover{background:var(--btn-h)}
+.b.gold{background:var(--gold);color:#1a1408}.b.gold:hover{background:#a8822f}
+.b.red{background:var(--red);color:#fff}
+.b.sm{height:30px;padding:0 12px;font-size:12px}
+.b:disabled{opacity:.45;cursor:not-allowed}
+.ph{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}
+.ph h1{margin:0;font-size:24px;font-weight:900;font-family:var(--cn);display:flex;align-items:center;gap:8px}
+.ph p{margin:6px 0 0;color:var(--muted);font-size:13px;font-family:var(--cn)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{text-align:left;font-size:12px;font-weight:700;padding:11px 12px;border-bottom:1.5px solid #1d1b18;white-space:nowrap;font-family:var(--cn)}
+.tbl td{white-space:nowrap;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle;font-size:12.5px}
+.tbl tr:last-child td{border-bottom:0}
+.mono{font-family:var(--mono);font-size:11.5px;color:#6d665b}
+.pill{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:5px;font-size:11px;font-weight:700}
+.p-green{background:var(--green-l);color:var(--green)}.p-gray{background:#efece6;color:#8a8377}
+.p-vip{background:#fbf1d9;color:#8a6a22}.p-comp{background:#e6eefc;color:#2f5bb8}
+.flt{display:flex;gap:10px;padding:12px;align-items:center;flex-wrap:wrap}
+.flt select,.flt input,.fld input,.fld select{height:38px;border:1px solid var(--line-2);border-radius:9px;background:#fff;padding:0 12px;min-width:0;font-family:var(--cn);font-size:13px}
+.flt input{flex:1;min-width:160px}
+select:focus,input:focus{outline:2px solid var(--gold);outline-offset:0;border-color:var(--gold)}
+.pg{display:flex;justify-content:flex-end;align-items:center;gap:10px;padding:12px 4px 0;font-size:12px;color:var(--muted);font-family:var(--cn)}
+.pg .sz{display:inline-flex;gap:2px}.pg .sz button{border:0;background:transparent;height:24px;min-width:26px;border-radius:5px;font-size:12px}
+.pg .sz button.on{background:var(--gold);color:#1a1408;font-weight:700}
+.link{border:0;background:none;padding:0;color:var(--gold-d);font-weight:700;font-size:13px;text-align:left;font-family:var(--ui)}
+.link:hover{text-decoration:underline}
+.empty{padding:36px;text-align:center;color:var(--muted);font-family:var(--cn)}
+
+/* change markers */
+.chg{position:relative;outline:2px dashed var(--chg);outline-offset:3px;border-radius:6px}
+.chg[data-n]::after{content:attr(data-n);position:absolute;top:-11px;left:-11px;width:20px;height:20px;border-radius:10px;background:var(--chg);color:#fff;font:700 11px/20px var(--ui);text-align:center;z-index:4;pointer-events:none}
+body.nomark .chg{outline:none}body.nomark .chg::after{display:none}
+.del{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--del);background:var(--del-l);border:1px dashed var(--del);border-radius:5px;padding:2px 7px;text-decoration:line-through;white-space:nowrap;font-family:var(--cn)}
+.del.blk{display:flex;width:max-content}
+body.nomark .del,body.nomark .dc{display:none!important}
+th.dc,td.dc{background:var(--del-l);color:var(--del);text-decoration:line-through}
+
+/* report */
+.rh{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:16px}
+.acts{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;max-width:560px}
+.swt{position:relative;display:inline-block}
+.swb{white-space:nowrap;border:0;background:transparent;padding:4px 6px 4px 0;display:inline-flex;align-items:center;gap:8px;font-size:26px;font-weight:900;font-family:var(--ui);letter-spacing:-.3px}
+.swb .car{width:26px;height:26px;border-radius:7px;background:var(--btn);display:inline-flex;align-items:center;justify-content:center;transition:transform .15s}
+.swb[aria-expanded=true] .car{transform:rotate(180deg)}
+.swb:hover .car{background:var(--btn-h)}
+.code{color:var(--muted);font-size:13px;margin-top:2px}
+.pop{position:absolute;top:calc(100% + 6px);left:0;width:380px;background:#fff;border:1px solid var(--line-2);border-radius:12px;box-shadow:0 16px 40px rgba(40,30,10,.18);z-index:30;padding:8px}
+.pop input{width:100%;height:36px;border:1px solid var(--line-2);border-radius:8px;padding:0 10px;margin-bottom:6px;font-family:var(--cn)}
+.opt{display:grid;grid-template-columns:1fr auto;gap:2px 10px;width:100%;border:0;background:transparent;text-align:left;padding:9px 10px;border-radius:8px}
+.opt:hover{background:#f6f2ea}.opt.on{background:var(--gold-l)}
+.opt b{font-size:14px}.opt small{grid-column:1/-1;color:var(--muted);font-size:11.5px}
+.stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.st{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.st span{font-size:11px;color:var(--muted);font-family:var(--cn)}.st b{display:block;font-size:24px;font-weight:800;margin-top:6px}
+.upd{text-align:right;font-size:11px;color:var(--muted);margin:8px 0 14px;font-family:var(--cn)}
+.rc .tbl td{white-space:normal;font-size:12px;padding:9px 8px}.rc .tbl th{padding:10px 8px}.rc .tbl td.nw{white-space:nowrap}
+.rg{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
+.rc{padding:16px}
+.rc h3,.qr h3{margin:0 0 8px;font-size:16px;font-weight:900;font-family:var(--cn);display:flex;align-items:center;gap:10px}
+.rc h3 small{font-size:12px;font-weight:500;color:var(--muted)}
+.rc .flt{padding:4px 0 10px}
+.rc .flt select{width:150px}
+.qr{padding:16px;text-align:center}
+.qr h3{justify-content:flex-start}
+.qr svg{width:150px;height:150px;margin:6px auto}
+.qr .n{font-weight:800;font-size:14px}.qr .k{font-family:var(--mono);color:var(--gold);font-size:13px;margin:2px 0 6px}
+.qr .u{font-size:10px;color:var(--muted);word-break:break-all;margin-bottom:10px}
+.imp{margin-top:16px;padding:14px 16px;font-weight:800;font-family:var(--cn)}
+
+/* modal */
+.mask{position:absolute;inset:0;background:rgba(20,18,15,.45);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px}
+.modal{width:660px;max-width:100%;background:#fff;border-radius:16px;padding:22px 24px;font-family:var(--cn);box-shadow:0 24px 60px rgba(0,0,0,.25)}
+.modal h2{margin:0 0 16px;font-size:18px;font-weight:900}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px}
+.fld{display:flex;flex-direction:column;gap:6px;font-size:12.5px;font-weight:700;min-width:0}
+.fld.full{grid-column:1/-1}
+.fld input,.fld select{width:100%}
+.fld .err{color:var(--red);font-weight:500;font-size:11.5px}
+.mf{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}
+.rad{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rad label{height:38px;border:1.5px solid var(--line-2);border-radius:9px;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;font-weight:700;font-size:13px}
+.rad input{accent-color:var(--gold);width:15px;height:15px;margin:0}
+.rad label:has(input:checked){border-color:var(--gold);background:var(--gold-l)}
+.rad label:has(input:focus-visible){outline:2px solid var(--gold);outline-offset:2px}
+.hint{font-weight:500;color:var(--muted);font-size:11.5px}
+.chk{display:flex;align-items:center;gap:6px;font-weight:500;font-size:12px}
+
+/* mini game */
+.pz{display:flex;flex-direction:column;gap:4px}
+.pz div{font-size:12px}.pz b{font-weight:700}
+.iss{display:inline-flex;align-items:center;gap:4px;color:var(--gold-d);font-weight:700}
+.ops{display:flex;flex-direction:column;gap:6px;align-items:stretch;width:120px}
+
+/* staff H5 */
+.staffbg{flex:1;background:#f4f4f3;overflow:auto;padding:24px 36px;font-family:var(--ui)}
+.ps{max-width:1000px;margin:0 auto}
+.staffbg .pcard{padding:18px 20px}.staffbg .wl td,.staffbg .wl th{padding:10px 8px}
+.back{border:0;background:none;padding:0;color:#6b665f;font-size:13px}
+.ptitle{font-size:24px;font-weight:800;margin:10px 0 2px}
+.psub{color:#7a756d;font-size:12.5px;margin-bottom:12px}
+.gsel{width:100%;height:34px;border:1px dashed #b9b2a6;border-radius:8px;background:#fff;padding:0 10px;font-size:12px;color:#5f584d;margin-bottom:12px}
+.tabs-old{display:flex;gap:4px;background:#e4e2df;border-radius:10px;padding:4px;margin-bottom:12px;opacity:.75}
+.tabs-old span{flex:1;text-align:center;font-size:11px;font-weight:700;padding:7px 0;border-radius:7px;text-decoration:line-through;color:var(--del)}
+.tabs-old span:first-child{background:#fff}
+.oldwrap{position:relative;margin-bottom:14px}
+.oldwrap .del{position:absolute;top:-9px;right:6px;z-index:2}
+body.nomark .oldwrap{display:none}
+.pcard{background:#fff;border-radius:14px;border:1px solid #e7e4df;padding:14px;margin-bottom:12px}
+.pch{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:6px}
+.pch b{font-size:15px;font-weight:800}.pch small{display:block;color:#7a756d;font-size:12px;margin-top:2px}
+.addm{height:40px;padding:0 14px;border:0;border-radius:10px;background:var(--gold);color:#1a1408;font-weight:800;font-size:13px;flex:none}
+.addm:disabled{background:#d8d3ca;color:#8a8377;cursor:not-allowed}
+.wl{width:100%;border-collapse:collapse;font-size:12.5px}
+.wl th{text-align:left;color:#7a756d;font-weight:700;padding:8px 6px;border-bottom:1px solid #ece9e4;font-size:12px}
+.wl td{padding:9px 6px;border-bottom:1px solid #f0eeea}
+.wl tr.new td{background:#fff8e6}
+.wl td:nth-child(2){font-family:var(--mono)}
+.sheet-mask{position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
+.dlg{width:420px;max-width:100%;box-shadow:0 20px 50px rgba(0,0,0,.25);background:#fff;border-radius:16px;padding:20px}.dlg h4{margin:0 0 4px;font-size:16px;font-weight:800}.dlg .sub{color:#7a756d;font-size:13px;margin-bottom:16px}
+.dlg input{width:100%;background:#fff;color:#1d1b18;height:48px;border:1.5px solid var(--gold);border-radius:12px;padding:0 14px;font-size:16px}
+.dlg .dbtn{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:20px}.dlg .cx{border:0;background:none;font-weight:800;font-size:15px;padding:0 14px;height:44px}.dlg .ok{border:0;background:var(--gold);color:#1a1408;font-weight:800;font-size:15px;padding:0 18px;height:48px;border-radius:12px}
+.sheet{width:100%;background:#fff;border-radius:18px 18px 0 0;padding:18px 16px 22px}
+.sheet h4{margin:0 0 4px;font-size:16px}.sheet .sub{color:#7a756d;font-size:12px;margin-bottom:12px}
+.sheet input{width:100%;height:46px;border:1.5px solid #d7d2c9;border-radius:10px;padding:0 12px;font-size:18px;font-family:var(--mono);letter-spacing:1px}
+.res{min-height:54px;margin:10px 0 14px;border-radius:10px;padding:10px 12px;font-size:13px;background:#f6f5f2;color:#7a756d}
+.res.ok{background:#eaf7ef;color:#14532d}.res.bad{background:#fdecea;color:#9b1c1c}.res.warn{background:#fff6e0;color:#7a5200}
+.res b{display:block;font-size:14px;color:inherit}
+.sbtn{display:grid;grid-template-columns:1fr 1.4fr;gap:10px}
+.sbtn button{height:44px;border:0;border-radius:10px;font-weight:800}
+.sbtn .cx{background:#ece9e4}.sbtn .ok{background:var(--gold);color:#1a1408}
+.sbtn .ok:disabled{background:#d8d3ca;color:#8a8377;cursor:not-allowed}
+.toast{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);background:#1d1b18;color:#fff;padding:9px 14px;border-radius:10px;font-size:12.5px;z-index:60;white-space:nowrap;font-family:var(--cn)}
+.ph-note{font-size:11.5px;color:#7a756d;text-align:center;margin-top:8px}
+
+/* ---------- spec ---------- */
+.spec{font-size:14px;line-height:1.75;color:#3a352d}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:2px;color:var(--gold-d)}
+.spec h2.t{margin:6px 0 10px;font-size:26px;line-height:1.3;color:#14120f;font-weight:900;text-wrap:balance}
+.lead{margin:0 0 14px}
+.lead-list{margin:0 0 10px;padding-left:22px}.lead-list li{margin:2px 0}
+.meta{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:0 0 14px}
+.meta div{background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.meta dt{font-size:11px;color:var(--muted)}.meta dd{margin:2px 0 0;font-weight:700;font-size:13px;color:#14120f}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+.toc a{display:inline-flex;align-items:center;gap:6px;min-height:30px;padding:0 11px;border-radius:15px;background:#efe9de;color:#2a251d;text-decoration:none;font-size:12.5px;font-weight:700}
+.toc a:hover{background:#e6dece}
+.toc a i{font-style:normal;width:18px;height:18px;border-radius:9px;background:var(--chg);color:#fff;font-size:11px;display:inline-flex;align-items:center;justify-content:center;font-family:var(--ui)}
+.sec{border-top:1px solid var(--line);padding:24px 0 6px;scroll-margin-top:12px}
+.sec h3{margin:0 0 8px;font-size:18px;font-weight:900;color:#14120f;display:flex;align-items:center;gap:10px}
+.sec h3 .n{width:26px;height:26px;border-radius:13px;background:var(--chg);color:#fff;font:700 13px/26px var(--ui);text-align:center;flex:none}
+.sec h4{margin:14px 0 4px;font-size:14px;color:#14120f}
+.sec p{margin:0 0 8px}
+.sec ol,.sec ul{margin:0 0 8px;padding-left:20px}
+.sec li{margin:2px 0}
+.sec strong{color:#14120f}
+.loc{font-size:12.5px;color:var(--muted);margin-bottom:8px}
+.loc b{color:#3a352d}
+.demo{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}
+.demo button{height:32px;padding:0 12px;border-radius:8px;border:1px solid var(--gold);background:#fff;color:var(--gold-d);font-size:12.5px;font-weight:700}
+.demo button:hover{background:var(--gold-l)}
+.ft{width:100%;border-collapse:collapse;font-size:12.5px;margin:6px 0 10px;background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.ft th,.ft td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.ft th{background:#f7f3ec;color:var(--muted);font-weight:700;white-space:nowrap}
+.ft tr:last-child td{border-bottom:0}
+.tag-d{color:var(--del);font-weight:700}.tag-a{color:var(--chg);font-weight:700}
+.q{background:#fff8ea;border:1px solid #f0dcae;border-radius:12px;padding:14px 16px}
+.q ol{margin:0;padding-left:20px}
+.q li{margin:6px 0}
+.q em{font-style:normal;color:var(--gold-d);font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="proto" aria-label="可操作原型">
+    <div class="bar">
+      <div class="seg" role="group" aria-label="切换端">
+        <button id="mAdmin" aria-pressed="true">管理后台</button>
+        <button id="mStaff" aria-pressed="false">员工后台</button>
+      </div>
+      <label class="sw"><input type="checkbox" id="mark" checked><span></span>标注改动</label>
+      <div class="legend"><span><i class="l1"></i>新增 / 修改（数字对应右侧需求编号）</span><span><i class="l2"></i>删除</span></div>
+    </div>
+    <div class="fscroll"><div class="frame" id="frame"></div></div>
+  </section>
+
+  <aside class="spec" aria-label="需求说明">
+    <div class="eyebrow">OKGL 赛事系统 · 需求变更</div>
+    <h2 class="t">活动报表整合 &amp; 后台精简 PRD</h2>
+    <p class="lead" style="margin-bottom:6px">本次共 7 处改动：</p>
+    <ol class="lead-list">
+      <li>活动详情页归到「活动报表」，标题改为活动切换，「最近签到」换成小游戏报表</li>
+      <li>删除左侧菜单「小游戏报表」</li>
+      <li>活动管理只管理活动，点击活动名称跳到对应活动报表</li>
+      <li>受邀会员「关联会员ID」改为 VIP / Companion 单选，列表新增导出按钮</li>
+      <li>删除「奖品类别管理」菜单和奖品的类别名称</li>
+      <li>小游戏管理删除排队二维码，已发放数量取员工后台中奖名单，新增导出按钮</li>
+      <li>员工后台小游戏取消排队，改为按签到ID添加中奖名单，跟抽奖游戏一样</li>
+    </ol>
+    <p class="lead">左侧原型可以直接点，每节下方的按钮会切到对应页面。原型里的数据都是示例。</p>
+    <dl class="meta">
+      <div><dt>版本</dt><dd>v1.0</dd></div>
+      <div><dt>日期</dt><dd>2026-11-17</dd></div>
+      <div><dt>涉及端</dt><dd>管理后台 / 员工后台</dd></div>
+      <div><dt>改动点</dt><dd>7 项</dd></div>
+    </dl>
+    <nav class="toc" aria-label="目录">
+      <a href="#s1"><i>1</i>活动报表看板</a><a href="#s2"><i>2</i>删小游戏报表菜单</a><a href="#s3"><i>3</i>活动管理</a><a href="#s4"><i>4</i>VIP/Companion</a><a href="#s5"><i>5</i>删奖品类别</a><a href="#s6"><i>6</i>小游戏管理</a><a href="#s7"><i>7</i>员工后台中奖名单</a>
+    </nav>
+
+    <section class="sec" id="s1">
+      <h3><span class="n">1</span>活动报表看板（原活动详情页）</h3>
+      <div class="loc">位置：<b>左侧菜单「活动报表」</b>，或从「活动管理」点击活动名称进入</div>
+      <div class="demo"><button data-go="report">查看看板</button><button data-go="report" data-open="switch">展开活动切换</button></div>
+      <h4>a. 页面归属</h4>
+      <ol>
+        <li>原来从「活动管理」点进去的活动详情页，改为属于<strong>「活动报表」</strong>。进入后左侧菜单高亮「活动报表」，不再高亮「活动管理」。</li>
+        <li><span class="tag-d">删除</span>标题上方的「← 返回」按钮。</li>
+      </ol>
+      <h4>b. 活动切换</h4>
+      <ol>
+        <li>标题「Baccarat Series II」改为<strong>活动切换器</strong>：标题右侧加下拉箭头，点击后展开活动列表。</li>
+        <li>列表每项显示：活动名称、活动编号、活动状态、活动时间；顶部有搜索框，可按活动名称或编号搜索。当前活动高亮。</li>
+        <li>选中其他活动后，整页切换为该活动的数据：顶部统计卡、小游戏报表、二维码。小游戏报表的筛选条件重置。</li>
+        <li>页面 URL 带上活动 ID，刷新或分享链接后仍停留在该活动。</li>
+      </ol>
+      <h4>c. 「最近签到」替换为「小游戏报表」</h4>
+      <ol>
+        <li>原「最近签到」模块整块替换为<strong>小游戏报表</strong>，数据和原「小游戏报表」页一致。</li>
+        <li>筛选项：全部小游戏、全部奖品、受邀会员姓名或编号搜索、搜索、重置。<span class="tag-d">删除</span>「全部活动」筛选，数据范围跟随当前选中的活动（切到活动1显示活动1，切到活动2显示活动2）。小游戏、奖品下拉只列出当前活动下的选项。</li>
+        <li>列表字段如下，按操作时间倒序，分页 10 / 20 / 50 / 100。</li>
+      </ol>
+      <table class="ft"><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody>
+        <tr><td>ID</td><td>发放记录 ID</td></tr>
+        <tr><td>活动名称</td><td>当前选中的活动</td></tr>
+        <tr><td>小游戏名称</td><td>如 EVO - Snakes And Ladder</td></tr>
+        <tr><td>受邀会员</td><td>会员编号 · 姓名</td></tr>
+        <tr><td>奖品名称</td><td>发放的奖品</td></tr>
+        <tr><td>操作人</td><td>员工后台添加中奖名单的员工账号</td></tr>
+        <tr><td>操作时间</td><td>YYYY/MM/DD HH:mm:ss</td></tr>
+      </tbody></table>
+      <p>字段和原「小游戏报表」页<strong>完全一致，全部保留</strong>。</p>
+    </section>
+
+    <section class="sec" id="s2">
+      <h3><span class="n">2</span>删除左侧菜单「小游戏报表」</h3>
+      <div class="loc">位置：<b>左侧菜单 › 活动管理分组</b></div>
+      <div class="demo"><button data-go="report">查看菜单</button></div>
+      <ol>
+        <li><span class="tag-d">删除</span>菜单项「小游戏报表」。原页面的功能已并入活动报表看板（见 1-c）。</li>
+        <li>旧页面地址（书签、外链）访问时，重定向到「活动报表」。</li>
+      </ol>
+    </section>
+
+    <section class="sec" id="s3">
+      <h3><span class="n">3</span>活动管理</h3>
+      <div class="loc">位置：<b>左侧菜单「活动管理」</b></div>
+      <div class="demo"><button data-go="activity">查看活动管理</button></div>
+      <ol>
+        <li>活动管理只负责活动本身：<strong>新增、修改、删除活动和活动 Logo</strong>，列表就是活动1、活动2 这些活动。</li>
+        <li>点击列表里的活动名称，跳转到<strong>「活动报表」对应活动的看板</strong>（见 1），左侧菜单同时切到「活动报表」。</li>
+        <li>列表字段和其他按钮不变。</li>
+      </ol>
+    </section>
+
+    <section class="sec" id="s4">
+      <h3><span class="n">4</span>受邀会员：关联会员ID → VIP / Companion</h3>
+      <div class="loc">位置：<b>用户管理 › 受邀会员管理</b>（新增 / 修改弹窗、列表）</div>
+      <div class="demo"><button data-go="members">查看列表</button><button data-go="members" data-open="memberModal">打开新增弹窗</button></div>
+      <h4>a. 新增 / 修改弹窗</h4>
+      <ol>
+        <li><span class="tag-d">删除</span>「关联会员ID（选填，填写已有会员ID）」输入框。</li>
+        <li><span class="tag-a">新增</span>「会员类型」单选，选项 <strong>VIP</strong> / <strong>Companion</strong>，两者互斥，只能选一个。必选，默认 VIP。</li>
+      </ol>
+      <h4>b. 列表</h4>
+      <ol>
+        <li><span class="tag-d">删除</span>「关联会员ID」列。</li>
+        <li><span class="tag-a">新增</span>「VIP/Companion」列，放在原「关联会员ID」的位置，每行显示 <strong>VIP</strong> 或 <strong>Companion</strong> 标签。</li>
+      </ol>
+      <h4>c. 会员编号规则</h4>
+      <ol>
+        <li>会员编号<strong>按签到顺序分配</strong>：第 1 个签到的会员是 001，第 2 个是 002，依次递增。</li>
+        <li>上传名单、新增会员时<strong>不分配编号</strong>，未签到的会员编号显示「—」；新增弹窗里的会员编号不可填写。</li>
+        <li>会员签到成功时分配编号，分配后不再变化。员工后台添加中奖名单时输入的签到ID 就是这个编号。</li>
+      </ol>
+      <h4>d. 导出</h4>
+      <p>页面右上角<span class="tag-a">新增</span>「导出」按钮，放在「上传名单」左边，导出受邀会员列表。</p>
+      <h4>e. 历史数据</h4>
+      <p>已填「关联会员ID」的会员标为 <strong>Companion</strong>，未填的标为 <strong>VIP</strong>。</p>
+    </section>
+
+    <section class="sec" id="s5">
+      <h3><span class="n">5</span>删除奖品类别</h3>
+      <div class="loc">位置：<b>左侧菜单 › 奖品管理分组</b>、<b>奖品管理</b>页</div>
+      <div class="demo"><button data-go="prizes">查看奖品管理</button><button data-go="prizes" data-open="prizeModal">打开新增奖品弹窗</button></div>
+      <ol>
+        <li><span class="tag-d">删除</span>左侧菜单「奖品类别管理」。</li>
+        <li>奖品管理新增 / 修改弹窗<span class="tag-d">删除</span>「类别名称」选项。</li>
+        <li>奖品管理列表<span class="tag-d">删除</span>「类别名称」列和顶部「全部类别」筛选，只保留编号 / 奖品名称搜索。页面说明文字改为「跨赛事查看奖品，可按编号或奖品名称搜索」。</li>
+        <li>已有奖品的类别数据不再展示，不影响奖品本身和已发放记录。</li>
+      </ol>
+    </section>
+
+    <section class="sec" id="s6">
+      <h3><span class="n">6</span>小游戏管理</h3>
+      <div class="loc">位置：<b>游戏管理 › 小游戏管理</b></div>
+      <div class="demo"><button data-go="minigame">查看小游戏管理</button></div>
+      <ol>
+        <li><span class="tag-d">删除</span>每行操作列的「排队二维码」按钮，操作列只保留「修改」「删除」。</li>
+        <li>奖品列的<strong>已发放数量 = 员工后台为该小游戏、该奖品添加的中奖名单条数</strong>。员工每添加 1 人，已发放 +1，实时更新。</li>
+              <li>页面右上角<span class="tag-a">新增</span>「导出」按钮，放在「＋ 新增小游戏」左边，导出小游戏列表。</li>
+      </ol>
+      <p>原型里在员工后台添加一名会员，再切回这里，可以看到已发放数量变化。</p>
+    </section>
+
+    <section class="sec" id="s7">
+      <h3><span class="n">7</span>员工后台：排队改为添加中奖名单</h3>
+      <div class="loc">位置：<b>员工后台 › Duties › 小游戏</b>（如 Lobby - Smash And Score）</div>
+      <div class="demo"><button data-go="staff">查看员工后台</button><button data-go="staff" data-open="addMember">打开 Add Member</button></div>
+      <h4>a. 删除排队功能</h4>
+      <p><span class="tag-d">删除</span>Queue Management、Completed、On-site Registration 三个 Tab，以及排队状态、预估等待时长、Add player to queue、Refresh。</p>
+      <h4>b. 新的页面结构（和抽奖游戏一致）</h4>
+      <p>直接沿用抽奖游戏的中奖名单样式：</p>
+      <ol>
+        <li>左上：「Prize：」，下方灰字「奖品名称 · Stock left N」。</li>
+        <li>右上：「Add Member」按钮。</li>
+        <li>下方名单列：No.、Attendee ID、Name。</li>
+      </ol>
+      <h4>c. Add Member 弹窗</h4>
+      <ol>
+        <li>点击「Add Member」，弹出「Please input member ID」弹窗，副标题为「员工账号 · 奖品名称」。</li>
+        <li>输入框占位文字「Member ID」，员工输入签到ID（即会员编号，如 048）。</li>
+        <li>底部按钮：Cancel、Submit。</li>
+        <li>Submit 后：名单追加一行；Stock left −1；小游戏管理「已发放」+1；活动报表看板的小游戏报表新增一条记录，操作人为当前员工账号。</li>
+      </ol>
+    </section>
+
+  </aside>
+</div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- data ---------- */
+const activities=[
+  {id:'1560c9f8',key:'bacc',name:'Baccarat Series II',code:'OKGLBACCAR0YMQ',time:'2026/10/30 00:00:00 → 2026/11/18 22:30:00',created:'2026/10/23 15:45:41',updated:'2026/11/17 14:17:10'},
+  {id:'d0e524f4',key:'a2',name:'活动2',code:'2F0P3',time:'2026/11/17 14:32:00 → 2026/11/18 14:32:00',created:'2026/11/17 14:32:24',updated:'2026/11/17 14:32:24'}
+];
+const games=[
+  {id:'4133ba89',code:'EVOCONNECT478ZB',act:'bacc',name:'EVO - Connect 4',prizes:[{n:'bottle opener',s:667}],c:'2026/10/26 18:01:34',u:'2026/10/30 14:05:19'},
+  {id:'52341bd5',code:'EVOROCKPAPER85BM',act:'bacc',name:'EVO - Rock-Paper-Scissors',prizes:[{n:'Ballpan',s:300}],c:'2026/10/26 18:02:15',u:'2026/10/30 17:15:49'},
+  {id:'58e1f88b',code:'NLCSLOTTABLELD46',act:'bacc',name:'NLC - Slot Tablet Station',prizes:[{n:'bottle opener',s:667}],c:'2026/10/29 20:23:31',u:'2026/10/30 18:35:22'},
+  {id:'d3650bf5',code:'EVOSNAKESAND9MTJ',act:'bacc',name:'EVO - Snakes And Ladder',prizes:[{n:'Evolution Towel',s:300}],c:'2026/10/26 18:03:25',u:'2026/10/30 14:06:33'},
+  {id:'d135b591',code:'LOBBYHOOPMAN5OBQ',act:'bacc',name:'Lobby - Hoop Mania',prizes:[{n:'Okgames-Merch',s:300},{n:'random gift',s:400}],c:'2026/10/26 18:00:23',u:'2026/10/30 17:17:00'},
+  {id:'e7a1c2d0',code:'LOBBYSMASHAND2KQ',act:'bacc',name:'Lobby - Smash And Score',prizes:[{n:'Okgames-Merch',s:300}],c:'2026/10/26 18:04:10',u:'2026/10/30 17:20:02'},
+  {id:'9fe0a771',code:'MINIGAMEA7XK2',act:'a2',name:'Mini Game A',prizes:[{n:'Okgames-Merch',s:50}],c:'2026/11/17 14:40:02',u:'2026/11/17 14:40:02'}
+];
+const P=(num,name,acc,ph,signed,type)=>({num,name,acc,ph,signed,type,act:'bacc'});
+const members=[
+  P('001','MARCIAL III SANTIAGO BONDOC','cial023','8465',1,'VIP'),P('002','DODIE CARUNCON IRABAGON','dods1027','4828',1,'VIP'),
+  P('003','JONAS HANAPIN SARIO','ftf0825','6299',1,'Companion'),P('004','JAY-R LABONGRAY BALANO','JAYR07','3751',1,'VIP'),
+  P('005','KARL ANTHONY RAMO CHUA','kalie021913','1270',0,'VIP'),P('006','JOANN MARTIN CAJANDAB','okbet00254xqm7','0025',1,'Companion'),
+  P('007','HERSON DELACRUZ JUDALENA','okbet00439f1f3','0043',0,'VIP'),P('008','JEAN ROBIN ASTILLAS DELA ROSA','okbet00972t5dv','0097',1,'VIP'),
+  P('009','MELVIN VILLABLANCA MANABAT','okbet01262z536','0126',1,'Companion'),P('037','JOHN FEROME FERNANDO HERNANDEZ','okbet0371kq2','3710',1,'VIP'),
+  P('048','KYLA LOUISE NAJE VILLEGAS','okbet0482pd9','4821',1,'Companion'),P('050','EDSIL ABALOYAN SANCIEGO','okbet0503mz1','5032',1,'VIP'),
+  P('056','LEXTER CLAUS ROSALES','okbet0561rr7','5617',1,'VIP'),P('075','NEIL BRYAN PENAREDONDO CARILLO','okbet0758nb3','7583',1,'Companion'),
+  P('081','FERNANDO CAYABYAB DUPAYA','okbet0814fd2','8142',1,'VIP'),P('120','DERRICK CULALA ALEJANDRO','okbet1203dc6','2036',1,'VIP'),
+  P('186','GLORIA AQUINO CRUZ','okbet1867ga1','8671',1,'Companion'),P('192','JHONNIX PASTOR ZAPATA','okbet1925jz8','9258',1,'VIP'),
+  P('203','KRISTINE MARIN MATSUO','okbet2036km4','0364',1,'Companion'),P('209','DAISYLYN DE LA CRUZ SACRO','okbet2092ds5','0925',1,'VIP'),
+  P('216','Viljumae Sunjae','okbet4892ma6xp','4892',1,'Companion'),P('264','CHRISTIAN DAVID LOPEZ MACARAEG','okbet2647cm9','6479',1,'VIP'),
+  P('292','MERGIN BELAGO FILLAR','okbet2921mf3','9213',1,'VIP'),P('301','ANA MARIE TORRES','okbet3010at1','3011',0,'Companion')
+];
+const R=(id,g,num,prize,t)=>({id,g,num,prize,op:'Mini Game 2',t});
+let records=[
+  R('dd2f1d46','d3650bf5','056','Evolution Towel','2026/10/31 17:26:41'),R('74e77c59','d3650bf5','264','Evolution Towel','2026/10/31 17:20:39'),
+  R('9076af07','52341bd5','264','Ballpan','2026/10/31 17:18:28'),R('48d778f7','d3650bf5','081','Evolution Towel','2026/10/31 17:17:59'),
+  R('1545f77e','d3650bf5','203','Evolution Towel','2026/10/31 17:17:08'),R('855469d8','d3650bf5','192','Evolution Towel','2026/10/31 17:14:29'),
+  R('b4f8bcc2','d3650bf5','209','Evolution Towel','2026/10/31 17:13:07'),R('5a0ad3be','d3650bf5','037','Evolution Towel','2026/10/31 17:08:10'),
+  R('072bec12','52341bd5','050','Ballpan','2026/10/31 17:08:08'),R('b996fcad','d3650bf5','292','Evolution Towel','2026/10/31 17:05:51'),
+  R('3c0e9a12','d135b591','048','Okgames-Merch','2026/10/31 16:52:10'),R('7a1b44c0','d135b591','075','random gift','2026/10/31 16:47:33'),
+  R('e51d0b9f','e7a1c2d0','186','Okgames-Merch','2026/10/31 16:40:05'),R('a0c4f3d2','e7a1c2d0','120','Okgames-Merch','2026/10/31 16:31:47')
+];
+const prizes=[
+  {id:'55947b96',n:'Okgames-Merch',code:'OKGAMESMERCH4Q1',s:'300',g:'Lobby - Hoop Mania'},
+  {id:'93f16d43',n:'Dyson',code:'DYSON8KT2',s:'1',g:'奖品发放'},
+  {id:'5f505232',n:'Evolution Towel',code:'EVOLUTIONTOW7M3',s:'300',g:'EVO - Snakes And Ladder'},
+  {id:'424c20ce',n:'Slot Bag',code:'SLOTBAG2W9',s:'100',g:'奖品发放'},
+  {id:'297468dd',n:'Ballpan',code:'BALLPAN5R8',s:'300',g:'EVO - Rock-Paper-Scissors'},
+  {id:'3df6266c',n:'₱1 million',code:'1MILLION7DU2',s:'1',g:'奖品发放'},
+  {id:'ae6c4a9b',n:'₱500K',code:'500K8UWS',s:'1',g:'奖品发放'},
+  {id:'4a215e06',n:'200K E-credit',code:'ECREDIT200KCL82',s:'1',g:'奖品发放'}
+];
+const stats={bacc:[297,157,140,227,'76%',579],a2:[0,0,0,0,'0%',0]};
+
+const S={mode:'admin',page:'report',act:'bacc',lastAct:'bacc',sw:false,swq:'',rf:{g:'',p:'',q:'',size:10,page:1},
+  modal:null,mErr:'',staffGame:'e7a1c2d0',sheet:null,justAdded:null,toast:''};
+
+const actOf=k=>activities.find(a=>a.key===k);
+const gameOf=id=>games.find(g=>g.id===id);
+const memberOf=n=>members.find(m=>m.num===n);
+const issued=(gid,pn)=>records.filter(r=>r.g===gid&&r.prize===pn).length;
+const pad=n=>String(n).padStart(2,'0');
+const now=()=>{const d=new Date();return `${d.getFullYear()}/${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`};
+const hex8=()=>Array.from({length:8},()=>'0123456789abcdef'[Math.random()*16|0]).join('');
+
+const ico='<svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="2.5" y="2.5" width="11" height="11" rx="2.5"/></svg>';
+const MENU=[
+  ['活动管理',[['activity','活动管理',2],['report','活动报表',2],['x2','小游戏报表',445],['bac','百家乐报表'],['lot','抽奖活动报表',134],['sig','签署留证']]],
+  ['用户管理',[['members','受邀会员管理',297],['staffm','现场工作人员管理',21],['adm','管理员',7]]],
+  ['奖品管理',[['x5','奖品类别管理',3],['prizes','奖品管理',26]]],
+  ['游戏管理',[['bg','百家乐游戏管理',5],['br','百家乐轮次管理',4],['minigame','小游戏管理',7],['lg','抽奖游戏管理',10]]]
+];
+
+/* ---------- side ---------- */
+function side(){
+  let h=`<nav class="side" aria-label="后台菜单"><div class="logo"><span class="sh"><svg width="16" height="18" viewBox="0 0 16 18" fill="none" stroke="#b8913a" stroke-width="1.6"><path d="M8 1l6 2.5v5c0 4-3 7-6 8.5C5 15.5 2 12.5 2 8.5v-5z"/><path d="M5.5 9l2 2 3-3.5"/></svg></span><div><b>OKGL</b><small>赛事系统</small></div></div>`;
+  MENU.forEach(([g,items])=>{
+    h+=`<div class="grp">${g}</div>`;
+    items.forEach(([k,label,c])=>{
+      if(k==='x2'||k==='x5'){h+=`<div class="mi gone chg" data-n="${k==='x2'?2:5}" style="outline-color:var(--del)">${ico}${label}<span class="c">删除</span></div>`;return}
+      const on=S.page===k;
+      const mark=(k==='report'&&S.page==='report')?' chg" data-n="1':'';
+      h+=`<button class="mi${on?' on':''}${mark}" data-page="${k}">${ico}${label}${c!=null?`<span class="c">${c}</span>`:''}</button>`;
+    });
+  });
+  h+=`<div class="grp"></div><button class="mi">${ico}退出登录</button><div class="lang"><span>中文</span><span>EN</span></div></nav>`;
+  return h;
+}
+const topbar=`<div class="top">当前用户：<b>Super Admin</b><button class="b sm">修改密码</button><button class="b sm">退出登录</button></div>`;
+
+/* ---------- pages ---------- */
+function qrSvg(seed){
+  let x=0;for(const c of seed)x=(x*31+c.charCodeAt(0))>>>0;
+  const rnd=()=>{x=(x*1103515245+12345)>>>0;return x/4294967296};
+  const N=25;let r='';
+  const finder=(a,b)=>`<rect x="${a}" y="${b}" width="7" height="7" fill="#111"/><rect x="${a+1}" y="${b+1}" width="5" height="5" fill="#fff"/><rect x="${a+2}" y="${b+2}" width="3" height="3" fill="#111"/>`;
+  for(let i=0;i<N;i++)for(let j=0;j<N;j++){
+    if((i<8&&j<8)||(i<8&&j>16)||(i>16&&j<8))continue;
+    if(rnd()<.5)r+=`<rect x="${j}" y="${i}" width="1" height="1" fill="#111"/>`;
+  }
+  return `<svg viewBox="0 0 25 25" shape-rendering="crispEdges" role="img" aria-label="签到二维码"><rect width="25" height="25" fill="#fff"/>${r}${finder(0,0)}${finder(18,0)}${finder(0,18)}</svg>`;
+}
+function pageReport(){
+  const a=actOf(S.act),st=stats[a.key],gs=games.filter(g=>g.act===a.key);
+  const pnames=[...new Set(gs.flatMap(g=>g.prizes.map(p=>p.n)))];
+  const rf=S.rf,q=rf.q.trim().toLowerCase();
+  let rows=records.filter(r=>gameOf(r.g).act===a.key)
+    .filter(r=>!rf.g||r.g===rf.g).filter(r=>!rf.p||r.prize===rf.p)
+    .filter(r=>{if(!q)return true;const m=memberOf(r.num);return r.num.includes(q)||(m&&m.name.toLowerCase().includes(q))})
+    .sort((x,y)=>y.t.localeCompare(x.t));
+  const total=rows.length,pages=Math.max(1,Math.ceil(total/rf.size));if(rf.page>pages)rf.page=pages;
+  rows=rows.slice((rf.page-1)*rf.size,rf.page*rf.size);
+  const acts=['编辑赛事','活动进程','免责声明管理','活动 Logo','操作日志','一键签到'].map(t=>`<button class="b">${t}</button>`).join('')+`<button class="b gold">玩家签到</button><button class="b red">删除赛事</button>`;
+  const fq=S.swq.trim().toLowerCase();
+  const opts=activities.filter(x=>!fq||x.name.toLowerCase().includes(fq)||x.code.toLowerCase().includes(fq)).map(x=>`<button class="opt${x.key===a.key?' on':''}" data-act="${x.key}" role="option" aria-selected="${x.key===a.key}"><b>${esc(x.name)}</b><span class="pill p-green">开启</span><small>${x.code} · ${x.time}</small></button>`).join('')||'<div class="empty" style="padding:16px">没有匹配的活动</div>';
+  const lab=['预约人数','VIP人数','亲友人数','已签到','签到率','已领取'];
+  return `${topbar}
+  <span class="del blk" style="margin-bottom:6px">← 返回</span>
+  <div class="rh"><div>
+    <div class="swt chg" data-n="1">
+      <button class="swb" id="swBtn" aria-haspopup="listbox" aria-expanded="${S.sw}">${esc(a.name)}<span class="car"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></span></button>
+      ${S.sw?`<div class="pop" role="listbox" aria-label="选择活动"><input id="swQ" placeholder="搜索活动名称或编号" value="${esc(S.swq)}">${opts}</div>`:''}
+    </div>
+    <div class="code">${a.code} · TBD</div></div>
+    <div class="acts">${acts}</div></div>
+  <div class="stats">${st.map((v,i)=>`<div class="st"><span>${lab[i]}</span><b>${v}</b></div>`).join('')}</div>
+  <div class="upd">最后更新时间: 2026/11/17 15:12:44</div>
+  <div class="rg">
+    <div class="card rc chg" data-n="1">
+      <h3>小游戏报表<small>共 ${total} 条</small><span class="del" style="margin-left:auto">最近签到</span></h3>
+      <div class="flt"><span class="del">全部活动</span>
+        <select id="fG" aria-label="小游戏"><option value="">全部小游戏</option>${gs.map(g=>`<option value="${g.id}"${rf.g===g.id?' selected':''}>${esc(g.name)}</option>`).join('')}</select>
+        <select id="fP" aria-label="奖品"><option value="">全部奖品</option>${pnames.map(p=>`<option${rf.p===p?' selected':''}>${esc(p)}</option>`).join('')}</select>
+        <input id="fQ" placeholder="输入受邀会员姓名或编号查询" value="${esc(rf.q)}">
+        <button class="b gold" id="fS">搜索</button><button class="b" id="fR">重置</button></div>
+      <div style="overflow-x:auto"><table class="tbl"><thead><tr><th>ID</th><th>活动名称</th><th>小游戏名称</th><th>受邀会员</th><th>奖品名称</th><th>操作人</th><th>操作时间</th></tr></thead><tbody>
+      ${rows.length?rows.map(r=>{const m=memberOf(r.num);return `<tr${S.justAdded===r.id?' style="background:#fff8e6"':''}><td class="mono nw">${r.id}</td><td>${esc(a.name)}</td><td>${esc(gameOf(r.g).name)}</td><td>${r.num} · ${esc(m?m.name:'')}</td><td>${esc(r.prize)}</td><td class="nw">${esc(r.op)}</td><td class="mono nw">${r.t.replace(' ','<br>')}</td></tr>`}).join(''):`<tr><td colspan="7"><div class="empty">该活动暂无小游戏发放记录</div></td></tr>`}
+      </tbody></table></div>
+      <div class="pg">共 ${total} 条 <span>每页</span><span class="sz">${[10,20,50,100].map(n=>`<button data-size="${n}" class="${rf.size===n?'on':''}">${n}</button>`).join('')}</span>
+        <button class="b sm" data-pg="-1" ${rf.page<=1?'disabled':''}>上一页</button><span>${rf.page} / ${pages}</span><button class="b sm" data-pg="1" ${rf.page>=pages?'disabled':''}>下一页</button></div>
+    </div>
+    <div class="card qr" style="display:grid;grid-template-columns:auto 1fr;gap:4px 20px;text-align:left;align-items:center"><h3 style="grid-column:1/-1">查看二维码</h3>${qrSvg(a.code)}<div><div class="n">${esc(a.name)}</div><div class="k">${a.code}</div><div class="u">https://okgl.oksports.ai/checkin/${a.code}</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="b sm">复制网址</button><button class="b sm">PNG</button><button class="b sm">打印</button></div></div></div>
+  </div>
+  <div class="card imp">▸ 批量导入参赛者</div>`;
+}
+function pageActivity(){
+  return `${topbar}<div class="ph"><div><h1>活动管理</h1><p>全部活动。活动时间即签到窗口；点击活动名称进入「活动报表」看板。</p></div><button class="b gold">＋ 新增</button></div>
+  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>ID</th><th>活动名称</th><th>活动时间</th><th>活动状态</th><th>创建时间</th><th>最后修改时间</th><th>操作</th></tr></thead><tbody>
+  ${activities.slice().reverse().map(a=>`<tr><td class="mono">${a.id}</td><td><span class="chg" data-n="3" style="display:inline-block;padding:2px 4px"><button class="link" data-goact="${a.key}">${esc(a.name)} ↗</button></span><div style="font-size:11.5px;color:var(--muted)">${a.code} · TBD</div></td><td style="font-size:12px">${a.time.replace(' → ','<br>→ ')}</td><td><span class="pill p-green">开启</span></td><td class="mono">${a.created}</td><td class="mono">${a.updated}</td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">活动 Logo</button><button class="b sm">删除</button></div></td></tr>`).join('')}
+  </tbody></table></div><div class="pg">共 ${activities.length} 条</div>`;
+}
+function pageMembers(){
+  return `${topbar}<div class="ph"><div><h1>受邀会员管理</h1><p>跨赛事查看受邀会员，可按活动筛选，按编号、手机号或姓名检索。</p></div><div style="display:flex;gap:8px"><span class="chg" data-n="4" style="display:inline-flex"><button class="b" id="expMem">导出</button></span><button class="b">上传名单</button><button class="b gold" id="addMem">＋ 新增</button></div></div>
+  <div class="card flt" style="margin-bottom:14px"><select style="width:220px"><option>全部活动</option></select><input placeholder="输入编号、手机号码或姓名查询"><button class="b gold">搜索</button><button class="b">重置</button></div>
+  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th><span class="chg" data-n="4" style="padding:2px 4px">会员编号</span></th><th>姓名</th><th>活动名称</th><th>手机号码</th><th>签到状态</th><th class="dc">关联会员ID</th><th><span class="chg" data-n="4" style="padding:2px 4px">VIP/Companion</span></th><th>是否准许拍照</th><th>领奖规则同意书</th><th>操作</th></tr></thead><tbody>
+  ${members.map(m=>`<tr${S.justAdded===m.num?' style="background:#fff8e6"':''}><td class="mono">${m.signed?m.num:'—'}</td><td><b style="color:var(--gold-d)">${esc(m.name)}</b><div style="font-size:11px;color:var(--muted)">${esc(m.acc)}</div></td><td style="font-size:12px">${esc(actOf(m.act).name)}<div style="font-size:11px;color:var(--muted)">${actOf(m.act).code}</div></td><td class="mono">+63 9*****${m.ph}</td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'已签到':'未签到'}</span></td><td class="dc">—</td><td><span class="pill ${m.type==='VIP'?'p-vip':'p-comp'}">${m.type}</span></td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'是':'未签'}</span></td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'是':'未签'}</span></td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+function pagePrizes(){
+  return `${topbar}<div class="ph"><div><h1>奖品管理</h1><p>跨赛事查看奖品，可按编号或奖品名称搜索。图片填 http(s) 地址。</p></div><button class="b gold" id="addPrize">＋ 新增</button></div>
+  <div class="card flt" style="margin-bottom:14px"><span class="del">全部类别</span><input placeholder="输入编号或奖品名称查询"><button class="b gold">搜索</button><button class="b">重置</button></div>
+  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>ID</th><th class="dc">类别名称</th><th>奖品名称</th><th>奖品图片</th><th>库存</th><th>挂载</th><th>操作</th></tr></thead><tbody>
+  ${prizes.map(p=>`<tr><td class="mono">${p.id}</td><td class="dc">${/₱|credit/i.test(p.n)?'cash prizes':'Physical prizes'}</td><td><b>${esc(p.n)}</b><div class="mono">${p.code}</div></td><td>—</td><td>${p.s}</td><td style="font-size:12px">${esc(p.g)}</td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+function pageMini(){
+  return `${topbar}<div class="ph"><div><h1>小游戏管理</h1><p>小游戏即「游戏类」发奖站点，下挂的奖品就是它可出的奖品。</p></div><div style="display:flex;gap:8px"><span class="chg" data-n="6" style="display:inline-flex"><button class="b" id="expMini">导出</button></span><button class="b gold">＋ 新增小游戏</button></div></div>
+  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>ID</th><th>活动名称</th><th>小游戏名称</th><th>奖品（库存 · 已发放）</th><th>创建时间</th><th>最后修改时间</th><th>操作</th></tr></thead><tbody>
+  ${games.map(g=>`<tr><td class="mono">${g.id}<br>${g.code}</td><td>${esc(actOf(g.act).name)}</td><td><b>${esc(g.name)}</b></td>
+    <td><div class="pz chg" data-n="6" style="padding:4px 6px">${g.prizes.map(p=>{const i=issued(g.id,p.n);return `<div><b>${esc(p.n)}</b> 库存数量 ${p.s} · <span class="iss">已发放 ${i}</span></div>`}).join('')}</div></td>
+    <td class="mono">${g.c}</td><td class="mono">${g.u}</td><td><div class="ops"><span class="del" style="justify-content:center">排队二维码</span><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`).join('')}
+  </tbody></table></div>`;
+}
+function pageOther(){
+  return `${topbar}<div class="ph"><div><h1>${esc((MENU.flatMap(x=>x[1]).find(i=>i[0]===S.page)||[,''])[1])}</h1><p>本次需求未改动此页面。</p></div></div><div class="card empty">本次未改动</div>`;
+}
+function modal(){
+  if(S.modal==='member'){
+    return `<div class="mask" id="mask"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mh"><h2 id="mh">新增受邀会员</h2>
+    <div class="fg">
+      <label class="fld">活动名称<select id="mAct">${activities.map(a=>`<option value="${a.key}">${esc(a.name)}</option>`).join('')}</select></label>
+      <label class="fld">会员编号<input id="mNum" placeholder="签到后按签到顺序自动分配" disabled></label>
+      <label class="fld">姓名<input id="mName" placeholder="必填">${S.mErr?`<span class="err">${S.mErr}</span>`:''}</label>
+      <label class="fld">手机号码<input id="mPh" placeholder="+63"></label>
+      <label class="fld">签到状态<select id="mSig"><option value="0">未签到</option><option value="1">已签到</option></select></label>
+      <div class="fld"><div><span class="del" style="margin-right:6px">关联会员ID（选填，填写已有会员ID）</span></div>
+        <div class="chg" data-n="4" style="padding:4px"><div style="margin-bottom:6px">会员类型 <span class="hint">必选，二选一</span></div>
+        <div class="rad" role="radiogroup" aria-label="会员类型"><label><input type="radio" name="mType" value="VIP" checked>VIP</label><label><input type="radio" name="mType" value="Companion">Companion</label></div></div></div>
+      <label class="fld full">账号<input id="mAcc"></label>
+    </div><div class="mf"><button class="b" data-close>取消</button><button class="b gold" id="mSave">保存</button></div></div></div>`;
+  }
+  if(S.modal==='prize'){
+    return `<div class="mask" id="mask"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mh"><h2 id="mh">新增奖品</h2>
+    <div class="fg">
+      <div class="fld"><span class="del" style="align-self:flex-start">类别名称</span><span class="hint">此项删除，奖品名称移到首位</span></div><div></div>
+      <label class="fld">奖品名称<input placeholder="必填"></label>
+      <label class="fld">奖品图片<input placeholder="https://…"></label>
+      <div class="fld">库存数量<input type="number" value="0" aria-label="库存数量"><label class="chk"><input type="checkbox">不限量</label></div>
+      <label class="fld">活动名称<select>${activities.map(a=>`<option>${esc(a.name)}</option>`).join('')}</select></label>
+      <label class="fld full">挂到小游戏<select><option>暂不挂（放在奖品发放）</option>${games.map(g=>`<option>${esc(g.name)}</option>`).join('')}</select></label>
+    </div><div class="mf"><button class="b" data-close>取消</button><button class="b gold" data-close>保存</button></div></div></div>`;
+  }
+  return '';
+}
+
+/* ---------- staff ---------- */
+function staff(){
+  const g=gameOf(S.staffGame);
+  const cards=g.prizes.map((p,i)=>{
+    const list=records.filter(r=>r.g===g.id&&r.prize===p.n).sort((a,b)=>a.t.localeCompare(b.t));
+    const left=p.s-list.length;
+    return `<div class="pcard"><div class="pch"><div><b>Prize：</b><small>${esc(p.n)} · Stock left ${left}</small></div><button class="addm" data-add="${i}" ${left<=0?'disabled':''}>Add Member</button></div>
+    <table class="wl"><thead><tr><th>No.</th><th>Attendee ID</th><th>Name</th></tr></thead><tbody>
+    ${list.length?list.map((r,k)=>{const m=memberOf(r.num);return `<tr class="${S.justAdded===r.id?'new':''}"><td>${k+1}</td><td>${r.num}</td><td>${esc(m?m.name:'')}</td></tr>`}).join(''):`<tr><td colspan="3" style="text-align:center;color:#9a948a;padding:18px">No winners yet</td></tr>`}
+    </tbody></table></div>`;
+  }).join('');
+  let sheet='';
+  if(S.sheet){
+    const p=g.prizes[S.sheet.i];
+    sheet=`<div class="sheet-mask" id="smask"><div class="dlg" role="dialog" aria-modal="true" aria-labelledby="shh"><h4 id="shh">Please input member ID</h4><div class="sub">Mini Game 2 · ${esc(p.n)}</div>
+      <input id="aid" inputmode="numeric" placeholder="Member ID" value="${esc(S.sheet.v)}" autocomplete="off" aria-label="Member ID">
+      <div class="dbtn"><button class="cx" id="acx">Cancel</button><button class="ok" id="aok">Submit</button></div></div></div>`;
+  }
+  return `<div class="staffbg"><div class="ps">
+    <button class="back">← Duties</button>
+    <div class="ptitle">${esc(g.name)}</div><div class="psub">Mini Game</div>
+    <div class="oldwrap"><span class="del">排队功能删除</span><div class="tabs-old"><span>Queue Management</span><span>Completed (280)</span><span>On-site Registration</span></div>
+      <div style="font-size:11px;color:var(--del);text-decoration:line-through;text-align:center">Queue status · Estimated waiting time · Add player to queue · Refresh</div></div>
+    <div class="chg" data-n="7" style="padding:4px;border-radius:14px">${cards}</div>
+  </div></div>${sheet}`;
+}
+
+/* ---------- render ---------- */
+function render(){
+  document.body.classList.toggle('nomark',!$('#mark').checked);
+  $('#mAdmin').setAttribute('aria-pressed',S.mode==='admin');$('#mStaff').setAttribute('aria-pressed',S.mode==='staff');
+  const f=$('#frame');
+  if(S.mode==='staff'){f.innerHTML=staff()+(S.toast?`<div class="toast">${S.toast}</div>`:'');if(S.sheet){const i=$('#aid');i.focus();i.setSelectionRange(i.value.length,i.value.length)}return}
+  const pg={report:pageReport,activity:pageActivity,members:pageMembers,prizes:pagePrizes,minigame:pageMini}[S.page]||pageOther;
+  const scroll=f.querySelector('.main')?.scrollTop||0;
+  f.innerHTML=side()+`<main class="main">${pg()}</main>`+modal()+(S.toast?`<div class="toast">${S.toast}</div>`:'');
+  const mm=f.querySelector('.main');if(mm&&S.keepScroll)mm.scrollTop=scroll;S.keepScroll=false;
+  if(S.sw){const q=$('#swQ');q&&q.focus();q&&q.setSelectionRange(q.value.length,q.value.length)}
+  if(S.modal==='member')$('#mName')?.focus();
+}
+let tt;function toast(t){S.toast=t;render();clearTimeout(tt);tt=setTimeout(()=>{S.toast='';S.justAdded=null;render()},2200)}
+function go(page,open){
+  S.sheet=null;S.modal=null;S.sw=false;
+  if(page==='staff'){S.mode='staff';if(open==='addMember'){const g=gameOf(S.staffGame);S.sheet={i:0,v:''}}}
+  else{S.mode='admin';S.page=page;if(page==='report'&&open==='switch'){S.sw=true;S.swq=''}if(open==='memberModal'){S.modal='member';S.mErr=''}if(open==='prizeModal')S.modal='prize'}
+  render();
+  if(window.matchMedia('(max-width:1200px)').matches)document.querySelector('.proto').scrollIntoView({behavior:'smooth'});
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{
+  const t=e.target;
+  const d=t.closest('[data-go]');if(d){go(d.dataset.go,d.dataset.open);return}
+  if(t.closest('#mAdmin')){S.mode='admin';S.sheet=null;render();return}
+  if(t.closest('#mStaff')){S.mode='staff';render();return}
+  if(!$('#frame').contains(t))return;
+  const m=t.closest('[data-page]');if(m){S.page=m.dataset.page;S.sw=false;S.modal=null;if(S.page==='report')S.act=S.lastAct;render();return}
+  if(t.closest('#swBtn')){S.sw=!S.sw;S.swq='';render();return}
+  const o=t.closest('[data-act]');if(o){S.act=S.lastAct=o.dataset.act;S.sw=false;S.rf={g:'',p:'',q:'',size:S.rf.size,page:1};render();return}
+  if(S.sw&&!t.closest('.pop')){S.sw=false;render();return}
+  const ga=t.closest('[data-goact]');if(ga){S.act=S.lastAct=ga.dataset.goact;S.page='report';S.rf={g:'',p:'',q:'',size:10,page:1};render();return}
+  if(t.closest('#fS')){S.rf.g=$('#fG').value;S.rf.p=$('#fP').value;S.rf.q=$('#fQ').value;S.rf.page=1;S.keepScroll=true;render();return}
+  if(t.closest('#fR')){S.rf={g:'',p:'',q:'',size:S.rf.size,page:1};S.keepScroll=true;render();return}
+  const sz=t.closest('[data-size]');if(sz){S.rf.size=+sz.dataset.size;S.rf.page=1;S.keepScroll=true;render();return}
+  const pgb=t.closest('[data-pg]');if(pgb){S.rf.page+=+pgb.dataset.pg;S.keepScroll=true;render();return}
+  if(t.closest('#expMini')){toast('已导出小游戏列表（原型示意）');return}
+  if(t.closest('#expMem')){toast('已导出受邀会员列表（原型示意）');return}
+  if(t.closest('#addMem')){S.modal='member';S.mErr='';render();return}
+  if(t.closest('#addPrize')){S.modal='prize';render();return}
+  if(t.closest('[data-close]')||t.id==='mask'){S.modal=null;render();return}
+  if(t.closest('#mSave')){
+    const name=$('#mName').value.trim();if(!name){S.mErr='请填写姓名';render();return}
+    let num='';{num=String(Math.max(...members.map(x=>+x.num))+1).padStart(3,'0')}
+    const type=document.querySelector('input[name=mType]:checked').value;
+    members.unshift({num,name:name.toUpperCase(),acc:$('#mAcc').value.trim()||'—',ph:($('#mPh').value.replace(/\D/g,'')||'0000').slice(-4),signed:+$('#mSig').value,type,act:$('#mAct').value});
+    S.modal=null;S.justAdded=num;toast(`已新增 ${num}，类型 ${type}`);return}
+  const ad=t.closest('[data-add]');if(ad){S.sheet={i:+ad.dataset.add,v:''};render();return}
+  if(t.closest('#acx')||t.id==='smask'){S.sheet=null;render();return}
+  if(t.closest('#aok')){
+    const g=gameOf(S.staffGame),p=g.prizes[S.sheet.i],id=hex8(),m=members.find(x=>x.signed&&x.num===S.sheet.v.padStart(3,'0'));
+    if(!m){$('#aid').focus();return}
+    records.push({id,g:g.id,num:m.num,prize:p.n,op:'Mini Game 2',t:now()});
+    S.sheet=null;S.justAdded=id;toast(`已添加 ${memberOf(records[records.length-1].num).name} · 已发放 +1，报表新增 1 条`);return}
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='swQ'){S.swq=e.target.value;const pos=e.target.selectionStart;render();const q=$('#swQ');q.setSelectionRange(pos,pos);return}
+  if(e.target.id==='aid'){S.sheet.v=e.target.value.replace(/\D/g,'').slice(0,4);e.target.value=S.sheet.v}
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='gsel'){S.staffGame=e.target.value;S.sheet=null;render()}
+  if(e.target.id==='mark')render();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){if(S.sheet){S.sheet=null;render()}else if(S.modal){S.modal=null;render()}else if(S.sw){S.sw=false;render()}}
+  if(e.key==='Enter'&&e.target.id==='fQ'){$('#fS').click()}
+  if(e.key==='Enter'&&e.target.id==='aid'){$('#aok').click()}
+});
+render();
+})();
+</script>
+</body>
+</html>
