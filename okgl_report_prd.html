@@ -119,6 +119,7 @@ th.dc,td.dc{background:var(--del-l);color:var(--del);text-decoration:line-throug
 .st span{font-size:11px;color:var(--muted);font-family:var(--cn)}.st b{display:block;font-size:24px;font-weight:800;margin-top:6px}
 .upd{text-align:right;font-size:11px;color:var(--muted);margin:8px 0 14px;font-family:var(--cn)}
 .rc .tbl td{white-space:normal;font-size:12px;padding:9px 8px}.rc .tbl th{padding:10px 8px}.rc .tbl td.nw{white-space:nowrap}
+.qrs{display:flex;gap:14px;align-items:center;margin-top:10px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:12px;width:max-content;max-width:100%}.qrs svg{width:84px;height:84px;flex:none}.qrs b{font-size:13px;font-family:var(--cn)}.qrs .k{font-family:var(--mono);color:var(--gold);font-size:12px}.qrs .u{font-size:10.5px;color:var(--muted);margin:2px 0 6px}
 .rg{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
 .rc{padding:16px}
 .rc h3,.qr h3{margin:0 0 8px;font-size:16px;font-weight:900;font-family:var(--cn);display:flex;align-items:center;gap:10px}
@@ -253,7 +254,7 @@ body.nomark .oldwrap{display:none}
     <h2 class="t">活动报表整合 &amp; 后台精简 PRD</h2>
     <p class="lead" style="margin-bottom:6px">本次共 8 处改动：</p>
     <ol class="lead-list">
-      <li>活动详情页归到「活动报表」，标题改为活动切换，「最近签到」换成小游戏报表</li>
+      <li>活动详情页归到「活动报表」，标题改为活动切换，二维码移到活动切换下方，「最近签到」换成小游戏报表，下方新增抽奖活动报表、受邀会员管理</li>
       <li>删除左侧菜单「小游戏报表」</li>
       <li>活动管理只管理活动，点击活动名称跳到对应活动报表</li>
       <li>受邀会员「关联会员ID」改为 VIP / Companion 单选，新增 VIP/Companion、签到状态筛选和导出按钮</li>
@@ -305,6 +306,13 @@ body.nomark .oldwrap{display:none}
         <tr><td>操作时间</td><td>YYYY/MM/DD HH:mm:ss</td></tr>
       </tbody></table>
       <p>字段和原「小游戏报表」页<strong>完全一致，全部保留</strong>。</p>
+      <h4>d. 抽奖活动报表、受邀会员管理</h4>
+      <ol>
+        <li>小游戏报表下方<span class="tag-a">新增</span>「抽奖活动报表」，再往下<span class="tag-a">新增</span>「受邀会员管理」。</li>
+        <li>两块的列表字段、筛选项、按钮和原页面一致，<span class="tag-d">删除</span>「全部活动」筛选，数据跟随当前选中的活动。</li>
+      </ol>
+      <h4>e. 二维码</h4>
+      <p>「查看二维码」移到活动切换（标题和活动编号）下方。</p>
     </section>
 
     <section class="sec" id="s2">
@@ -471,7 +479,7 @@ const prizes=[
 ];
 const stats={bacc:[297,157,140,227,'76%',579],a2:[0,0,0,0,'0%',0]};
 
-const S={mq:{a:'',t:'',s:'',q:''},ld:{a:'',t:'',q:''},pf:'',mf:'',lf:'',mode:'admin',page:'report',act:'bacc',lastAct:'bacc',sw:false,swq:'',rf:{g:'',p:'',q:'',size:10,page:1},
+const S={rl:{t:'',q:''},rm:{t:'',s:'',q:''},mq:{a:'',t:'',s:'',q:''},ld:{a:'',t:'',q:''},pf:'',mf:'',lf:'',mode:'admin',page:'report',act:'bacc',lastAct:'bacc',sw:false,swq:'',rf:{g:'',p:'',q:'',size:10,page:1},
   modal:null,mErr:'',staffGame:'e7a1c2d0',sheet:null,justAdded:null,toast:''};
 
 const actOf=k=>activities.find(a=>a.key===k);
@@ -532,6 +540,8 @@ function pageReport(){
   const acts=['编辑赛事','活动进程','免责声明管理','活动 Logo','操作日志','一键签到'].map(t=>`<button class="b">${t}</button>`).join('')+`<button class="b gold">玩家签到</button><button class="b red">删除赛事</button>`;
   const fq=S.swq.trim().toLowerCase();
   const opts=activities.filter(x=>!fq||x.name.toLowerCase().includes(fq)||x.code.toLowerCase().includes(fq)).map(x=>`<button class="opt${x.key===a.key?' on':''}" data-act="${x.key}" role="option" aria-selected="${x.key===a.key}"><b>${esc(x.name)}</b><span class="pill p-green">开启</span><small>${x.code} · ${x.time}</small></button>`).join('')||'<div class="empty" style="padding:16px">没有匹配的活动</div>';
+  const lq=S.rl.q.trim().toLowerCase(),lrows=ldraw.filter(r=>r.act===a.key&&(!S.rl.t||r.tier===S.rl.t)&&(!lq||r.num.includes(lq)||r.name.toLowerCase().includes(lq)));
+  const mq=S.rm.q.trim().toLowerCase(),mrows=members.filter(m=>m.act===a.key&&(!S.rm.t||m.type===S.rm.t)&&(S.rm.s===''||String(m.signed)===S.rm.s)&&(!mq||m.num.includes(mq)||m.ph.includes(mq)||m.name.toLowerCase().includes(mq)));
   const lab=['预约人数','VIP人数','亲友人数','已签到','签到率','已领取'];
   return `${topbar}
   <span class="del blk" style="margin-bottom:6px">← 返回</span>
@@ -540,7 +550,8 @@ function pageReport(){
       <button class="swb" id="swBtn" aria-haspopup="listbox" aria-expanded="${S.sw}">${esc(a.name)}<span class="car"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 4.5L6 8l3.5-3.5" stroke="currentColor" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg></span></button>
       ${S.sw?`<div class="pop" role="listbox" aria-label="选择活动"><input id="swQ" placeholder="搜索活动名称或编号" value="${esc(S.swq)}">${opts}</div>`:''}
     </div>
-    <div class="code">${a.code} · TBD</div></div>
+    <div class="code">${a.code} · TBD</div>
+    <div class="qrs chg" data-n="1">${qrSvg(a.code)}<div><b>查看二维码</b><div class="k">${a.code}</div><div class="u">https://okgl.oksports.ai/checkin/${a.code}</div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="b sm">复制网址</button><button class="b sm">PNG</button><button class="b sm">打印</button></div></div></div></div>
     <div class="acts">${acts}</div></div>
   <div class="stats">${st.map((v,i)=>`<div class="st"><span>${lab[i]}</span><b>${v}</b></div>`).join('')}</div>
   <div class="upd">最后更新时间: 2026/11/17 15:12:44</div>
@@ -558,8 +569,16 @@ function pageReport(){
       <div class="pg">共 ${total} 条 <span>每页</span><span class="sz">${[10,20,50,100].map(n=>`<button data-size="${n}" class="${rf.size===n?'on':''}">${n}</button>`).join('')}</span>
         <button class="b sm" data-pg="-1" ${rf.page<=1?'disabled':''}>上一页</button><span>${rf.page} / ${pages}</span><button class="b sm" data-pg="1" ${rf.page>=pages?'disabled':''}>下一页</button></div>
     </div>
-    <div class="card qr" style="display:grid;grid-template-columns:auto 1fr;gap:4px 20px;text-align:left;align-items:center"><h3 style="grid-column:1/-1">查看二维码</h3>${qrSvg(a.code)}<div><div class="n">${esc(a.name)}</div><div class="k">${a.code}</div><div class="u">https://okgl.oksports.ai/checkin/${a.code}</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap"><button class="b sm">复制网址</button><button class="b sm">PNG</button><button class="b sm">打印</button></div></div></div>
+    <div class="card rc chg" data-n="1">
+      <h3>抽奖活动报表<small>共 ${lrows.length} 条</small></h3>
+      <div class="flt"><select id="rlT" aria-label="奖项"><option value="">全部奖项</option>${lotto.filter(l=>l.act===a.key).map(l=>`<option${S.rl.t===l.tier?' selected':''}>${l.tier}</option>`).join('')}</select><input id="rlQ" placeholder="输入受邀会员姓名或编号查询" value="${esc(S.rl.q)}"><button class="b gold" id="rlS">搜索</button><button class="b" id="rlR">重置</button><button class="b">导出</button></div>
+      <div style="overflow-x:auto"><table class="tbl">${ldHead}<tbody>${lrows.length?lrows.map(ldRow).join(''):'<tr><td colspan="9"><div class="empty">该活动暂无中奖记录</div></td></tr>'}</tbody></table></div>
+    </div>
+    <div class="card rc chg" data-n="1">
+      <h3>受邀会员管理<small>共 ${mrows.length} 条</small></h3>
+      <div class="flt"><select id="rmT" style="width:130px" aria-label="VIP/Companion"><option value="">全部类型</option>${['VIP','Companion'].map(v=>`<option${S.rm.t===v?' selected':''}>${v}</option>`).join('')}</select><select id="rmS" style="width:140px" aria-label="签到状态"><option value="">全部签到状态</option><option value="1"${S.rm.s==='1'?' selected':''}>已签到</option><option value="0"${S.rm.s==='0'?' selected':''}>未签到</option></select><input id="rmQ" placeholder="输入编号、手机号码或姓名查询" value="${esc(S.rm.q)}"><button class="b gold" id="rmS2">搜索</button><button class="b" id="rmR">重置</button><button class="b">导出</button></div>
+      <div style="overflow-x:auto;max-height:520px"><table class="tbl mt">${memberHead}<tbody>${mrows.length?mrows.map(memberRow).join(''):'<tr><td colspan="10"><div class="empty">该活动暂无受邀会员</div></td></tr>'}</tbody></table></div>
+    </div>
   </div>
   <div class="card imp">▸ 批量导入参赛者</div>`;
 }
@@ -569,11 +588,13 @@ function pageActivity(){
   ${activities.slice().reverse().map(a=>`<tr><td class="mono">${a.id}</td><td><span class="chg" data-n="3" style="display:inline-block;padding:2px 4px"><button class="link" data-goact="${a.key}">${esc(a.name)} ↗</button></span><div style="font-size:11.5px;color:var(--muted)">${a.code} · TBD</div></td><td style="font-size:12px">${a.time.replace(' → ','<br>→ ')}</td><td><span class="pill p-green">开启</span></td><td class="mono">${a.created}</td><td class="mono">${a.updated}</td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">活动 Logo</button><button class="b sm">删除</button></div></td></tr>`).join('')}
   </tbody></table></div><div class="pg">共 ${activities.length} 条</div>`;
 }
+function memberRow(m){return `<tr${S.justAdded===m.num?' style="background:#fff8e6"':''}><td class="mono">${m.signed?m.num:'—'}</td><td><b style="color:var(--gold-d)">${esc(m.name)}</b><div style="font-size:11px;color:var(--muted)">${esc(m.acc)}</div></td><td style="font-size:12px">${esc(actOf(m.act).name)}<div style="font-size:11px;color:var(--muted)">${actOf(m.act).code}</div></td><td class="mono">+63 9*****${m.ph}</td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'已签到':'未签到'}</span></td><td class="dc">—</td><td><span class="pill ${m.type==='VIP'?'p-vip':'p-comp'}">${m.type}</span></td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'是':'未签'}</span></td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'是':'未签'}</span></td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`}
+const memberHead=`<tr><th><span class="chg" data-n="4" style="padding:2px 4px">会员编号</span></th><th>姓名</th><th>活动名称</th><th>手机号码</th><th>签到状态</th><th class="dc">关联会员ID</th><th><span class="chg" data-n="4" style="padding:2px 4px">VIP/Companion</span></th><th>是否准许拍照</th><th>领奖规则同意书</th><th>操作</th></tr>`;
 function pageMembers(){
   return `${topbar}<div class="ph"><div><h1>受邀会员管理</h1><p>跨赛事查看受邀会员，可按活动筛选，按编号、手机号或姓名检索。</p></div><div style="display:flex;gap:8px"><span class="chg" data-n="4" style="display:inline-flex"><button class="b" id="expMem">导出</button></span><button class="b">上传名单</button><button class="b gold" id="addMem">＋ 新增</button></div></div>
   <div class="card flt" style="margin-bottom:14px"><select id="mfA" style="width:150px"><option value="">全部活动</option>${activities.map(a=>`<option value="${a.key}"${S.mq.a===a.key?' selected':''}>${esc(a.name)}</option>`).join('')}</select><span class="chg" data-n="4" style="display:inline-flex;gap:8px"><select id="mfT" style="width:125px" aria-label="VIP/Companion"><option value="">全部类型</option>${['VIP','Companion'].map(v=>`<option${S.mq.t===v?' selected':''}>${v}</option>`).join('')}</select><select id="mfS" style="width:135px" aria-label="签到状态"><option value="">全部签到状态</option><option value="1"${S.mq.s==='1'?' selected':''}>已签到</option><option value="0"${S.mq.s==='0'?' selected':''}>未签到</option></select></span><input id="mfQ" style="min-width:120px" placeholder="输入编号、手机号码或姓名查询" value="${esc(S.mq.q)}"><button class="b gold" id="mfGo">搜索</button><button class="b" id="mfR">重置</button></div>
   <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th><span class="chg" data-n="4" style="padding:2px 4px">会员编号</span></th><th>姓名</th><th>活动名称</th><th>手机号码</th><th>签到状态</th><th class="dc">关联会员ID</th><th><span class="chg" data-n="4" style="padding:2px 4px">VIP/Companion</span></th><th>是否准许拍照</th><th>领奖规则同意书</th><th>操作</th></tr></thead><tbody>
-  ${members.filter(m=>{const f=S.mq,q=f.q.trim().toLowerCase();return(!f.a||m.act===f.a)&&(!f.t||m.type===f.t)&&(f.s===''||String(m.signed)===f.s)&&(!q||m.num.includes(q)||m.ph.includes(q)||m.name.toLowerCase().includes(q))}).map(m=>`<tr${S.justAdded===m.num?' style="background:#fff8e6"':''}><td class="mono">${m.signed?m.num:'—'}</td><td><b style="color:var(--gold-d)">${esc(m.name)}</b><div style="font-size:11px;color:var(--muted)">${esc(m.acc)}</div></td><td style="font-size:12px">${esc(actOf(m.act).name)}<div style="font-size:11px;color:var(--muted)">${actOf(m.act).code}</div></td><td class="mono">+63 9*****${m.ph}</td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'已签到':'未签到'}</span></td><td class="dc">—</td><td><span class="pill ${m.type==='VIP'?'p-vip':'p-comp'}">${m.type}</span></td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'是':'未签'}</span></td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'是':'未签'}</span></td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`).join('')}
+  ${members.filter(m=>{const f=S.mq,q=f.q.trim().toLowerCase();return(!f.a||m.act===f.a)&&(!f.t||m.type===f.t)&&(f.s===''||String(m.signed)===f.s)&&(!q||m.num.includes(q)||m.ph.includes(q)||m.name.toLowerCase().includes(q))}).map(memberRow).join('')}
   </tbody></table></div>`;
 }
 function actSel(id,val){return `<span class="chg" data-n="${id==='fpA'?5:id==='fmA'?6:8}" style="display:inline-flex"><select id="${id}" aria-label="活动名称" style="width:200px"><option value="">全部活动</option>${activities.map(a=>`<option value="${a.key}"${val===a.key?' selected':''}>${esc(a.name)}</option>`).join('')}</select></span>`}
@@ -587,13 +608,15 @@ function pageLotto(){
   </tbody></table></div><div class="pg">共 ${rows.length} 条</div>`;
 }
 const ldraw=[['f3543770','JUSTINE HIZOLA RUBIN','099','4th Prize','₱1K','14:06:37'],['9ff4242c','STEPHENBRIAN MACATO TEJE','284','4th Prize','₱1K','14:06:34'],['c177b5e7','CHARLES RAY MAGYANI ARAGON','060','4th Prize','₱1K','14:06:28'],['19b61a60','JASPER DALE AQUINO FLORES','196','3rd Prize','₱2K','13:57:25'],['4e0f5487','ERIC LUMIO ALAG','165','3rd Prize','₱2K','13:57:19'],['2a1412aa','EDWIN MANALO PANGAN','207','3rd Prize','₱2K','13:57:13'],['03e73856','RICKY HADE PONCE','282','3rd Prize','₱2K','13:57:08'],['3c5b5ee5','JACQUELINE GONZALES DE JESUS','184','3rd Prize','₱2K','13:57:02'],['54abac58','JOVILYN GALLANO FERNANDEZ','217','3rd Prize','₱2K','13:56:56']].map(r=>({id:r[0],act:'bacc',name:r[1],num:r[2],tier:r[3],prize:r[4],t:'2026/11/2 '+r[5]}));
+function ldRow(r){return `<tr><td class="mono">${r.id}</td><td>${esc(actOf(r.act).name)}</td><td><b>${esc(r.name)}</b></td><td class="mono">${r.num}</td><td>${r.tier}</td><td>${r.prize}</td><td>Super Admin</td><td class="mono">${r.t}</td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`}
+const ldHead='<tr><th>ID</th><th>活动名称</th><th>受邀会员</th><th>会员编号</th><th>奖项名称</th><th>奖品名称</th><th>操作人</th><th>操作时间</th><th>操作</th></tr>';
 function pageLdraw(){
   const f=S.ld,q=f.q.trim().toLowerCase();
   const rows=ldraw.filter(r=>(!f.a||r.act===f.a)&&(!f.t||r.tier===f.t)&&(!q||r.num.includes(q)||r.name.toLowerCase().includes(q)));
   return `${topbar}<div class="ph"><div><h1>抽奖活动报表</h1><p>员工端 Lucky Draw 录入的中奖记录。修改或删除会作废原领取并回退库存。</p></div></div>
   <div class="card flt" style="margin-bottom:14px"><select id="ldA" style="width:180px"><option value="">全部活动</option>${activities.map(a=>`<option value="${a.key}"${f.a===a.key?' selected':''}>${esc(a.name)}</option>`).join('')}</select><select id="ldT" style="width:160px"><option value="">全部奖项</option>${lotto.map(l=>`<option${f.t===l.tier?' selected':''}>${l.tier}</option>`).join('')}</select><input id="ldQ" placeholder="输入受邀会员姓名或编号查询" value="${esc(f.q)}"><button class="b gold" id="ldS">搜索</button><button class="b" id="ldR">重置</button><button class="b">导出</button></div>
   <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>ID</th><th>活动名称</th><th>受邀会员</th><th>会员编号</th><th>奖项名称</th><th>奖品名称</th><th>操作人</th><th>操作时间</th><th>操作</th></tr></thead><tbody>
-  ${rows.length?rows.map(r=>`<tr><td class="mono">${r.id}</td><td>${esc(actOf(r.act).name)}</td><td><b>${esc(r.name)}</b></td><td class="mono">${r.num}</td><td>${r.tier}</td><td>${r.prize}</td><td>Super Admin</td><td class="mono">${r.t}</td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`).join(''):'<tr><td colspan="9"><div class="empty">暂无中奖记录</div></td></tr>'}
+  ${rows.length?rows.map(ldRow).join(''):'<tr><td colspan="9"><div class="empty">暂无中奖记录</div></td></tr>'}
   </tbody></table></div><div class="pg">共 ${rows.length} 条</div>`;
 }
 function pagePrizes(){
@@ -702,13 +725,17 @@ document.addEventListener('click',e=>{
   if(!$('#frame').contains(t))return;
   const m=t.closest('[data-page]');if(m){S.page=m.dataset.page;S.sw=false;S.modal=null;if(S.page==='report')S.act=S.lastAct;render();return}
   if(t.closest('#swBtn')){S.sw=!S.sw;S.swq='';render();return}
-  const o=t.closest('[data-act]');if(o){S.act=S.lastAct=o.dataset.act;S.sw=false;S.rf={g:'',p:'',q:'',size:S.rf.size,page:1};render();return}
+  const o=t.closest('[data-act]');if(o){S.act=S.lastAct=o.dataset.act;S.sw=false;S.rf={g:'',p:'',q:'',size:S.rf.size,page:1};S.rl={t:'',q:''};S.rm={t:'',s:'',q:''};render();return}
   if(S.sw&&!t.closest('.pop')){S.sw=false;render();return}
   const ga=t.closest('[data-goact]');if(ga){S.act=S.lastAct=ga.dataset.goact;S.page='report';S.rf={g:'',p:'',q:'',size:10,page:1};render();return}
   if(t.closest('#fS')){S.rf.g=$('#fG').value;S.rf.p=$('#fP').value;S.rf.q=$('#fQ').value;S.rf.page=1;S.keepScroll=true;render();return}
   if(t.closest('#fR')){S.rf={g:'',p:'',q:'',size:S.rf.size,page:1};S.keepScroll=true;render();return}
   const sz=t.closest('[data-size]');if(sz){S.rf.size=+sz.dataset.size;S.rf.page=1;S.keepScroll=true;render();return}
   const pgb=t.closest('[data-pg]');if(pgb){S.rf.page+=+pgb.dataset.pg;S.keepScroll=true;render();return}
+  if(t.closest('#rlS')){S.rl={t:$('#rlT').value,q:$('#rlQ').value};S.keepScroll=true;render();return}
+  if(t.closest('#rlR')){S.rl={t:'',q:''};S.keepScroll=true;render();return}
+  if(t.closest('#rmS2')){S.rm={t:$('#rmT').value,s:$('#rmS').value,q:$('#rmQ').value};S.keepScroll=true;render();return}
+  if(t.closest('#rmR')){S.rm={t:'',s:'',q:''};S.keepScroll=true;render();return}
   if(t.closest('#mfGo')){S.mq={a:$('#mfA').value,t:$('#mfT').value,s:$('#mfS').value,q:$('#mfQ').value};S.keepScroll=true;render();return}
   if(t.closest('#mfR')){S.mq={a:'',t:'',s:'',q:''};S.keepScroll=true;render();return}
   if(t.closest('#ldS')){S.ld={a:$('#ldA').value,t:$('#ldT').value,q:$('#ldQ').value};render();return}
