@@ -256,7 +256,7 @@ body.nomark .oldwrap{display:none}
       <li>活动详情页归到「活动报表」，标题改为活动切换，「最近签到」换成小游戏报表</li>
       <li>删除左侧菜单「小游戏报表」</li>
       <li>活动管理只管理活动，点击活动名称跳到对应活动报表</li>
-      <li>受邀会员「关联会员ID」改为 VIP / Companion 单选，列表新增导出按钮</li>
+      <li>受邀会员「关联会员ID」改为 VIP / Companion 单选，新增 VIP/Companion、签到状态筛选和导出按钮</li>
       <li>删除「奖品类别管理」菜单和奖品的类别名称，奖品列表新增活动名称列和活动筛选</li>
       <li>小游戏管理删除排队二维码，已发放数量取员工后台中奖名单，新增活动筛选</li>
       <li>员工后台小游戏取消排队，改为按签到ID添加中奖名单，跟抽奖游戏一样</li>
@@ -341,6 +341,7 @@ body.nomark .oldwrap{display:none}
       <ol>
         <li><span class="tag-d">删除</span>「关联会员ID」列。</li>
         <li><span class="tag-a">新增</span>「VIP/Companion」列，放在原「关联会员ID」的位置，每行显示 <strong>VIP</strong> 或 <strong>Companion</strong> 标签。</li>
+        <li>顶部筛选<span class="tag-a">新增</span>「VIP/Companion」筛选（全部类型 / VIP / Companion）和「签到状态」筛选（全部签到状态 / 已签到 / 未签到），放在「全部活动」右边。</li>
       </ol>
       <h4>c. 会员编号规则</h4>
       <ol>
@@ -470,7 +471,7 @@ const prizes=[
 ];
 const stats={bacc:[297,157,140,227,'76%',579],a2:[0,0,0,0,'0%',0]};
 
-const S={ld:{a:'',t:'',q:''},pf:'',mf:'',lf:'',mode:'admin',page:'report',act:'bacc',lastAct:'bacc',sw:false,swq:'',rf:{g:'',p:'',q:'',size:10,page:1},
+const S={mq:{a:'',t:'',s:'',q:''},ld:{a:'',t:'',q:''},pf:'',mf:'',lf:'',mode:'admin',page:'report',act:'bacc',lastAct:'bacc',sw:false,swq:'',rf:{g:'',p:'',q:'',size:10,page:1},
   modal:null,mErr:'',staffGame:'e7a1c2d0',sheet:null,justAdded:null,toast:''};
 
 const actOf=k=>activities.find(a=>a.key===k);
@@ -570,9 +571,9 @@ function pageActivity(){
 }
 function pageMembers(){
   return `${topbar}<div class="ph"><div><h1>受邀会员管理</h1><p>跨赛事查看受邀会员，可按活动筛选，按编号、手机号或姓名检索。</p></div><div style="display:flex;gap:8px"><span class="chg" data-n="4" style="display:inline-flex"><button class="b" id="expMem">导出</button></span><button class="b">上传名单</button><button class="b gold" id="addMem">＋ 新增</button></div></div>
-  <div class="card flt" style="margin-bottom:14px"><select style="width:220px"><option>全部活动</option></select><input placeholder="输入编号、手机号码或姓名查询"><button class="b gold">搜索</button><button class="b">重置</button></div>
+  <div class="card flt" style="margin-bottom:14px"><select id="mfA" style="width:150px"><option value="">全部活动</option>${activities.map(a=>`<option value="${a.key}"${S.mq.a===a.key?' selected':''}>${esc(a.name)}</option>`).join('')}</select><span class="chg" data-n="4" style="display:inline-flex;gap:8px"><select id="mfT" style="width:125px" aria-label="VIP/Companion"><option value="">全部类型</option>${['VIP','Companion'].map(v=>`<option${S.mq.t===v?' selected':''}>${v}</option>`).join('')}</select><select id="mfS" style="width:135px" aria-label="签到状态"><option value="">全部签到状态</option><option value="1"${S.mq.s==='1'?' selected':''}>已签到</option><option value="0"${S.mq.s==='0'?' selected':''}>未签到</option></select></span><input id="mfQ" style="min-width:120px" placeholder="输入编号、手机号码或姓名查询" value="${esc(S.mq.q)}"><button class="b gold" id="mfGo">搜索</button><button class="b" id="mfR">重置</button></div>
   <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th><span class="chg" data-n="4" style="padding:2px 4px">会员编号</span></th><th>姓名</th><th>活动名称</th><th>手机号码</th><th>签到状态</th><th class="dc">关联会员ID</th><th><span class="chg" data-n="4" style="padding:2px 4px">VIP/Companion</span></th><th>是否准许拍照</th><th>领奖规则同意书</th><th>操作</th></tr></thead><tbody>
-  ${members.map(m=>`<tr${S.justAdded===m.num?' style="background:#fff8e6"':''}><td class="mono">${m.signed?m.num:'—'}</td><td><b style="color:var(--gold-d)">${esc(m.name)}</b><div style="font-size:11px;color:var(--muted)">${esc(m.acc)}</div></td><td style="font-size:12px">${esc(actOf(m.act).name)}<div style="font-size:11px;color:var(--muted)">${actOf(m.act).code}</div></td><td class="mono">+63 9*****${m.ph}</td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'已签到':'未签到'}</span></td><td class="dc">—</td><td><span class="pill ${m.type==='VIP'?'p-vip':'p-comp'}">${m.type}</span></td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'是':'未签'}</span></td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'是':'未签'}</span></td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`).join('')}
+  ${members.filter(m=>{const f=S.mq,q=f.q.trim().toLowerCase();return(!f.a||m.act===f.a)&&(!f.t||m.type===f.t)&&(f.s===''||String(m.signed)===f.s)&&(!q||m.num.includes(q)||m.ph.includes(q)||m.name.toLowerCase().includes(q))}).map(m=>`<tr${S.justAdded===m.num?' style="background:#fff8e6"':''}><td class="mono">${m.signed?m.num:'—'}</td><td><b style="color:var(--gold-d)">${esc(m.name)}</b><div style="font-size:11px;color:var(--muted)">${esc(m.acc)}</div></td><td style="font-size:12px">${esc(actOf(m.act).name)}<div style="font-size:11px;color:var(--muted)">${actOf(m.act).code}</div></td><td class="mono">+63 9*****${m.ph}</td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'已签到':'未签到'}</span></td><td class="dc">—</td><td><span class="pill ${m.type==='VIP'?'p-vip':'p-comp'}">${m.type}</span></td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'是':'未签'}</span></td><td><span class="pill ${m.signed?'p-green':'p-gray'}">${m.signed?'是':'未签'}</span></td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`).join('')}
   </tbody></table></div>`;
 }
 function actSel(id,val){return `<span class="chg" data-n="${id==='fpA'?5:id==='fmA'?6:8}" style="display:inline-flex"><select id="${id}" aria-label="活动名称" style="width:200px"><option value="">全部活动</option>${activities.map(a=>`<option value="${a.key}"${val===a.key?' selected':''}>${esc(a.name)}</option>`).join('')}</select></span>`}
@@ -708,6 +709,8 @@ document.addEventListener('click',e=>{
   if(t.closest('#fR')){S.rf={g:'',p:'',q:'',size:S.rf.size,page:1};S.keepScroll=true;render();return}
   const sz=t.closest('[data-size]');if(sz){S.rf.size=+sz.dataset.size;S.rf.page=1;S.keepScroll=true;render();return}
   const pgb=t.closest('[data-pg]');if(pgb){S.rf.page+=+pgb.dataset.pg;S.keepScroll=true;render();return}
+  if(t.closest('#mfGo')){S.mq={a:$('#mfA').value,t:$('#mfT').value,s:$('#mfS').value,q:$('#mfQ').value};S.keepScroll=true;render();return}
+  if(t.closest('#mfR')){S.mq={a:'',t:'',s:'',q:''};S.keepScroll=true;render();return}
   if(t.closest('#ldS')){S.ld={a:$('#ldA').value,t:$('#ldT').value,q:$('#ldQ').value};render();return}
   if(t.closest('#ldR')){S.ld={a:'',t:'',q:''};render();return}
   const qb=t.closest('[data-q]');if(qb){const k=qb.dataset.q;S[k+'f']=$('#f'+k+'A').value;S.keepScroll=true;render();return}
