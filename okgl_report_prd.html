@@ -282,6 +282,7 @@ body.nomark .oldwrap{display:none}
       <ol>
         <li>原来从「活动管理」点进去的活动详情页，改为属于<strong>「活动报表」</strong>。进入后左侧菜单高亮「活动报表」，不再高亮「活动管理」。</li>
         <li><span class="tag-d">删除</span>标题上方的「← 返回」按钮。</li>
+        <li><span class="tag-d">删除</span>右上角的「活动进程」按钮。</li>
       </ol>
       <h4>b. 活动切换</h4>
       <ol>
@@ -537,7 +538,7 @@ function pageReport(){
     .sort((x,y)=>y.t.localeCompare(x.t));
   const total=rows.length,pages=Math.max(1,Math.ceil(total/rf.size));if(rf.page>pages)rf.page=pages;
   rows=rows.slice((rf.page-1)*rf.size,rf.page*rf.size);
-  const acts=['编辑赛事','活动进程','免责声明管理','活动 Logo','操作日志','一键签到'].map(t=>`<button class="b">${t}</button>`).join('')+`<button class="b gold">玩家签到</button><button class="b red">删除赛事</button>`;
+  const acts=['编辑赛事','活动进程','免责声明管理','活动 Logo','操作日志','一键签到'].map(t=>t==='活动进程'?`<span class="del" style="align-self:center">活动进程</span>`:`<button class="b">${t}</button>`).join('')+`<button class="b gold">玩家签到</button><button class="b red">删除赛事</button>`;
   const fq=S.swq.trim().toLowerCase();
   const opts=activities.filter(x=>!fq||x.name.toLowerCase().includes(fq)||x.code.toLowerCase().includes(fq)).map(x=>`<button class="opt${x.key===a.key?' on':''}" data-act="${x.key}" role="option" aria-selected="${x.key===a.key}"><b>${esc(x.name)}</b><span class="pill p-green">开启</span><small>${x.code} · ${x.time}</small></button>`).join('')||'<div class="empty" style="padding:16px">没有匹配的活动</div>';
   const lq=S.rl.q.trim().toLowerCase(),lrows=ldraw.filter(r=>r.act===a.key&&(!S.rl.t||r.tier===S.rl.t)&&(!lq||r.num.includes(lq)||r.name.toLowerCase().includes(lq)));
