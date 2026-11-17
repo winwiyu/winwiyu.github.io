@@ -470,7 +470,7 @@ const prizes=[
 ];
 const stats={bacc:[297,157,140,227,'76%',579],a2:[0,0,0,0,'0%',0]};
 
-const S={pf:'',mf:'',lf:'',mode:'admin',page:'report',act:'bacc',lastAct:'bacc',sw:false,swq:'',rf:{g:'',p:'',q:'',size:10,page:1},
+const S={ld:{a:'',t:'',q:''},pf:'',mf:'',lf:'',mode:'admin',page:'report',act:'bacc',lastAct:'bacc',sw:false,swq:'',rf:{g:'',p:'',q:'',size:10,page:1},
   modal:null,mErr:'',staffGame:'e7a1c2d0',sheet:null,justAdded:null,toast:''};
 
 const actOf=k=>activities.find(a=>a.key===k);
@@ -585,6 +585,16 @@ function pageLotto(){
   ${rows.length?rows.map(r=>`<tr><td class="mono">${r.id}</td><td>${esc(actOf(r.act).name)}</td><td><b>${esc(r.tier)}</b></td><td>${esc(r.prize)}</td><td>${r.left}</td><td>${r.win}</td><td class="mono">${r.c}</td><td class="mono">${r.u}</td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`).join(''):'<tr><td colspan="9"><div class="empty">该活动暂无抽奖奖项</div></td></tr>'}
   </tbody></table></div><div class="pg">共 ${rows.length} 条</div>`;
 }
+const ldraw=[['f3543770','JUSTINE HIZOLA RUBIN','099','4th Prize','₱1K','14:06:37'],['9ff4242c','STEPHENBRIAN MACATO TEJE','284','4th Prize','₱1K','14:06:34'],['c177b5e7','CHARLES RAY MAGYANI ARAGON','060','4th Prize','₱1K','14:06:28'],['19b61a60','JASPER DALE AQUINO FLORES','196','3rd Prize','₱2K','13:57:25'],['4e0f5487','ERIC LUMIO ALAG','165','3rd Prize','₱2K','13:57:19'],['2a1412aa','EDWIN MANALO PANGAN','207','3rd Prize','₱2K','13:57:13'],['03e73856','RICKY HADE PONCE','282','3rd Prize','₱2K','13:57:08'],['3c5b5ee5','JACQUELINE GONZALES DE JESUS','184','3rd Prize','₱2K','13:57:02'],['54abac58','JOVILYN GALLANO FERNANDEZ','217','3rd Prize','₱2K','13:56:56']].map(r=>({id:r[0],act:'bacc',name:r[1],num:r[2],tier:r[3],prize:r[4],t:'2026/11/2 '+r[5]}));
+function pageLdraw(){
+  const f=S.ld,q=f.q.trim().toLowerCase();
+  const rows=ldraw.filter(r=>(!f.a||r.act===f.a)&&(!f.t||r.tier===f.t)&&(!q||r.num.includes(q)||r.name.toLowerCase().includes(q)));
+  return `${topbar}<div class="ph"><div><h1>抽奖活动报表</h1><p>员工端 Lucky Draw 录入的中奖记录。修改或删除会作废原领取并回退库存。</p></div></div>
+  <div class="card flt" style="margin-bottom:14px"><select id="ldA" style="width:180px"><option value="">全部活动</option>${activities.map(a=>`<option value="${a.key}"${f.a===a.key?' selected':''}>${esc(a.name)}</option>`).join('')}</select><select id="ldT" style="width:160px"><option value="">全部奖项</option>${lotto.map(l=>`<option${f.t===l.tier?' selected':''}>${l.tier}</option>`).join('')}</select><input id="ldQ" placeholder="输入受邀会员姓名或编号查询" value="${esc(f.q)}"><button class="b gold" id="ldS">搜索</button><button class="b" id="ldR">重置</button><button class="b">导出</button></div>
+  <div class="card" style="overflow-x:auto"><table class="tbl"><thead><tr><th>ID</th><th>活动名称</th><th>受邀会员</th><th>会员编号</th><th>奖项名称</th><th>奖品名称</th><th>操作人</th><th>操作时间</th><th>操作</th></tr></thead><tbody>
+  ${rows.length?rows.map(r=>`<tr><td class="mono">${r.id}</td><td>${esc(actOf(r.act).name)}</td><td><b>${esc(r.name)}</b></td><td class="mono">${r.num}</td><td>${r.tier}</td><td>${r.prize}</td><td>Super Admin</td><td class="mono">${r.t}</td><td><div style="display:flex;gap:6px"><button class="b sm">修改</button><button class="b sm">删除</button></div></td></tr>`).join(''):'<tr><td colspan="9"><div class="empty">暂无中奖记录</div></td></tr>'}
+  </tbody></table></div><div class="pg">共 ${rows.length} 条</div>`;
+}
 function pagePrizes(){
   return `${topbar}<div class="ph"><div><h1>奖品管理</h1><p>跨赛事查看奖品，可按编号或奖品名称搜索。图片填 http(s) 地址。</p></div><button class="b gold" id="addPrize">＋ 新增</button></div>
   <div class="card flt" style="margin-bottom:14px"><span class="del">全部类别</span>${actSel('fpA',S.pf)}<input placeholder="输入编号或奖品名称查询"><button class="b gold" data-q="p">搜索</button><button class="b" data-r="p">重置</button></div>
@@ -666,7 +676,7 @@ function render(){
   $('#mAdmin').setAttribute('aria-pressed',S.mode==='admin');$('#mStaff').setAttribute('aria-pressed',S.mode==='staff');
   const f=$('#frame');
   if(S.mode==='staff'){f.innerHTML=staff()+(S.toast?`<div class="toast">${S.toast}</div>`:'');if(S.sheet){const i=$('#aid');i.focus();i.setSelectionRange(i.value.length,i.value.length)}return}
-  const pg={report:pageReport,activity:pageActivity,members:pageMembers,prizes:pagePrizes,minigame:pageMini,lg:pageLotto}[S.page]||pageOther;
+  const pg={report:pageReport,activity:pageActivity,members:pageMembers,prizes:pagePrizes,minigame:pageMini,lg:pageLotto,lot:pageLdraw}[S.page]||pageOther;
   const scroll=f.querySelector('.main')?.scrollTop||0;
   f.innerHTML=side()+`<main class="main">${pg()}</main>`+modal()+(S.toast?`<div class="toast">${S.toast}</div>`:'');
   const mm=f.querySelector('.main');if(mm&&S.keepScroll)mm.scrollTop=scroll;S.keepScroll=false;
@@ -698,6 +708,8 @@ document.addEventListener('click',e=>{
   if(t.closest('#fR')){S.rf={g:'',p:'',q:'',size:S.rf.size,page:1};S.keepScroll=true;render();return}
   const sz=t.closest('[data-size]');if(sz){S.rf.size=+sz.dataset.size;S.rf.page=1;S.keepScroll=true;render();return}
   const pgb=t.closest('[data-pg]');if(pgb){S.rf.page+=+pgb.dataset.pg;S.keepScroll=true;render();return}
+  if(t.closest('#ldS')){S.ld={a:$('#ldA').value,t:$('#ldT').value,q:$('#ldQ').value};render();return}
+  if(t.closest('#ldR')){S.ld={a:'',t:'',q:''};render();return}
   const qb=t.closest('[data-q]');if(qb){const k=qb.dataset.q;S[k+'f']=$('#f'+k+'A').value;S.keepScroll=true;render();return}
   const rb=t.closest('[data-r]');if(rb){S[rb.dataset.r+'f']='';S.keepScroll=true;render();return}
   if(t.closest('#expMem')){toast('已导出受邀会员列表（原型示意）');return}
