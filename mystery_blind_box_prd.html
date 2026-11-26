@@ -175,7 +175,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
 .rec-tbl td,.rec-tbl th{white-space:nowrap}
 @media (prefers-reduced-motion:reduce){.burst .rays,.confetti,.twinkle{animation:none}.confetti{display:none}}
 @media (prefers-reduced-motion:reduce){.board.idle .slot[data-i="0"]::after,.board.idle .slot[data-i="0"]::before,.board.idle .sparkle{animation:none}.feed .track{animation:none}.feed.ticker{overflow-y:auto}}
-.feed .new{color:#ffe34d}
+del.drop{color:#d23b53;text-decoration:line-through;text-decoration-thickness:2px}
 .feed .empty{justify-content:center;color:#c5cdfb;font-weight:600}
 
 /* ---------- overlays inside phone ---------- */
@@ -433,7 +433,7 @@ button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid 
         <tr><td>底部区</td><td>My Points</td><td>当前积分，抽奖成功后实时刷新</td></tr>
         <tr><td></td><td>Recent Winners</td><td>每行：奖品缩略图 · 奖品名 · 中奖用户（脱敏，如 OKBet****88）。列表自动向上慢速循环滚动，约 3 秒滚过一条；手指按住或鼠标悬停时暂停。超过 3 条才滚动</td></tr>
         <tr><td></td><td>My Rewards</td><td>每行：奖品缩略图 · 奖品名 · 中奖时间（YYYY.MM.DD HH:mm:ss）；实物奖品右侧改为 Contact CS 按钮，点击跳转客服</td></tr>
-        <tr><td></td><td>列表规则</td><td>区域内滚动；抽中后插入列表顶部，最新一条高亮</td></tr>
+        <tr><td></td><td>列表规则</td><td>区域内滚动；抽中后插入列表顶部<del class="drop">，最新一条高亮</del></td></tr>
       </tbody>
     </table></div>
     <ol>
